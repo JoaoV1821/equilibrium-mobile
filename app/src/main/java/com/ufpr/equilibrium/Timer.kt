@@ -1,22 +1,27 @@
 package com.ufpr.equilibrium
+
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.Environment
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
+import kotlinx.coroutines.*
 import org.json.JSONObject
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.ConcurrentHashMap
 
 class Timer : AppCompatActivity(), SensorEventListener {
     private var timerTextView: TextView? = null
@@ -26,14 +31,16 @@ class Timer : AppCompatActivity(), SensorEventListener {
     private var gyroscope: Sensor? = null
     private val running = AtomicBoolean(false)
     private var startTime: Long = 0
-    private val handler = Handler(Looper.getMainLooper())
+    private val sensorData = ConcurrentHashMap<String, JSONObject>()
+    private val result = Collections.synchronizedList(mutableListOf<JSONObject>())
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-
             override fun handleOnBackPressed() {
                 val intent = Intent(this@Timer, FtstsInstruction::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -47,95 +54,151 @@ class Timer : AppCompatActivity(), SensorEventListener {
         val refreshBtn = findViewById<ImageView>(R.id.refresh)
         val arrowBack = findViewById<ImageView>(R.id.arrow_back)
 
-
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         gyroscope = sensorManager!!.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
-        pauseButton?.setOnClickListener { toggleTimer() }
+        pauseButton?.setOnClickListener {
+            if (pauseButton!!.text == "Enviar")
+                sendData()
+            else
+                toggleTimer()
+        }
         refreshBtn.setOnClickListener { resetTimer() }
 
         arrowBack.setOnClickListener {
             val intent = Intent(this, FtstsInstruction::class.java)
-            startActivity(intent);
-            finish();
+            startActivity(intent)
+            finish()
         }
 
         startTimerAndSensors()
     }
 
-    private val timerRunnable = object : Runnable {
-
-        override fun run() {
-            if (running.get()) {
-                val elapsedTime = System.currentTimeMillis() - startTime
-                val seconds = (elapsedTime / 1000) % 60
-                val minutes = (elapsedTime / (1000 * 60)) % 60
-                timerTextView?.text = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
-                handler.postDelayed(this, 1000)
-            }
-        }
-    }
-
     private fun startTimerAndSensors() {
         startTime = System.currentTimeMillis()
         running.set(true)
-        handler.post(timerRunnable)
-        sensorManager!!.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME)
-        sensorManager!!.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_GAME)
+        startTimerTask() // Inicia a atualização periódica do timer
+        startSensorCollection()
     }
 
     private fun stopTimerAndSensors() {
         running.set(false)
-        handler.removeCallbacks(timerRunnable)
         sensorManager!!.unregisterListener(this)
     }
 
     private fun toggleTimer() {
         if (running.get()) {
             stopTimerAndSensors()
-
-        } else {
-            startTimerAndSensors()
         }
-
         pauseButton!!.text = if (running.get()) "Pausar" else "Enviar"
     }
 
     private fun resetTimer() {
         stopTimerAndSensors()
         startTimerAndSensors()
-
         pauseButton!!.text = "Pausar"
     }
 
-    override fun onSensorChanged(event: SensorEvent) {
-        if (running.get()) {
-            val dataJson = JSONObject()
-
-            try {
-                val timestamp = SimpleDateFormat("HH:mm:ss.SSS'Z'", Locale.getDefault()).format(Date())
-                dataJson.put("timestamp", timestamp)
-
-                if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-                    dataJson.put("acc_x", event.values[0].toDouble())
-                    dataJson.put("acc_y", event.values[1].toDouble())
-                    dataJson.put("acc_z", event.values[2].toDouble())
-
-                } else if (event.sensor.type == Sensor.TYPE_GYROSCOPE) {
-                    dataJson.put("gyro_x", event.values[0].toDouble())
-                    dataJson.put("gyro_y", event.values[1].toDouble())
-                    dataJson.put("gyro_z", event.values[2].toDouble())
-                }
-
-                println(dataJson)
-
-            } catch (ignored: Exception) {}
+    // Coroutine para atualizar o TextView do timer na thread principal
+    private fun startTimerTask() {
+        coroutineScope.launch(Dispatchers.Main) {
+            while (running.get()) {
+                val elapsed = System.currentTimeMillis() - startTime
+                timerTextView?.text = formatTime(elapsed)
+                delay(1000)
+            }
         }
     }
 
+    // Formata o tempo decorrido no formato HH:mm:ss.SS
+    private fun formatTime(millis: Long): String {
+        val seconds = (millis / 1000) % 60
+        val minutes = (millis / (1000 * 60)) % 60
+
+        return String.format("%02d:%02d", minutes, seconds, )
+    }
+
+    private fun startSensorCollection() {
+        coroutineScope.launch {
+            sensorManager!!.registerListener(this@Timer, accelerometer, SensorManager.SENSOR_DELAY_GAME)
+            sensorManager!!.registerListener(this@Timer, gyroscope, SensorManager.SENSOR_DELAY_GAME)
+        }
+    }
+
+    override fun onSensorChanged(event: SensorEvent) {
+        if (!running.get()) return
+        coroutineScope.launch {
+            val timestamp = SimpleDateFormat("HH:mm:ss.SSS'Z'", Locale.getDefault()).format(Date())
+            val sensorType = if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) "accelerometer" else "gyroscope"
+
+            val dataJson = JSONObject().apply {
+                put("timestamp", timestamp)
+                put("sensor", sensorType)
+                put("x", event.values[0].toDouble())
+                put("y", event.values[1].toDouble())
+                put("z", event.values[2].toDouble())
+            }
+
+            sensorData[sensorType] = dataJson
+            mergeSensorData()
+        }
+    }
+
+    private fun mergeSensorData() {
+        val acc = sensorData["accelerometer"]
+        val gyro = sensorData["gyroscope"]
+        if (acc != null && gyro != null) {
+            synchronized(result) {
+                val mergedJson = JSONObject().apply {
+                    put("timestamp", acc.getString("timestamp"))
+                    put("acc_x", acc.getDouble("x"))
+                    put("acc_y", acc.getDouble("y"))
+                    put("acc_z", acc.getDouble("z"))
+                    put("gyro_x", gyro.getDouble("x"))
+                    put("gyro_y", gyro.getDouble("y"))
+                    put("gyro_z", gyro.getDouble("z"))
+                }
+                result.add(mergedJson)
+                sensorData.clear()
+            }
+        }
+    }
+
+    private fun sendData() {
+        try {
+            val folder = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+            if (folder != null && !folder.exists()) folder.mkdirs()
+
+            val csvFile = File(folder, "sensores_data.csv")
+            val writer = FileWriter(csvFile)
+            writer.append("timestamp,acc_x,acc_y,acc_z,gyro_x,gyro_y,gyro_z\n")
+
+            synchronized(result) {
+                for (json in result) {
+                    writer.append(convertJsonToCsv(json))
+                }
+            }
+
+            writer.flush()
+            writer.close()
+
+            val uri = FileProvider.getUriForFile(this, "${packageName}.provider", csvFile)
+            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/csv"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                setPackage("com.whatsapp")
+            }
+            startActivity(Intent.createChooser(sendIntent, "Enviar CSV via WhatsApp"))
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun convertJsonToCsv(jsonObject: JSONObject): String {
+        return "\n${jsonObject.optString("timestamp")},${jsonObject.optDouble("acc_x", 0.0)},${jsonObject.optDouble("acc_y", 0.0)},${jsonObject.optDouble("acc_z", 0.0)},${jsonObject.optDouble("gyro_x", 0.0)},${jsonObject.optDouble("gyro_y", 0.0)},${jsonObject.optDouble("gyro_z", 0.0)}"
+    }
+
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) = Unit
-
-
-
 }
