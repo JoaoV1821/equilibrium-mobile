@@ -2,11 +2,22 @@ package com.ufpr.equilibrium
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var cpf: EditText
+    private lateinit var senha: EditText
+    private lateinit var intent: Intent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -14,11 +25,40 @@ class MainActivity : AppCompatActivity() {
 
         val btnLogin = findViewById<Button>(R.id.login_button);
 
-        btnLogin.setOnClickListener {
-            val intent = Intent(this, Testes::class.java)
+        intent = Intent(this, Testes::class.java)
+        cpf = findViewById(R.id.cpf)
+        senha = findViewById(R.id.password)
 
-            startActivity(intent);
+        btnLogin.setOnClickListener {
+            authentication()
+
         }
+    }
+
+    private fun authentication() {
+        val api = RetrofitClient.instancePessoasAPI
+
+        val login = Login(cpf.text.toString(), senha.text.toString())
+
+        val call = api.authenticate(login)
+
+        call.enqueue(object : Callback<LoginResult> {
+            override fun onResponse(call: Call<LoginResult>, response: Response<LoginResult>) {
+               if (response.isSuccessful) {
+                   Toast.makeText(applicationContext, "Login realizado com sucesso !", Toast.LENGTH_SHORT).show()
+                   println(response)
+
+                   startActivity(intent);
+
+               }
+            }
+
+            override fun onFailure(call: Call<LoginResult>, t: Throwable) {
+                Log.e("Erro", "Falha no login", t)
+            }
+        })
+
+
     }
 
 }
