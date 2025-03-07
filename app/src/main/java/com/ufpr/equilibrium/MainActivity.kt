@@ -3,9 +3,9 @@ package com.ufpr.equilibrium
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cpf: EditText
     private lateinit var senha: EditText
     private lateinit var intent: Intent
+    private lateinit var intentCadastro: Intent
+    private lateinit var cadastroButton: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,12 +28,18 @@ class MainActivity : AppCompatActivity() {
         val btnLogin = findViewById<Button>(R.id.login_button);
 
         intent = Intent(this, Testes::class.java)
+        intentCadastro = Intent(this, Cadastro::class.java)
         cpf = findViewById(R.id.cpf)
         senha = findViewById(R.id.password)
+        cadastroButton = findViewById(R.id.cadastroView)
 
         btnLogin.setOnClickListener {
             authentication()
 
+        }
+
+        cadastroButton.setOnClickListener {
+            startActivity(intentCadastro)
         }
     }
 
@@ -52,7 +60,6 @@ class MainActivity : AppCompatActivity() {
 
                }
             }
-
             override fun onFailure(call: Call<LoginResult>, t: Throwable) {
                 Log.e("Erro", "Falha no login", t)
             }
