@@ -1,6 +1,5 @@
 package com.ufpr.equilibrium
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -98,5 +97,5 @@ class Cadastro : AppCompatActivity() {
                 Log.e("Erro", "Falha ao cadastrar", t)
             }
         })
-      }
     }
+}

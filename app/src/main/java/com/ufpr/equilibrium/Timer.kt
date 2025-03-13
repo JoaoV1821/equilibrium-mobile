@@ -59,6 +59,7 @@ class Timer : AppCompatActivity(), SensorEventListener {
 
         timerTextView = findViewById(R.id.timerTextView)
         pauseButton = findViewById(R.id.pauseButton)
+
         val refreshBtn = findViewById<ImageView>(R.id.refresh)
         val arrowBack = findViewById<ImageView>(R.id.arrow_back)
 
@@ -146,6 +147,7 @@ class Timer : AppCompatActivity(), SensorEventListener {
                 stopTimerAndSensors()
                 sendData()
             }
+
         } else if (gyroX < 0.2) {
             peakDetected = false
         }
