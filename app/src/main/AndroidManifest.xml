@@ -16,11 +16,12 @@
         android:theme="@style/Theme.Equilibrium"
         tools:targetApi="31">
         <activity
+            android:name=".HomeProfissional"
+            android:exported="false" />
+        <activity
             android:name=".Cadastro"
             android:exported="false"
-            android:theme="@style/Theme.Equilibrium"
-
-            />
+            android:theme="@style/Theme.Equilibrium" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

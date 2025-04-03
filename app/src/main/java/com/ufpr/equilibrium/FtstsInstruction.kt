@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 
 
 class FtstsInstruction : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -16,15 +18,36 @@ class FtstsInstruction : AppCompatActivity() {
 
         val arrowBtn = findViewById<ImageView>(R.id.arrow_button);
         val ftsts = findViewById<Button>(R.id.next_button);
+        var intent: Intent;
+
+
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                intent = if (SessionManager.usuario?.perfil == "paciente") {
+                    Intent(this@FtstsInstruction, Testes::class.java)
+
+                } else {
+                    Intent(this@FtstsInstruction, HomeProfissional::class.java)
+                }
+
+                startActivity(intent);
+            }
+        })
+
 
         arrowBtn.setOnClickListener {
-            val intent = Intent(this, Testes::class.java)
+            intent = if (SessionManager.usuario?.perfil == "paciente") {
+                Intent(this@FtstsInstruction, Testes::class.java)
+
+            } else {
+                Intent(this@FtstsInstruction, HomeProfissional::class.java)
+            }
 
             startActivity(intent);
         }
 
         ftsts.setOnClickListener {
-            val intent = Intent(this, Contagem::class.java)
+            intent = Intent(this, Contagem::class.java)
 
             startActivity(intent);
         }

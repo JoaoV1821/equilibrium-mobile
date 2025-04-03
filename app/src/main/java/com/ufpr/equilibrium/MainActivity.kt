@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.activity.OnBackPressedCallback
 
 class MainActivity : AppCompatActivity() {
     private lateinit var cpf: EditText
@@ -31,9 +32,19 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
+        SessionManager.init(this)
+
+        if (SessionManager.isLoggedIn()) {
+            if (SessionManager.usuario?.perfil == "paciente")
+                startActivity(Intent(this@MainActivity, Testes::class.java))
+            else
+                startActivity(Intent(this@MainActivity, HomeProfissional::class.java))
+
+        }
+
         cpf = findViewById(R.id.cpf)
         senha = findViewById(R.id.password)
-        cadastroButton = findViewById(R.id.cadastroView)
+
         eyeIcon = findViewById(R.id.eye)
         errorBar = findViewById(R.id.error_bar)
 
@@ -65,10 +76,14 @@ class MainActivity : AppCompatActivity() {
             togglePasswordVisibility()
         }
 
-        cadastroButton.setOnClickListener {
-            startActivity(Intent(this, Cadastro::class.java))
-        }
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+               finish();
+            }
+        })
+
     }
+
 
     private fun isValidCPF(cpf: String): Boolean {
         val cleanedCPF = cpf.replace("\\D".toRegex(), "") // Remove caracteres não numéricos
@@ -89,9 +104,6 @@ class MainActivity : AppCompatActivity() {
         return cleanedCPF[9].digitToInt() == digit1 && cleanedCPF[10].digitToInt() == digit2
     }
 
-
-
-
     private fun authentication() {
         val cpfText = cpf.text.toString().trim()
         val senhaText = senha.text.toString().trim()
@@ -105,8 +117,19 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<LoginResult>, response: Response<LoginResult>) {
                 if (response.isSuccessful) {
                     errorBar.visibility = View.GONE
+                    println(response)
+
+                    SessionManager.token = response.body()?.token
+                    SessionManager.usuario = response.body()?.usuario
+
                     Toast.makeText(applicationContext, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@MainActivity, Testes::class.java))
+
+                    if (SessionManager.usuario?.perfil == "paciente"){
+                        startActivity(Intent(this@MainActivity, Testes::class.java));
+
+                    } else {
+                        startActivity(Intent(this@MainActivity, HomeProfissional::class.java));
+                    }
 
                 } else {
                     errorBar.visibility = View.VISIBLE
@@ -135,4 +158,6 @@ class MainActivity : AppCompatActivity() {
         isPasswordVisible = !isPasswordVisible
         senha.setSelection(senha.text.length)
     }
+
+
 }

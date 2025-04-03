@@ -26,4 +26,8 @@ interface PessoasAPI {
 
     @PUT("/pessoas")
     fun updatePessoas(@Query("upc") request: Usuario): Call<Usuario>
+
+
+    @GET("/paciente")
+    fun getPacientes(): Call<List<Paciente>>
 }

@@ -19,7 +19,7 @@
             android:textColor="@color/blue"
             android:paddingBottom="16dp"/>
 
-        <!-- Campos de entrada -->
+        <!-- Campos de entrada padrão -->
         <EditText
             android:id="@+id/cpf"
             android:layout_width="match_parent"
@@ -33,7 +33,6 @@
             android:layout_height="wrap_content"
             android:hint="Senha"
             android:inputType="textPassword"/>
-
 
         <EditText
             android:id="@+id/nome"
@@ -59,13 +58,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
             <CheckBox
                 android:id="@+id/checkMasculino"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="M"/>
-
             <CheckBox
                 android:id="@+id/checkFeminino"
                 android:layout_width="wrap_content"
@@ -73,18 +70,91 @@
                 android:text="F"/>
         </LinearLayout>
 
-        <!-- Perfil como ComboBox (Spinner) -->
+        <!-- Perfil com Spinner -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Perfil"
             android:id="@+id/perfil"
             android:textStyle="bold"/>
-
         <Spinner
             android:id="@+id/spinnerPerfil"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <!-- Seção para campos adicionais específicos por perfil -->
+        <LinearLayout
+            android:id="@+id/llCamposAdicionais"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:paddingTop="16dp">
+
+            <!-- Campos para Pesquisador -->
+            <LinearLayout
+                android:id="@+id/llPesquisador"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Instituição"
+                    android:textStyle="bold"/>
+                <EditText
+                    android:id="@+id/editInstituicao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Digite sua instituição"/>
+                <!-- Adicione outros campos específicos para pesquisador -->
+            </LinearLayout>
+
+            <!-- Campos para Paciente -->
+            <LinearLayout
+                android:id="@+id/llPaciente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Data de Nascimento"
+                    android:textStyle="bold"/>
+                <EditText
+                    android:id="@+id/editDataNascimento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="DD/MM/AAAA"
+                    android:inputType="date"/>
+                <!-- Adicione outros campos específicos para paciente -->
+            </LinearLayout>
+
+            <!-- Campos para Profissional -->
+            <LinearLayout
+                android:id="@+id/llProfissional"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Conselho Profissional"
+                    android:textStyle="bold"/>
+                <EditText
+                    android:id="@+id/editConselho"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Digite seu número de conselho"/>
+                <!-- Adicione outros campos específicos para profissional -->
+            </LinearLayout>
+        </LinearLayout>
 
         <!-- Botão de Enviar -->
         <Button
@@ -95,6 +165,5 @@
             android:backgroundTint="@color/blue"
             android:textColor="@android:color/white"
             android:layout_marginTop="16dp"/>
-
     </LinearLayout>
 </ScrollView>
