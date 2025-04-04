@@ -7,25 +7,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="50dp"
+        >
 
-        <!-- Título -->
+        <!-- Título Centralizado -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cadastro"
-            android:textSize="22sp"
-            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:paddingBottom="16dp"
+            android:text="Cadastro de Pacientes"
             android:textColor="@color/blue"
-            android:paddingBottom="16dp"/>
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-        <!-- Campos de entrada padrão -->
         <EditText
             android:id="@+id/cpf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="CPF"
             android:inputType="number"/>
+
+        <EditText
+            android:id="@+id/nome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nome completo" />
 
         <EditText
             android:id="@+id/senha"
@@ -35,135 +44,102 @@
             android:inputType="textPassword"/>
 
         <EditText
-            android:id="@+id/nome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nome completo"/>
-
-        <EditText
             android:id="@+id/telefone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Telefone"
             android:inputType="phone"/>
 
-        <!-- Sexo com CheckBoxes -->
+        <EditText
+            android:id="@+id/cep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Cep"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/dataNasc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Data de nascimento"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/telefone4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Idade"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/telefone5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Altura"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/telefone6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Peso"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/telefone7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Escolaridade"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/telefone8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nível sócioeconômico"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/telefone9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Possui histórico de queda ?"
+            android:inputType="phone" />
+
+        <!-- Sexo com RadioGroup -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sexo"
             android:textStyle="bold"/>
 
-        <LinearLayout
+        <RadioGroup
+            android:id="@+id/radioGroupSexo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <CheckBox
-                android:id="@+id/checkMasculino"
+
+            <RadioButton
+                android:id="@+id/radioMasculino"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="M"/>
-            <CheckBox
-                android:id="@+id/checkFeminino"
+
+            <RadioButton
+                android:id="@+id/radioFeminino"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="F"/>
-        </LinearLayout>
-
-        <!-- Perfil com Spinner -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Perfil"
-            android:id="@+id/perfil"
-            android:textStyle="bold"/>
-        <Spinner
-            android:id="@+id/spinnerPerfil"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!-- Seção para campos adicionais específicos por perfil -->
-        <LinearLayout
-            android:id="@+id/llCamposAdicionais"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:paddingTop="16dp">
-
-            <!-- Campos para Pesquisador -->
-            <LinearLayout
-                android:id="@+id/llPesquisador"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Instituição"
-                    android:textStyle="bold"/>
-                <EditText
-                    android:id="@+id/editInstituicao"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Digite sua instituição"/>
-                <!-- Adicione outros campos específicos para pesquisador -->
-            </LinearLayout>
-
-            <!-- Campos para Paciente -->
-            <LinearLayout
-                android:id="@+id/llPaciente"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Data de Nascimento"
-                    android:textStyle="bold"/>
-                <EditText
-                    android:id="@+id/editDataNascimento"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="DD/MM/AAAA"
-                    android:inputType="date"/>
-                <!-- Adicione outros campos específicos para paciente -->
-            </LinearLayout>
-
-            <!-- Campos para Profissional -->
-            <LinearLayout
-                android:id="@+id/llProfissional"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Conselho Profissional"
-                    android:textStyle="bold"/>
-                <EditText
-                    android:id="@+id/editConselho"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Digite seu número de conselho"/>
-                <!-- Adicione outros campos específicos para profissional -->
-            </LinearLayout>
-        </LinearLayout>
+        </RadioGroup>
 
         <!-- Botão de Enviar -->
         <Button
             android:id="@+id/enviar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enviar"
+            android:layout_marginTop="16dp"
             android:backgroundTint="@color/blue"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="16dp"/>
+            android:text="Enviar"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </ScrollView>

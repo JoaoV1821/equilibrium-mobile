@@ -2,15 +2,11 @@ package com.ufpr.equilibrium
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Spinner
 import android.widget.Toast
+
 import androidx.activity.enableEdgeToEdge
 
 import androidx.appcompat.app.AppCompatActivity
@@ -20,56 +16,23 @@ import retrofit2.Response
 
 class Cadastro : AppCompatActivity() {
 
-    private lateinit var cpf: EditText
-    private lateinit var senha: EditText
-    private lateinit var nome: EditText
-    private lateinit var telefone: EditText
-    private lateinit var perfil: String
-    private lateinit var checkM: CheckBox
-
-    private lateinit var llCamposAdicionais: LinearLayout
-    private lateinit var llPesquisador: LinearLayout
-    private lateinit var llPaciente: LinearLayout
-    private lateinit var llProfissional: LinearLayout
+    private lateinit var cpf: EditText;
+    private lateinit var nome: EditText;
+    private lateinit var senha: EditText;
+    private lateinit var telefone: EditText;
+    private lateinit var cep: EditText;
+    private lateinit var dataNasc: EditText;
+    private lateinit var idade: EditText;
+    private lateinit var altura: EditText;
+    private lateinit var peso: EditText;
+    private lateinit var escolaridade: EditText;
+    private lateinit var nivelSocio: EditText;
+    private lateinit var queda: EditText;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_cadastro)
-        
-        val spinnerPerfil: Spinner = findViewById(R.id.spinnerPerfil)
-        val opcoesPerfil = arrayOf("pesquisador", "paciente", "profissional")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, opcoesPerfil)
-        spinnerPerfil.adapter = adapter
-
-
-        llCamposAdicionais = findViewById(R.id.llCamposAdicionais)
-        llPesquisador = findViewById(R.id.llPesquisador)
-        llPaciente = findViewById(R.id.llPaciente)
-        llProfissional = findViewById(R.id.llProfissional)
-
-        spinnerPerfil.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val itemSelecionado = parent.getItemAtPosition(position).toString()
-                perfil = itemSelecionado
-
-
-                llCamposAdicionais.visibility = View.VISIBLE
-                llPesquisador.visibility = View.GONE
-                llPaciente.visibility = View.GONE
-                llProfissional.visibility = View.GONE
-
-                when (itemSelecionado) {
-                    "pesquisador" -> llPesquisador.visibility = View.VISIBLE
-                    "paciente" -> llPaciente.visibility = View.VISIBLE
-                    "profissional" -> llProfissional.visibility = View.VISIBLE
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-
-            }
-        }
 
         val btnEnviar = findViewById<Button>(R.id.enviar)
 
@@ -77,7 +40,13 @@ class Cadastro : AppCompatActivity() {
         senha = findViewById(R.id.senha)
         nome = findViewById(R.id.nome)
         telefone = findViewById(R.id.telefone)
-        checkM = findViewById(R.id.checkMasculino)
+        cep = findViewById(R.id.cep)
+        dataNasc = findViewById(R.id.dataNasc)
+
+        cpf.addTextChangedListener(MaskWatcher(cpf, "###.###.###-##"))
+        telefone.addTextChangedListener(MaskWatcher(telefone, "(##) #####-####"))
+        cep.addTextChangedListener(MaskWatcher(cep, "#####-###"))
+        dataNasc.addTextChangedListener(MaskWatcher(dataNasc, "##/##/####"))
 
         btnEnviar.setOnClickListener {
             cadastrar()
@@ -92,8 +61,8 @@ class Cadastro : AppCompatActivity() {
             nome.text.toString(),
             senha.text.toString(),
             telefone.text.toString(),
-            if (checkM.isChecked) "M" else "F",
-            perfil
+            "",
+            ""
         )
 
         val call = api.postPessoas(usuario)
