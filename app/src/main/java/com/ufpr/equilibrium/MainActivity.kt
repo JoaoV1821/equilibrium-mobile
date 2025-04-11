@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +21,6 @@ import androidx.activity.OnBackPressedCallback
 class MainActivity : AppCompatActivity() {
     private lateinit var cpf: EditText
     private lateinit var senha: EditText
-    private lateinit var cadastroButton: TextView
     private lateinit var errorBar: LinearLayout
     private lateinit var eyeIcon: ImageView
     private var isPasswordVisible = false
@@ -39,7 +37,6 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this@MainActivity, Testes::class.java))
             else
                 startActivity(Intent(this@MainActivity, HomeProfissional::class.java))
-
         }
 
         cpf = findViewById(R.id.cpf)
@@ -61,7 +58,6 @@ class MainActivity : AppCompatActivity() {
 
             } else {
                 errorBar.visibility = View.VISIBLE
-
             }
         }
 

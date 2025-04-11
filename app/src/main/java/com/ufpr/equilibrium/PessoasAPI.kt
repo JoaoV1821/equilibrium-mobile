@@ -30,4 +30,7 @@ interface PessoasAPI {
 
     @GET("/paciente")
     fun getPacientes(): Call<List<Paciente>>
+
+    @POST("/testes")
+    fun postTestes(@Body request: Teste): Call<Teste>
 }

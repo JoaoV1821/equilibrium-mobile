@@ -18,6 +18,7 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private val countdownList = listOf("1", "2", "3", "JÁ!")
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contagem)
@@ -60,8 +61,21 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun startTimerActivity() {
-        val intent = Intent(this, Timer::class.java)
-        startActivity(intent)
+
+        val teste = intent.getStringExtra("teste")
+
+       ;
+
+        val newIntent = Intent(this, Timer::class.java)
+
+
+        newIntent.putExtra("teste", teste)
+
+
+        println("$teste - Contagem")
+
+        startActivity(newIntent)
+
     }
 
     override fun onDestroy() {

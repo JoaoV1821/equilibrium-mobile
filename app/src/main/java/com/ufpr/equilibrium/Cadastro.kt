@@ -66,6 +66,7 @@ class Cadastro : AppCompatActivity() {
         )
 
         val call = api.postPessoas(usuario)
+
         call.enqueue(object : Callback<Usuario> {
             override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
                 if (response.isSuccessful) {
