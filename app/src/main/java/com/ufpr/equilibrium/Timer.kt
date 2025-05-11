@@ -1,4 +1,5 @@
 package com.ufpr.equilibrium
+
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.hardware.Sensor
@@ -23,13 +24,21 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.abs
+
+private enum class TugPhase {
+    INIT, STAND_UP, WALK_FORWARD, TURN, WALK_BACK, SIT_DOWN, DONE
+}
 
 class Timer : AppCompatActivity(), SensorEventListener {
 
     private lateinit var timerTextView: TextView
+    private lateinit var title: TextView
     private lateinit var pauseButton: Button
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
@@ -50,19 +59,44 @@ class Timer : AppCompatActivity(), SensorEventListener {
     private var peakDetected = false
     private val maxCycles = 5
 
+    private var tugPhase = TugPhase.INIT
+    private var lastGyroY = 0.0
+    private var lastAccelZ = 0.0
+    private var turning = false
+    private var walkBackStartTime = 0L
+    private var sitStartTime = 0L
+
+    private var time = "";
+
+    private lateinit var typeTeste:String
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                startActivity(Intent(this@Timer, FtstsInstruction::class.java))
-                finish()
+
+                if (intent.getStringExtra("teste") == "5TSTS") {
+                    startActivity(Intent(this@Timer, FtstsInstruction::class.java))
+                    finish()
+
+                } else {
+                    startActivity(Intent(this@Timer, TugInstruction::class.java))
+                    finish()
+                }
+
             }
         })
 
         timerTextView = findViewById(R.id.timerTextView)
+        title = findViewById(R.id.title)
         pauseButton = findViewById(R.id.pauseButton)
+        typeTeste = intent.getStringExtra("teste").toString();
+
+        title.text = intent.getStringExtra("teste")?.uppercase();
+
         val refreshBtn = findViewById<ImageView>(R.id.refresh)
         val arrowBack = findViewById<ImageView>(R.id.arrow_back)
 
@@ -71,8 +105,22 @@ class Timer : AppCompatActivity(), SensorEventListener {
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
         pauseButton.setOnClickListener {
+
             if (pauseButton.text == "Enviar") {
-                postData()
+
+                if (SessionManager.user?.profile == "healthProfessional") {
+                    postData();
+
+                } else {
+
+                    intent = Intent(this@Timer, TestResult::class.java)
+
+                    intent.putExtra("time", time);
+                    intent.putExtra("teste", typeTeste)
+
+                    startActivity(intent);
+                }
+
             } else {
                 toggleTimer()
             }
@@ -81,8 +129,15 @@ class Timer : AppCompatActivity(), SensorEventListener {
         refreshBtn.setOnClickListener { resetTimer() }
 
         arrowBack.setOnClickListener {
-            startActivity(Intent(this, FtstsInstruction::class.java))
-            finish()
+
+            if (intent.getStringExtra("teste")?.uppercase() == "5TSTS") {
+                startActivity(Intent(this@Timer, FtstsInstruction::class.java))
+                finish()
+
+            } else {
+                startActivity(Intent(this@Timer, TugInstruction::class.java))
+                finish()
+            }
         }
 
         startTimerAndSensors()
@@ -106,6 +161,7 @@ class Timer : AppCompatActivity(), SensorEventListener {
     }
 
     private fun resetTimer() {
+
         stopTimerAndSensors()
         result.clear()
         accelQueue.clear()
@@ -116,9 +172,11 @@ class Timer : AppCompatActivity(), SensorEventListener {
 
     private fun startTimerTask() {
         coroutineScope.launch(Dispatchers.Main) {
+
             while (running.get()) {
                 val elapsed = System.currentTimeMillis() - startTime
                 timerTextView.text = formatTime(elapsed)
+                time = formatTime(elapsed)
                 delay(1000)
             }
         }
@@ -128,6 +186,7 @@ class Timer : AppCompatActivity(), SensorEventListener {
     private fun formatTime(millis: Long): String {
         val seconds = (millis / 1000) % 60
         val minutes = (millis / (1000 * 60)) % 60
+
         return String.format("%02d:%02d", minutes, seconds)
     }
 
@@ -142,6 +201,7 @@ class Timer : AppCompatActivity(), SensorEventListener {
         val timestamp = formatTimestamp()
 
         val json = JSONObject().apply {
+
             put("tempo", timestamp)
             put("x", event.values[0].toDouble())
             put("y", event.values[1].toDouble())
@@ -150,9 +210,17 @@ class Timer : AppCompatActivity(), SensorEventListener {
 
         when (event.sensor.type) {
             Sensor.TYPE_ACCELEROMETER -> accelQueue.add(json)
+
             Sensor.TYPE_GYROSCOPE -> {
                 gyroQueue.add(json)
-                detectCycle(event.values[0].toDouble())
+
+                if (intent.getStringExtra("teste")?.lowercase() == "5tsts") {
+                    detectCycle5tsts(event.values[0].toDouble())
+
+            } else {
+                detectCycleTug()
+
+                }
             }
         }
 
@@ -173,13 +241,14 @@ class Timer : AppCompatActivity(), SensorEventListener {
         val accDate = sdf.parse(accTime)
         val gyroDate = sdf.parse(gyroTime)
 
-        val diff = kotlin.math.abs(accDate.time - gyroDate.time)
+        val diff = abs(accDate.time - gyroDate.time)
 
         if (diff <= 20) {
             accelQueue.poll()
             gyroQueue.poll()
 
             val merged = JSONObject().apply {
+
                 put("tempo", acc.getString("tempo"))
                 put("accel_x", acc.getDouble("x"))
                 put("accel_y", acc.getDouble("y"))
@@ -190,17 +259,21 @@ class Timer : AppCompatActivity(), SensorEventListener {
             }
 
             result.add(merged)
+
         } else if (accDate != null) {
+
             if (accDate.before(gyroDate)) {
                 accelQueue.poll()
+
             } else {
                 gyroQueue.poll()
             }
         }
     }
 
-    private fun detectCycle(gyroX: Double) {
+    private fun detectCycle5tsts(gyroX: Double) {
         if (gyroX > peakThreshold && !peakDetected) {
+
             peakDetected = true
             cycleCount++
 
@@ -214,6 +287,80 @@ class Timer : AppCompatActivity(), SensorEventListener {
         }
     }
 
+    private fun detectCycleTug() {
+        val latest = result.lastOrNull() ?: return
+        val currentTime = System.currentTimeMillis()
+
+        val accelZ = latest.optDouble("accel_z", 0.0)
+        val gyroY = latest.optDouble("gyro_y", 0.0)
+
+        when (tugPhase) {
+            TugPhase.INIT -> {
+                if (accelZ < -1.0) {
+                    tugPhase = TugPhase.STAND_UP
+                    Log.d("TUG", "Fase: Levantando-se")
+                }
+            }
+
+            TugPhase.STAND_UP -> {
+                if (abs(accelZ - lastAccelZ) > 0.5) {
+                    tugPhase = TugPhase.WALK_FORWARD
+                    Log.d("TUG", "Fase: Caminhando para frente")
+                }
+            }
+
+            TugPhase.WALK_FORWARD -> {
+                if (abs(gyroY) > 1.0 && !turning) {
+                    turning = true
+                    tugPhase = TugPhase.TURN
+                    Log.d("TUG", "Fase: Virando")
+                }
+            }
+
+            TugPhase.TURN -> {
+                if (abs(gyroY) < 0.3 && turning) {
+                    turning = false
+                    tugPhase = TugPhase.WALK_BACK
+                    walkBackStartTime = currentTime
+                    Log.d("TUG", "Fase: Caminhando de volta")
+                }
+            }
+
+            TugPhase.WALK_BACK -> {
+                val walkDuration = currentTime - walkBackStartTime
+
+                if (walkDuration > 2000 && accelZ > 1.0) { // mínimo 2 segundos de caminhada antes de aceitar "sentar"
+                    tugPhase = TugPhase.SIT_DOWN
+                    sitStartTime = currentTime
+
+
+                    Log.d("TUG", "Fase: Sentando")
+                }
+            }
+
+            TugPhase.SIT_DOWN
+            -> {
+                val sitDuration = currentTime - sitStartTime
+
+                if (sitDuration > 1000 && (abs(accelZ) < 0.2 && (abs(gyroY) < 0.2) || abs(accelZ) < -0.2 && abs(gyroY) < -0.2))  {
+                    tugPhase = TugPhase.DONE
+
+                    stopTimerAndSensors()
+
+                    pauseButton.text = "Enviar"
+                    Log.d("TUG", "Fase: Finalizado")
+                }
+            }
+
+            TugPhase.DONE -> {
+                // Nada a fazer
+            }
+        }
+
+        lastAccelZ = accelZ
+        lastGyroY = gyroY
+    }
+
     private fun formatTimestamp(): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
         sdf.timeZone = TimeZone.getTimeZone("UTC")
@@ -225,37 +372,51 @@ class Timer : AppCompatActivity(), SensorEventListener {
 
         val sensorList = result.map { json ->
             val map = mutableMapOf<String, Any>()
+
             json.keys().forEach { key ->
                 map[key] = json.get(key)
             }
             map
         }
 
+        println(intent.getStringExtra("teste"))
+        println(PacienteManager.cpf);
+        println(SessionManager.user?.cpf)
+        println(sensorList)
+
+        println("teste unidade")
+        println(intent.getStringExtra("id_unidade"))
+
         val teste = Teste(
-            tipo = intent.getStringExtra("teste"),
-            cpfPaciente = PacienteManager.cpf,
-            cpfProfissional = SessionManager.usuario?.cpf,
-            id_unidade = "1",
+            type = intent.getStringExtra("teste"),
+            cpfPatient = PacienteManager.cpf,
+            cpfHealthProfessional = SessionManager.user?.cpf,
+            id_healthUnit = intent.getStringExtra("id_unidade")?.toInt(),
+            date = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()),
+            totalTime = time,
             dadosSensor = sensorList
         )
 
+        if (SessionManager.user?.profile== "healthProfessional") {
+            val call = api.postTestes(teste);
 
-        val call = api.postTestes(teste);
-
-        call.enqueue(object : retrofit2.Callback<Teste> {
-            override fun onResponse(call: Call<Teste>, response: Response<Teste>) {
-                if (response.isSuccessful) {
-                    Toast.makeText(applicationContext, "Teste enviado com sucesso!", Toast.LENGTH_SHORT).show()
+            call.enqueue(object : retrofit2.Callback<Teste> {
+                override fun onResponse(call: Call<Teste>, response: Response<Teste>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(applicationContext, "Teste enviado com sucesso!", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
-            override fun onFailure(call: retrofit2.Call<Teste>, t: Throwable) {
-                Log.e("Erro", "Falha ao enviar o teste", t)
-            }
-        })
+
+                override fun onFailure(call: Call<Teste>, t: Throwable) {
+                    Log.e("Erro", "Falha ao enviar o teste", t)
+                }
+            })
+
+        } else {
+            println("Teste realizado por paciente")
+        }
+
     }
-
-
-
 
     private fun sendData() {
         try {
@@ -269,9 +430,11 @@ class Timer : AppCompatActivity(), SensorEventListener {
             writer.append("timestamp,acc_x,acc_y,acc_z,gyro_x,gyro_y,gyro_z\n")
 
             synchronized(result) {
+
                 for (json in result) {
                     writer.append(convertJsonToCsv(json))
                 }
+
                 result.clear()
             }
 

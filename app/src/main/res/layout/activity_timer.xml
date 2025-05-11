@@ -44,7 +44,7 @@
         app:srcCompat="@drawable/img" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/title"
         android:layout_width="97dp"
         android:layout_height="40dp"
         android:layout_marginStart="168dp"

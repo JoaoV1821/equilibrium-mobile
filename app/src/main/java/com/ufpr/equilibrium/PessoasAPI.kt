@@ -12,25 +12,15 @@ interface PessoasAPI {
     @GET("lookup")
     fun getPessoaByid(@Query("upc") cpf: String ): Call<Usuario>
 
-    @GET("/pessoas")
-    fun getPessoas(): Call<List<Usuario>>
-
-    @POST("/autenticacao/login")
+    @POST("/auth/login")
     fun authenticate(@Body request: Login): Call<LoginResult>
 
-    @POST("/pessoas")
-    fun postPessoas(@Body request: Usuario): Call<Usuario>
-
-    @DELETE("/pessoas")
-    fun deletePessoas(@Query("upc") cpf: String): Call<Usuario>
-
-    @PUT("/pessoas")
-    fun updatePessoas(@Query("upc") request: Usuario): Call<Usuario>
-
-
-    @GET("/paciente")
+    @GET("/patient")
     fun getPacientes(): Call<List<Paciente>>
 
-    @POST("/testes")
+    @POST("/evaluation")
     fun postTestes(@Body request: Teste): Call<Teste>
+
+    @GET("/healthUnit")
+    fun getHealthUnit(): Call<List<HealthUnit>>
 }

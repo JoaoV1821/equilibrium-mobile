@@ -16,12 +16,25 @@
         android:theme="@style/Theme.Equilibrium"
         tools:targetApi="31">
         <activity
-            android:name=".HomeProfissional"
+            android:name=".HealthUnitActivity"
             android:exported="false" />
         <activity
-            android:name=".Cadastro"
+            android:name=".MainActivity2"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium" />
+        <activity
+            android:name=".TestResult"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium" />
+        <activity
+            android:name=".HomeProfissional"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium"
+            android:windowSoftInputMode="adjustPan" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

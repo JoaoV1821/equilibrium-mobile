@@ -1,10 +1,10 @@
 package com.ufpr.equilibrium
 
-data class Usuario(
+data class Usuario (
     val cpf: String,
-    val nome: String,
-    val senha: String,
-    val telefone: String,
-    val sexo: String,
-    val perfil: String
+    val name: String,
+    val password: String,
+    val phone: String,
+    val gender: String,
+    val profile: String
 )

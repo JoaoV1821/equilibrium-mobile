@@ -6,14 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".HomeProfissional">
 
+    <!-- Botão voltar -->
+
+    <!-- Título centralizado -->
+
+    <!-- Campo de busca estilizado -->
+
     <ImageView
         android:id="@+id/arrow_back"
-        android:layout_width="21dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="28dp"
+        android:layout_width="31dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="40dp"
         android:contentDescription="Voltar"
         android:src="@drawable/arrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.121"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,76 +28,64 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="28dp"
         android:text="Pacientes"
         android:textColor="#0057FF"
         android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/arrow_back"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Campo de busca estilizado -->
-
-    <!-- Botão adicionar paciente -->
-
-    <!-- Lista de Pacientes -->
-
-    <Button
-        android:id="@+id/btn_add_paciente"
-        android:layout_width="165dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="124dp"
-        android:backgroundTint="#0057FF"
-        android:text="+ Novo Paciente"
-        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.065"
+        app:layout_constraintHorizontal_bias="0.453"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        app:boxBackgroundColor="#F5F5F5"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxStrokeColor="@android:color/transparent"
+        app:endIconDrawable="@android:drawable/ic_menu_search"
+        app:endIconMode="custom"
+        app:endIconTint="#0057FF"
+        app:hintAnimationEnabled="false"
+        app:hintEnabled="true"
+        app:layout_constraintBottom_toTopOf="@id/rv_pacientes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:hint="Digite um CPF"
+            android:paddingStart="16dp"
+            android:paddingEnd="48dp"
+            android:textColorHint="#888888"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Lista de Pacientes -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_pacientes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="163dp"
+        android:layout_marginTop="8dp"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/searchInput"
-        android:layout_width="199dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="124dp"
-        android:layout_marginBottom="10dp"
-        android:background="#86D6D6D6"
-        android:hint="Digite um cpf"
-        android:paddingStart="16dp"
-        android:textColorHint="#888888"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/rv_pacientes"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_add_paciente"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.625" />
-
-    <ImageView
-        android:id="@+id/searchIcon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="127dp"
-        android:layout_marginEnd="21dp"
-        android:contentDescription="@string/todo"
-        android:src="@android:drawable/ic_menu_search"
-        app:layout_constraintBottom_toBottomOf="@+id/searchInput"
-        app:layout_constraintEnd_toEndOf="@+id/searchInput"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/searchInput"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:tint="#0057FF" />
+        app:layout_constraintTop_toBottomOf="@id/searchLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

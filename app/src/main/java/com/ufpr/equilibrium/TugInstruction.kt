@@ -20,44 +20,46 @@ class TugInstruction : AppCompatActivity() {
         val tug = findViewById<Button>(R.id.next_button);
         var intent: Intent;
 
-
-
+        println(SessionManager.user?.profile);
 
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                intent = if (SessionManager.usuario?.perfil == "paciente") {
-                    Intent(this@TugInstruction, Testes::class.java)
+
+                if (SessionManager.user?.profile == "healthProfessional") {
+                    intent = Intent(this@TugInstruction, HomeProfissional::class.java)
+
+                    startActivity(intent);
 
                 } else {
-                    Intent(this@TugInstruction, HomeProfissional::class.java)
+                    intent = Intent(this@TugInstruction, Testes::class.java)
+
+                    startActivity(intent)
                 }
 
-                startActivity(intent);
             }
         })
 
         arrowBtn.setOnClickListener {
-            intent = if (SessionManager.usuario?.perfil == "paciente") {
-                Intent(this@TugInstruction, Testes::class.java)
+            if (SessionManager.user?.profile == "healthProfessional") {
+                intent = Intent(this@TugInstruction, HomeProfissional::class.java)
+
+                startActivity(intent);
 
             } else {
-                Intent(this@TugInstruction, HomeProfissional::class.java)
-            }
+                intent = Intent(this@TugInstruction, Testes::class.java)
 
-            startActivity(intent);
+                startActivity(intent)
+            }
         }
 
         tug.setOnClickListener {
 
-
-            intent = Intent(this, Contagem::class.java)
+            intent = Intent(this, HealthUnitActivity::class.java)
 
             val cpf = Intent().getStringExtra("cpf")
 
             intent.putExtra("cpf",cpf)
             intent.putExtra("teste", "TUG")
-
-
 
             startActivity(intent);
         }

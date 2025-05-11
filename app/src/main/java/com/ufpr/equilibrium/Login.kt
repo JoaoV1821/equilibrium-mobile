@@ -2,5 +2,5 @@ package com.ufpr.equilibrium
 
 data class Login(
     val cpf: String,
-    val senha: String
+    val password: String
 )

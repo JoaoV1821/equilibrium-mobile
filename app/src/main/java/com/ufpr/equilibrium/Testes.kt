@@ -2,7 +2,6 @@ package com.ufpr.equilibrium
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
@@ -17,7 +16,7 @@ class Testes : AppCompatActivity() {
         setContentView(R.layout.activity_testes)
 
         var intent: Intent;
-        val perfil = SessionManager.usuario?.perfil ?: ""
+        val perfil = SessionManager.user?.profile ?: ""
         val arrowBtn = findViewById<ImageView>(R.id.arrow_button);
         val tugBtn = findViewById<FrameLayout>(R.id.tug);
         val ftsts = findViewById<FrameLayout>(R.id.ftsts);
@@ -41,13 +40,7 @@ class Testes : AppCompatActivity() {
         })
 
         arrowBtn.setOnClickListener {
-
-            if (perfil.lowercase() == "paciente") {  // Usa lowercase() para evitar problemas com maiúsculas/minúsculas
-              builder.show();
-
-            } else {
-                startActivity(Intent(this@Testes, HomeProfissional::class.java))
-            }
+                builder.show();
         }
 
 

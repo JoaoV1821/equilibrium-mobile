@@ -16,7 +16,7 @@ object SessionManager {
         get() = prefs?.getString("TOKEN", null)
         set(value) = prefs?.edit()?.putString("TOKEN", value)?.apply()!!
 
-    var usuario: Usuario?
+    var user: Usuario?
         get() {
             val json = prefs?.getString("USUARIO", null)
             return json?.let { gson.fromJson(it, Usuario::class.java) }

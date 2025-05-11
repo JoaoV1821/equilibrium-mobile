@@ -32,7 +32,7 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            textToSpeech?.language = Locale("pt", "BR") // Configura idioma para português do Brasil
+            textToSpeech?.language = Locale("pt", "BR")
         }
     }
 
@@ -63,13 +63,15 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun startTimerActivity() {
 
         val teste = intent.getStringExtra("teste")
+        val selectedUnitId = intent.getStringExtra("id_unidade")
 
-       ;
 
         val newIntent = Intent(this, Timer::class.java)
 
 
         newIntent.putExtra("teste", teste)
+
+        newIntent.putExtra("id_unidade", selectedUnitId)
 
 
         println("$teste - Contagem")

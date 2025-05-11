@@ -19,43 +19,45 @@ class FtstsInstruction : AppCompatActivity() {
         val arrowBtn = findViewById<ImageView>(R.id.arrow_button);
         val ftsts = findViewById<Button>(R.id.next_button);
 
-
-
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                intent = if (SessionManager.usuario?.perfil == "paciente") {
-                    Intent(this@FtstsInstruction, Testes::class.java)
+
+                if (SessionManager.user?.profile == "healthProfessional") {
+                    intent = Intent(this@FtstsInstruction, HomeProfissional::class.java)
+
+                    startActivity(intent);
 
                 } else {
-                    Intent(this@FtstsInstruction, HomeProfissional::class.java)
-                }
+                    intent = Intent(this@FtstsInstruction, Testes::class.java)
 
-                startActivity(intent);
+                    startActivity(intent)
+                }
             }
         })
 
 
         arrowBtn.setOnClickListener {
-            val intent = if (SessionManager.usuario?.perfil == "paciente") {
 
-                Intent(this@FtstsInstruction, Testes::class.java)
+            if (SessionManager.user?.profile == "healthProfessional") {
+                intent = Intent(this@FtstsInstruction, HomeProfissional::class.java)
+
+                startActivity(intent);
 
             } else {
-                Intent(this@FtstsInstruction, HomeProfissional::class.java)
-            }
 
-            startActivity(intent);
+                intent = Intent(this@FtstsInstruction, Testes::class.java)
+
+                startActivity(intent)
+            }
         }
 
         ftsts.setOnClickListener {
 
-            val cpf = intent.getStringExtra("cpf") // <-- pegar da intent atual ✅
+            val intent = Intent(this, HealthUnitActivity::class.java)
 
-            println("$cpf - instruction")
+            val cpf = Intent().getStringExtra("cpf")
 
-            val intent = Intent(this, Contagem::class.java)
-
-
+            intent.putExtra("cpf",cpf)
 
             intent.putExtra("teste", "5TSTS")
 

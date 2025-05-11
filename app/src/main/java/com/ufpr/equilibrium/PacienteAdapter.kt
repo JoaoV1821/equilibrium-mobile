@@ -11,49 +11,58 @@ import androidx.recyclerview.widget.RecyclerView
 
 class PacienteAdapter(
     private val context: Context,
-    private val pacientes: List<Paciente>
-
+    private var pacientes: List<Paciente>
 ) : RecyclerView.Adapter<PacienteAdapter.PacienteViewHolder>() {
+
+    private var pacientesFiltrados: List<Paciente> = pacientes.toList()
 
     class PacienteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nome: TextView = itemView.findViewById(R.id.tv_nome_paciente)
         val info: TextView = itemView.findViewById(R.id.tv_info_paciente)
-        val btnTug: Button = itemView.findViewById(R.id.btn_tug)
+        val btnTug: Button = itemView.findViewById(R.id.back)
         val btn5sts: Button = itemView.findViewById(R.id.btn_5sts)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PacienteViewHolder {
-        PacienteManager.init(context) // Inicializa aqui, uma vez só
+        PacienteManager.init(context)
         val view = LayoutInflater.from(context).inflate(R.layout.item_paciente, parent, false)
         return PacienteViewHolder(view)
     }
 
-
     override fun onBindViewHolder(holder: PacienteViewHolder, position: Int) {
-        val paciente = pacientes[position]
-
-
-        holder.nome.text = paciente.cpf
-        holder.info.text = "CPF: ${paciente.cpf}\nIdade: ${paciente.idade}"
+        val paciente = pacientesFiltrados[position]
+        holder.nome.text = paciente.name
+        holder.info.text = "CPF: ${paciente.cpf}\nIdade: ${paciente.age}"
 
         holder.btn5sts.setOnClickListener {
             val intent = Intent(context, FtstsInstruction::class.java)
-            println(paciente.cpf + "- Paciente Adapter");
-
             PacienteManager.cpf = paciente.cpf
-
             context.startActivity(intent)
         }
 
         holder.btnTug.setOnClickListener {
             val intent = Intent(context, TugInstruction::class.java)
-            println(paciente.cpf + "- Paciente Adapter");
-
             intent.putExtra("cpf", paciente.cpf)
             context.startActivity(intent)
         }
     }
 
-    override fun getItemCount(): Int = pacientes.size
+    override fun getItemCount(): Int = pacientesFiltrados.size
+
+    // Atualiza a lista completa
+    fun atualizarLista(novaLista: List<Paciente>) {
+        this.pacientes = novaLista
+        this.pacientesFiltrados = novaLista
+        notifyDataSetChanged()
+    }
+
+    // Filtra por CPF
+    fun filtrarPorCpf(cpf: String) {
+        pacientesFiltrados = if (cpf.isBlank()) {
+            pacientes
+        } else {
+            pacientes.filter { it.cpf.contains(cpf, ignoreCase = true) }
+        }
+        notifyDataSetChanged()
+    }
 }

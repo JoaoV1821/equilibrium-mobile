@@ -8,178 +8,44 @@
     tools:context=".MainActivity">
 
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:fontFamily="@font/league_spartan_medium"
-        android:text="Login"
-        android:textColor="#2260FF"
-        android:textSize="84px"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="191dp"
-        android:layout_height="149dp"
-        android:layout_marginTop="88dp"
+        android:layout_width="274dp"
+        android:layout_height="237dp"
         android:src="@drawable/logo"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.569"
+        app:layout_constraintHorizontal_bias="0.723"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
-
-    <TextView
-        android:id="@+id/email_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="CPF"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logo" />
-
-    <EditText
-        android:id="@+id/cpf"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/input_background"
-        android:hint="Digite seu cpf"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email_label" />
-
-    <TextView
-        android:id="@+id/password_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Senha"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cpf" />
-
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/input_background"
-        android:hint="Digite sua senha"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/password_label" />
-
-    <ImageView
-        android:id="@+id/eye"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="8dp"
-        android:src="@drawable/eye"
-        app:layout_constraintBottom_toBottomOf="@id/password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/password" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.333"></ImageView>
 
     <Button
-        android:id="@+id/login_button"
-        android:layout_width="217dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="56dp"
+        android:id="@+id/profissional"
+        android:layout_width="273dp"
+        android:layout_height="55dp"
         android:backgroundTint="#2260FF"
-        android:text="Login"
+        android:text="Sou profissional"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/password"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.669" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="249dp"
-        android:layout_marginTop="564dp"
-        android:layout_marginEnd="6dp"
-        android:text="Esqueci minha senha "
-        android:textColor="#2260FF"
-        android:textStyle="bold"
+    <Button
+        android:id="@+id/paciente"
+        android:layout_width="277dp"
+        android:layout_height="55dp"
+        android:backgroundTint="#2260FF"
+        android:text="Sou paciente"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.519"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.796" />
 
-    <ImageView
-        android:id="@+id/openeye"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="eye"
-        android:src="@drawable/openeye"
-        app:layout_constraintBottom_toBottomOf="@id/password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/password" />
-
-
-    <LinearLayout
-        android:id="@+id/error_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:visibility="gone"
-        android:background="@drawable/error_bar_background"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_button">
-
-        <!-- Mensagem de erro -->
-        <TextView
-            android:id="@+id/error_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dados inválidos. Verifique se está digitando o cpf e a senha corretamente."
-            android:textColor="#2260FF"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_gravity="center_horizontal" />
-
-        <!-- Botão de tentar novamente -->
-        <Button
-            android:id="@+id/retry_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="#2260FF"
-            android:text="Tentar Novamente"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal" />
-
-        <!-- Link 'Esqueci minha senha' -->
-        <TextView
-            android:id="@+id/forgot_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Esqueci minha senha"
-            android:textColor="#2260FF"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:layout_gravity="center_horizontal" />
-
-
-
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

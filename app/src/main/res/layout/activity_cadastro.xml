@@ -55,56 +55,75 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Cep"
-            android:inputType="phone" />
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/dataNasc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Data de nascimento"
-            android:inputType="phone" />
+            android:inputType="date" />
 
         <EditText
-            android:id="@+id/telefone4"
+            android:id="@+id/idade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Idade"
-            android:inputType="phone" />
+            android:inputType="number" />
 
         <EditText
-            android:id="@+id/telefone5"
+            android:id="@+id/altura"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Altura"
-            android:inputType="phone" />
+            android:inputType="numberDecimal" />
 
         <EditText
-            android:id="@+id/telefone6"
+            android:id="@+id/peso"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Peso"
-            android:inputType="phone" />
+            android:inputType="numberDecimal" />
 
         <EditText
-            android:id="@+id/telefone7"
+            android:id="@+id/escolaridade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Escolaridade"
-            android:inputType="phone" />
+            android:inputType="text" />
 
         <EditText
-            android:id="@+id/telefone8"
+            android:id="@+id/nivelSocio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nível sócioeconômico"
-            android:inputType="phone" />
+            android:inputType="text" />
 
-        <EditText
+        <TextView
             android:id="@+id/telefone9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Possui histórico de queda ?"
-            android:inputType="phone" />
+            android:text="Possui histórico de queda ?"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupQueda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioSim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sim"/>
+
+            <RadioButton
+                android:id="@+id/radioNão"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Não"/>
+        </RadioGroup>
 
         <!-- Sexo com RadioGroup -->
         <TextView
