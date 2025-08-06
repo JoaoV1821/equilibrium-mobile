@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.feature_teste
 
 import android.content.Intent
 import android.os.Build
@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.ufpr.equilibrium.R
 
 
 class TestResult : AppCompatActivity() {

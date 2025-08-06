@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.feature_ftsts
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +7,12 @@ import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-
+import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.feature_healthUnit.HealthUnitActivity
+import com.ufpr.equilibrium.feature_professional.HomeProfissional
+import com.ufpr.equilibrium.feature_teste.Contagem
+import com.ufpr.equilibrium.feature_teste.Testes
+import com.ufpr.equilibrium.utils.SessionManager
 
 class FtstsInstruction : AppCompatActivity() {
 
@@ -53,11 +58,17 @@ class FtstsInstruction : AppCompatActivity() {
 
         ftsts.setOnClickListener {
 
-            val intent = Intent(this, HealthUnitActivity::class.java)
+           val intent = if (SessionManager.user?.profile == "healthProfessional") {
 
-            val cpf = Intent().getStringExtra("cpf")
+               val cpf = Intent().getStringExtra("cpf")
+               intent.putExtra("cpf",cpf)
 
-            intent.putExtra("cpf",cpf)
+                Intent(this, HealthUnitActivity::class.java)
+
+            } else {
+
+                Intent(this, Contagem::class.java)
+            }
 
             intent.putExtra("teste", "5TSTS")
 
@@ -65,6 +76,5 @@ class FtstsInstruction : AppCompatActivity() {
         }
 
     }
-
 
 }

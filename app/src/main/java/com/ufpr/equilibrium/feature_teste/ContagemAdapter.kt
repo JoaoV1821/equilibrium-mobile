@@ -1,10 +1,11 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.feature_teste
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.ufpr.equilibrium.R
 
 class ContagemAdapter(private val items: List<String>) :
     RecyclerView.Adapter<ContagemAdapter.ViewHolder>() {

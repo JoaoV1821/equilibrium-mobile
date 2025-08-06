@@ -16,22 +16,19 @@
         android:theme="@style/Theme.Equilibrium"
         tools:targetApi="31">
         <activity
-            android:name=".HealthUnitActivity"
+            android:name=".feature_healthUnit.HealthUnitActivity"
             android:exported="false" />
+
         <activity
-            android:name=".MainActivity2"
+            android:name=".feature_teste.TestResult"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium" />
         <activity
-            android:name=".TestResult"
+            android:name=".feature_login.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium" />
         <activity
-            android:name=".LoginActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Equilibrium" />
-        <activity
-            android:name=".HomeProfissional"
+            android:name=".feature_professional.HomeProfissional"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium"
             android:windowSoftInputMode="adjustPan" />
@@ -47,19 +44,19 @@
         </provider>
 
         <activity
-            android:name=".Timer"
+            android:name=".feature_teste.Timer"
             android:exported="false" />
         <activity
-            android:name=".Contagem"
+            android:name=".feature_teste.Contagem"
             android:exported="false" />
         <activity
-            android:name=".TugInstruction"
+            android:name=".feature_tug.TugInstruction"
             android:exported="false" />
         <activity
-            android:name=".FtstsInstruction"
+            android:name=".feature_ftsts.FtstsInstruction"
             android:exported="false" />
         <activity
-            android:name=".Testes"
+            android:name=".feature_teste.Testes"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

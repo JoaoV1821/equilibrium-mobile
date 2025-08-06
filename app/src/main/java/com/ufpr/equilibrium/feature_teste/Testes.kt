@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.feature_teste
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.ufpr.equilibrium.feature_ftsts.FtstsInstruction
+import com.ufpr.equilibrium.MainActivity
+import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.utils.SessionManager
+import com.ufpr.equilibrium.feature_tug.TugInstruction
 
 class Testes : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,7 +21,6 @@ class Testes : AppCompatActivity() {
         setContentView(R.layout.activity_testes)
 
         var intent: Intent;
-        val perfil = SessionManager.user?.profile ?: ""
         val arrowBtn = findViewById<ImageView>(R.id.arrow_button);
         val tugBtn = findViewById<FrameLayout>(R.id.tug);
         val ftsts = findViewById<FrameLayout>(R.id.ftsts);

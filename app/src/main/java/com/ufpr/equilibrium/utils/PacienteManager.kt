@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.utils
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -18,7 +18,6 @@ object PacienteManager {
     var teste: String?
         get() = prefs?.getString("CPF", null)
         set(value) = prefs?.edit()?.putString("CPF", value)?.apply()!!
-
 
     fun clearPacienteCpf() {
         prefs?.edit()?.clear()?.apply()

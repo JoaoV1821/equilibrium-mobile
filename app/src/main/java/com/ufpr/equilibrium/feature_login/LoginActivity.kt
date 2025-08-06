@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.feature_login
 
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +17,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.activity.OnBackPressedCallback
+import com.ufpr.equilibrium.feature_professional.HomeProfissional
+import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.utils.SessionManager
+import com.ufpr.equilibrium.network.Login
+import com.ufpr.equilibrium.network.LoginResult
+import com.ufpr.equilibrium.network.RetrofitClient
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var cpf: EditText
@@ -30,13 +36,11 @@ class LoginActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
 
-
         cpf = findViewById(R.id.cpf)
         senha = findViewById(R.id.password)
 
         eyeIcon = findViewById(R.id.eye)
         errorBar = findViewById(R.id.error_bar)
-
 
         val btnLogin = findViewById<Button>(R.id.login_button)
         val retryButton = findViewById<Button>(R.id.retry_button)
@@ -104,17 +108,15 @@ class LoginActivity : AppCompatActivity() {
         call.enqueue(object : Callback<LoginResult> {
 
             override fun onResponse(call: Call<LoginResult>, response: Response<LoginResult>) {
-                if (response.isSuccessful) {
+                if (response.isSuccessful && response.body()?.user?.profile == "healthProfessional") {
                     errorBar.visibility = View.GONE
-                    println(response)
 
-                    SessionManager.token = response.body()?.token
-                    SessionManager.user = response.body()?.user
+                        SessionManager.token = response.body()?.token
+                        SessionManager.user = response.body()?.user
 
-                    Toast.makeText(applicationContext, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
 
-                    startActivity(Intent(this@LoginActivity, HomeProfissional::class.java))
-
+                        startActivity(Intent(this@LoginActivity, HomeProfissional::class.java))
 
                 } else {
                     println(response)

@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.network
 
 data class LoginResult(
     val token: String,

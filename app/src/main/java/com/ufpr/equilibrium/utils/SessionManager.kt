@@ -1,8 +1,9 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.utils
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.ufpr.equilibrium.network.Usuario
 
 object SessionManager {
     private var prefs: SharedPreferences? = null

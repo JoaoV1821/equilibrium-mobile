@@ -7,6 +7,10 @@ import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.ufpr.equilibrium.feature_login.LoginActivity
+import com.ufpr.equilibrium.feature_professional.HomeProfissional
+import com.ufpr.equilibrium.feature_teste.Testes
+import com.ufpr.equilibrium.utils.SessionManager
 
 class MainActivity : AppCompatActivity() {
 

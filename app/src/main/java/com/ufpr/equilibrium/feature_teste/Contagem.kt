@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.feature_teste
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +7,9 @@ import android.os.Looper
 import android.speech.tts.TextToSpeech
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.ufpr.equilibrium.R
 import java.util.Locale
+
 
 class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener {
 
@@ -65,14 +67,11 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener {
         val teste = intent.getStringExtra("teste")
         val selectedUnitId = intent.getStringExtra("id_unidade")
 
-
         val newIntent = Intent(this, Timer::class.java)
-
 
         newIntent.putExtra("teste", teste)
 
         newIntent.putExtra("id_unidade", selectedUnitId)
-
 
         println("$teste - Contagem")
 

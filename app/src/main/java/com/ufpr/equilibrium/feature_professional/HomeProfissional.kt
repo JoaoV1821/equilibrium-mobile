@@ -1,11 +1,10 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.feature_professional
 
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -14,6 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
+import com.ufpr.equilibrium.MainActivity
+import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.network.Paciente
+import com.ufpr.equilibrium.feature_paciente.PacienteAdapter
+import com.ufpr.equilibrium.network.RetrofitClient
+import com.ufpr.equilibrium.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

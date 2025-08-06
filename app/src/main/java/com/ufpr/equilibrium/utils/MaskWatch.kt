@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.utils
 
 import android.text.Editable
 import android.text.TextWatcher

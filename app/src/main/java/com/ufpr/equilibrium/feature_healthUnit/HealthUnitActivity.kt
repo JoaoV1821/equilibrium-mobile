@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.feature_healthUnit
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,10 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.ufpr.equilibrium.feature_teste.Contagem
+import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.network.RetrofitClient
+import com.ufpr.equilibrium.network.HealthUnit
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,7 +46,6 @@ class HealthUnitActivity : AppCompatActivity() {
                 intent.putExtra("cpf",cpf)
 
                 intent.putExtra("teste", teste)
-
 
                 startActivity(intent)
 

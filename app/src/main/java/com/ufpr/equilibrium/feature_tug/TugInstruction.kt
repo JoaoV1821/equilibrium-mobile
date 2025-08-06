@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.feature_tug
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,11 @@ import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.feature_healthUnit.HealthUnitActivity
+import com.ufpr.equilibrium.feature_professional.HomeProfissional
+import com.ufpr.equilibrium.feature_teste.Testes
+import com.ufpr.equilibrium.utils.SessionManager
 
 
 class TugInstruction : AppCompatActivity() {

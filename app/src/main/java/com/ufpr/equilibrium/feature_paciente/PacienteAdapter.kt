@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium
+package com.ufpr.equilibrium.feature_paciente
 
 import android.content.Context
 import android.content.Intent
@@ -8,6 +8,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.ufpr.equilibrium.feature_ftsts.FtstsInstruction
+import com.ufpr.equilibrium.utils.PacienteManager
+import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.feature_tug.TugInstruction
+import com.ufpr.equilibrium.network.Paciente
 
 class PacienteAdapter(
     private val context: Context,
