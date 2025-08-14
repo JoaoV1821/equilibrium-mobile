@@ -1,5 +1,6 @@
 package com.ufpr.equilibrium.network
 
+import com.ufpr.equilibrium.feature_paciente.Paciente
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET

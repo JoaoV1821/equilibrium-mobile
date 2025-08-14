@@ -39,21 +39,6 @@
             app:layout_constraintEnd_toEndOf="@id/tv_nome_paciente"
             android:layout_marginTop="4dp"/>
 
-        <!-- Botão TUG -->
-        <Button
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TUG"
-            app:boxCornerRadiusBottomEnd="20dp"
-            app:boxCornerRadiusBottomStart="20dp"
-            app:boxCornerRadiusTopEnd="20dp"
-            app:boxCornerRadiusTopStart="20dp"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#0057FF"
-            app:layout_constraintEnd_toStartOf="@id/btn_5sts"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="8dp"/>
 
         <!-- Botão 5STS -->
         <Button
@@ -61,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#0057FF"
-            android:text="5TSTS"
+            android:text="Realizar teste"
             app:boxCornerRadiusBottomEnd="20dp"
             app:boxCornerRadiusBottomStart="20dp"
             app:boxCornerRadiusTopEnd="202dp"

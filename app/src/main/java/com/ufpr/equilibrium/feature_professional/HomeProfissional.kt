@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.ufpr.equilibrium.MainActivity
 import com.ufpr.equilibrium.R
-import com.ufpr.equilibrium.network.Paciente
+import com.ufpr.equilibrium.feature_paciente.Paciente
 import com.ufpr.equilibrium.feature_paciente.PacienteAdapter
 import com.ufpr.equilibrium.network.RetrofitClient
 import com.ufpr.equilibrium.utils.SessionManager

@@ -98,6 +98,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun authentication() {
+
         val cpfText = cpf.text.toString().trim()
         val senhaText = senha.text.toString().trim()
 

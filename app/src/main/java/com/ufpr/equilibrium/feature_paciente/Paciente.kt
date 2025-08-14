@@ -1,4 +1,4 @@
-package com.ufpr.equilibrium.network
+package com.ufpr.equilibrium.feature_paciente
 
 data class Paciente (
 

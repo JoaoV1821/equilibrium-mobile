@@ -12,7 +12,6 @@ import com.ufpr.equilibrium.feature_ftsts.FtstsInstruction
 import com.ufpr.equilibrium.utils.PacienteManager
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_tug.TugInstruction
-import com.ufpr.equilibrium.network.Paciente
 
 class PacienteAdapter(
     private val context: Context,

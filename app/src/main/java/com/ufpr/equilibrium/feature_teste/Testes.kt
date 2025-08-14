@@ -12,7 +12,6 @@ import com.ufpr.equilibrium.feature_ftsts.FtstsInstruction
 import com.ufpr.equilibrium.MainActivity
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.utils.SessionManager
-import com.ufpr.equilibrium.feature_tug.TugInstruction
 
 class Testes : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +21,6 @@ class Testes : AppCompatActivity() {
 
         var intent: Intent;
         val arrowBtn = findViewById<ImageView>(R.id.arrow_button);
-        val tugBtn = findViewById<FrameLayout>(R.id.tug);
         val ftsts = findViewById<FrameLayout>(R.id.ftsts);
         val builder = AlertDialog.Builder(this);
 
@@ -47,11 +45,6 @@ class Testes : AppCompatActivity() {
                 builder.show();
         }
 
-
-        tugBtn.setOnClickListener {
-            intent = Intent(this, TugInstruction::class.java);
-            startActivity(intent);
-        }
 
         ftsts.setOnClickListener {
             intent = Intent(this, FtstsInstruction::class.java)

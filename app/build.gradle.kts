@@ -56,8 +56,10 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.tensorflow.lite) // ou versão compatível
     implementation(libs.tensorflow.lite.select.tf.ops)
+    implementation(libs.tensorflow.android)
     testImplementation(libs.junit)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
 }

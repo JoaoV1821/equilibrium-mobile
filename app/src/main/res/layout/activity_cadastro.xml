@@ -24,38 +24,17 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/cpf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="CPF"
-            android:inputType="number"/>
-
-        <EditText
             android:id="@+id/nome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nome completo" />
 
         <EditText
-            android:id="@+id/senha"
+            android:id="@+id/cpf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Senha"
-            android:inputType="textPassword"/>
-
-        <EditText
-            android:id="@+id/telefone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Telefone"
-            android:inputType="phone"/>
-
-        <EditText
-            android:id="@+id/cep"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Cep"
-            android:inputType="number" />
+            android:hint="CPF"
+            android:inputType="number"/>
 
         <EditText
             android:id="@+id/dataNasc"
@@ -64,40 +43,33 @@
             android:hint="Data de nascimento"
             android:inputType="date" />
 
-        <EditText
-            android:id="@+id/idade"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Idade"
-            android:inputType="number" />
+            android:text="Sexo"
+            android:textStyle="bold" />
+        <RadioGroup
+            android:id="@+id/radioGroupSexo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/altura"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Altura"
-            android:inputType="numberDecimal" />
+            <RadioButton
+                android:id="@+id/radioMasculino"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="M" />
 
-        <EditText
-            android:id="@+id/peso"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Peso"
-            android:inputType="numberDecimal" />
+            <RadioButton
+                android:id="@+id/radioFeminino"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="F" />
 
-        <EditText
-            android:id="@+id/escolaridade"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Escolaridade"
-            android:inputType="text" />
 
-        <EditText
-            android:id="@+id/nivelSocio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nível sócioeconômico"
-            android:inputType="text" />
+        </RadioGroup>
+
+
 
         <TextView
             android:id="@+id/telefone9"
@@ -126,30 +98,7 @@
         </RadioGroup>
 
         <!-- Sexo com RadioGroup -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sexo"
-            android:textStyle="bold"/>
 
-        <RadioGroup
-            android:id="@+id/radioGroupSexo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/radioMasculino"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="M"/>
-
-            <RadioButton
-                android:id="@+id/radioFeminino"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="F"/>
-        </RadioGroup>
 
         <!-- Botão de Enviar -->
         <Button
@@ -160,5 +109,6 @@
             android:backgroundTint="@color/blue"
             android:text="Enviar"
             android:textColor="@android:color/white" />
+
     </LinearLayout>
 </ScrollView>
