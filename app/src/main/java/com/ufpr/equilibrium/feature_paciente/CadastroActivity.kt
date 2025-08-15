@@ -1,8 +1,11 @@
 package com.ufpr.equilibrium.feature_paciente
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -18,6 +21,8 @@ class CadastroActivity : AppCompatActivity() {
     private lateinit var dataNascimento: EditText
     private lateinit var sexo: RadioGroup
     private lateinit var historicoQueda: RadioGroup
+    private lateinit var radioHistorico: RadioButton
+    private lateinit var radioSexo: RadioButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,20 +35,53 @@ class CadastroActivity : AppCompatActivity() {
         sexo = findViewById(R.id.radioGroupSexo)
         historicoQueda = findViewById(R.id.radioGroupQueda)
 
+        cpf.addMask("###.###.###-##")
+        dataNascimento.addMask("##/##/####")
+
         val btnCadastrar = findViewById<Button>(R.id.enviar)
 
         btnCadastrar.setOnClickListener {
+
             val nomeStr = nome.text.toString().trim()
             val cpfStr = cpf.text.toString().trim()
             val dataNascStr = dataNascimento.text.toString().trim()
 
-            if (nomeStr.isNotEmpty() || cpfStr.isNotEmpty() || dataNascStr.isNotEmpty() || isValidCPF(cpfStr)) {
-                postPaciente()
+            when {
 
-            } else {
-                Toast.makeText(applicationContext,"Erro ao cadastrar", Toast.LENGTH_SHORT ).show()
+                nomeStr.isEmpty() -> {
+                    nome.error = "Informe o nome"
+                    nome.requestFocus()
+                }
+
+                cpfStr.isEmpty() -> {
+                    cpf.error = "Informe o CPF"
+                    cpf.requestFocus()
+                }
+
+                cpfStr.length != 14 -> {
+                    cpf.error = "CPF deve ter 11 dígitos"
+                    cpf.requestFocus()
+                }
+
+                dataNascStr.isEmpty() -> {
+                    dataNascimento.error = "Informe a data de nascimento"
+                    dataNascimento.requestFocus()
+                }
+
+                sexo.checkedRadioButtonId == -1 -> {
+                    Toast.makeText(this, "Selecione o sexo", Toast.LENGTH_SHORT).show()
+                }
+
+                historicoQueda.checkedRadioButtonId == -1 -> {
+                    Toast.makeText(this, "Informe o histórico de quedas", Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {
+                    postPaciente()
+                }
             }
         }
+
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -53,32 +91,27 @@ class CadastroActivity : AppCompatActivity() {
 
     }
 
-    private fun isValidCPF(cpf: String): Boolean {
-        val cleanedCPF = cpf.replace("\\D".toRegex(), "") // Remove caracteres não numéricos
+    private fun postPaciente() {
 
-        if (cleanedCPF.length != 11 || cleanedCPF.all { it == cleanedCPF[0] }) return false
-
-        fun calculateDigit(cpfSlice: String, weights: IntProgression): Int {
-            val sum = cpfSlice.mapIndexed { index, c -> c.digitToInt() * weights.elementAt(index) }.sum()
-            val remainder = sum % 11
-            return if (remainder < 2) 0 else 11 - remainder
-        }
-
-        val digit1 = calculateDigit(cleanedCPF.substring(0, 9), 10 downTo 2)
-        val digit2 = calculateDigit(cleanedCPF.substring(0, 10), 11 downTo 2)
-
-        println(cleanedCPF[9].digitToInt() == digit1 && cleanedCPF[10].digitToInt() == digit2)
-
-        return cleanedCPF[9].digitToInt() == digit1 && cleanedCPF[10].digitToInt() == digit2
-    }
-
-    private fun postPaciente(){
+        radioHistorico = findViewById(historicoQueda.checkedRadioButtonId)
+        radioSexo = findViewById(sexo.checkedRadioButtonId)
 
         val nomeStr = nome.text.toString().trim()
-        val cpfStr = cpf.text.toString().trim()
-        val dataNascStr = dataNascimento.text.toString().trim()
-        val sexoStr = sexo.id.toString()
-        val historico = historicoQueda.id.toString() == "Sim"
+        val cpfStr = cpf.text.toString().trim().replace(Regex("[^\\d]"), "")
+
+        val dataNascStr = try {
+            val sdfEntrada = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+            val sdfSaida = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+            val data = sdfEntrada.parse(dataNascimento.text.toString().trim())
+
+            sdfSaida.format(data!!)
+
+        } catch (e: Exception) {
+            "" // caso a data seja inválida
+        }
+
+        val historico = radioHistorico.text.toString() == "Sim"
+        val sexoStr = radioSexo.text.toString()
         val paciente = CadastroPacienteModel(nomeStr, cpfStr, dataNascStr, sexoStr, historico )
 
         println(paciente)
@@ -86,5 +119,42 @@ class CadastroActivity : AppCompatActivity() {
         Toast.makeText(applicationContext,"Cadastro concluído", Toast.LENGTH_SHORT ).show()
 
     }
+
+    fun EditText.addMask(mask: String) {
+        this.addTextChangedListener(object : TextWatcher {
+            var isUpdating: Boolean = false
+            var oldText: String = ""
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (isUpdating) {
+                    isUpdating = false
+                    return
+                }
+
+                val unmasked = s.toString().replace(Regex("[^\\d]"), "")
+                var maskedText = ""
+                var i = 0
+
+                for (m in mask.toCharArray()) {
+                    if (m != '#' && unmasked.length > i) {
+                        maskedText += m
+                    } else {
+                        try {
+                            maskedText += unmasked[i]
+                        } catch (_: Exception) { break }
+                        i++
+                    }
+                }
+
+                isUpdating = true
+                this@addMask.setText(maskedText)
+                this@addMask.setSelection(maskedText.length)
+            }
+        })
+    }
+
 
 }

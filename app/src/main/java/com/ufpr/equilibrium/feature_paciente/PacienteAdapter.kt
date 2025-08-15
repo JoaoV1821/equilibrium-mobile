@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ufpr.equilibrium.feature_ftsts.FtstsInstruction
 import com.ufpr.equilibrium.utils.PacienteManager
 import com.ufpr.equilibrium.R
-import com.ufpr.equilibrium.feature_tug.TugInstruction
+
 
 class PacienteAdapter(
     private val context: Context,
@@ -23,7 +23,6 @@ class PacienteAdapter(
     class PacienteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nome: TextView = itemView.findViewById(R.id.tv_nome_paciente)
         val info: TextView = itemView.findViewById(R.id.tv_info_paciente)
-        val btnTug: Button = itemView.findViewById(R.id.back)
         val btn5sts: Button = itemView.findViewById(R.id.btn_5sts)
     }
 
@@ -44,11 +43,7 @@ class PacienteAdapter(
             context.startActivity(intent)
         }
 
-        holder.btnTug.setOnClickListener {
-            val intent = Intent(context, TugInstruction::class.java)
-            intent.putExtra("cpf", paciente.cpf)
-            context.startActivity(intent)
-        }
+
     }
 
     override fun getItemCount(): Int = pacientesFiltrados.size

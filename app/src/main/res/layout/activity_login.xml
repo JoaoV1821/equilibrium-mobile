@@ -50,6 +50,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/input_background"
         android:hint="Digite seu cpf"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email_label" />
@@ -86,19 +87,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/password" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button"
         android:id="@+id/login_button"
         android:layout_width="217dp"
         android:layout_height="49dp"
         android:layout_marginTop="56dp"
         android:backgroundTint="#2260FF"
-        android:text="Login"
+        android:text="Entrar"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/password"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        app:backgroundTint="#1565C0"
+        app:cornerRadius="12dp" />
 <!--
     <TextView
         android:id="@+id/textView"

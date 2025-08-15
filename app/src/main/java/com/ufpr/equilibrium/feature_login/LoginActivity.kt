@@ -2,6 +2,8 @@ package com.ufpr.equilibrium.feature_login
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
@@ -39,6 +41,8 @@ class LoginActivity : AppCompatActivity() {
         cpf = findViewById(R.id.cpf)
         senha = findViewById(R.id.password)
 
+        cpf.addMask("###.###.###-##")
+
         eyeIcon = findViewById(R.id.eye)
         errorBar = findViewById(R.id.error_bar)
 
@@ -46,10 +50,10 @@ class LoginActivity : AppCompatActivity() {
         val retryButton = findViewById<Button>(R.id.retry_button)
 
         btnLogin.setOnClickListener {
-            val cpfStr = cpf.text.toString().trim()
+            val cpfStr = cpf.text.toString().trim().replace(Regex("[^\\d]"), "")
             val senhaStr = senha.text.toString().trim()
 
-            if (cpfStr.isNotEmpty() || senhaStr.isNotEmpty() || isValidCPF(cpf.text.toString())) {
+            if (cpfStr.isNotEmpty() || senhaStr.isNotEmpty() || cpfStr.length != 14) {
                 authentication()
 
             } else {
@@ -77,29 +81,9 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-
-    private fun isValidCPF(cpf: String): Boolean {
-        val cleanedCPF = cpf.replace("\\D".toRegex(), "") // Remove caracteres não numéricos
-
-        if (cleanedCPF.length != 11 || cleanedCPF.all { it == cleanedCPF[0] }) return false
-
-        fun calculateDigit(cpfSlice: String, weights: IntProgression): Int {
-            val sum = cpfSlice.mapIndexed { index, c -> c.digitToInt() * weights.elementAt(index) }.sum()
-            val remainder = sum % 11
-            return if (remainder < 2) 0 else 11 - remainder
-        }
-
-        val digit1 = calculateDigit(cleanedCPF.substring(0, 9), 10 downTo 2)
-        val digit2 = calculateDigit(cleanedCPF.substring(0, 10), 11 downTo 2)
-
-        println(cleanedCPF[9].digitToInt() == digit1 && cleanedCPF[10].digitToInt() == digit2)
-
-        return cleanedCPF[9].digitToInt() == digit1 && cleanedCPF[10].digitToInt() == digit2
-    }
-
     private fun authentication() {
 
-        val cpfText = cpf.text.toString().trim()
+        val cpfText = cpf.text.toString().trim().replace(Regex("[^\\d]"), "")
         val senhaText = senha.text.toString().trim()
 
         val api = RetrofitClient.instancePessoasAPI
@@ -148,5 +132,39 @@ class LoginActivity : AppCompatActivity() {
         senha.setSelection(senha.text.length)
     }
 
+    fun EditText.addMask(mask: String) {
+        this.addTextChangedListener(object : TextWatcher {
+            var isUpdating: Boolean = false
+            var oldText: String = ""
 
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (isUpdating) {
+                    isUpdating = false
+                    return
+                }
+
+                val unmasked = s.toString().replace(Regex("[^\\d]"), "")
+                var maskedText = ""
+                var i = 0
+
+                for (m in mask.toCharArray()) {
+                    if (m != '#' && unmasked.length > i) {
+                        maskedText += m
+                    } else {
+                        try {
+                            maskedText += unmasked[i]
+                        } catch (_: Exception) { break }
+                        i++
+                    }
+                }
+
+                isUpdating = true
+                this@addMask.setText(maskedText)
+                this@addMask.setSelection(maskedText.length)
+            }
+        })
+    }
 }

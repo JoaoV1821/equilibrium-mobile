@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS"/>
+    <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS" />
 
     <application
         android:allowBackup="true"
@@ -17,9 +17,12 @@
         android:theme="@style/Theme.Equilibrium"
         tools:targetApi="31">
         <activity
+            android:name=".feature_professional.ListagemPacientes"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium" />
+        <activity
             android:name=".feature_healthUnit.HealthUnitActivity"
             android:exported="false" />
-
         <activity
             android:name=".feature_teste.TestResult"
             android:exported="false"
@@ -30,6 +33,11 @@
             android:theme="@style/Theme.Equilibrium" />
         <activity
             android:name=".feature_professional.HomeProfissional"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".feature_paciente.CadastroActivity"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium"
             android:windowSoftInputMode="adjustPan" />

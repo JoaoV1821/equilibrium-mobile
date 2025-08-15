@@ -18,22 +18,23 @@
         app:layout_constraintHorizontal_bias="0.723"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.333"></ImageView>
+        app:layout_constraintVertical_bias="0.363"></ImageView>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/profissional"
         android:layout_width="273dp"
         android:layout_height="55dp"
         android:backgroundTint="#2260FF"
-        android:text="Entrar"
+        android:text="Login"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.537"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.669" />
+        app:layout_constraintVertical_bias="0.645" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/paciente"
         android:layout_width="277dp"
         android:layout_height="55dp"
@@ -45,7 +46,8 @@
         app:layout_constraintHorizontal_bias="0.519"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.796" />
+        app:layout_constraintVertical_bias="0.822" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

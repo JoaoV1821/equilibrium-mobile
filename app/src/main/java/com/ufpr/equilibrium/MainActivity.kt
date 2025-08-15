@@ -8,12 +8,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.ufpr.equilibrium.feature_login.LoginActivity
+import com.ufpr.equilibrium.feature_paciente.CadastroActivity
 import com.ufpr.equilibrium.feature_professional.HomeProfissional
-import com.ufpr.equilibrium.feature_teste.Testes
 import com.ufpr.equilibrium.utils.SessionManager
 
 class MainActivity : AppCompatActivity() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -27,15 +26,15 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this@MainActivity, HomeProfissional::class.java))
         }
 
-        val btnPaciente = findViewById<Button>(R.id.paciente)
-        val btnProfissional = findViewById<Button>(R.id.profissional)
+        val btnCadastro = findViewById<Button>(R.id.paciente)
+        val btnLogin = findViewById<Button>(R.id.profissional)
 
-        btnPaciente.setOnClickListener {
+        btnCadastro.setOnClickListener {
 
-            startActivity(Intent(this@MainActivity, Testes::class.java))
+            startActivity(Intent(this@MainActivity, CadastroActivity::class.java))
         }
 
-        btnProfissional.setOnClickListener {
+        btnLogin.setOnClickListener {
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
         }
 
