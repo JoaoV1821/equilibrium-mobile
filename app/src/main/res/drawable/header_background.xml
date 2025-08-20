@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Gradiente azul -->
+    <gradient
+        android:startColor="#1565C0"
+        android:endColor="#1E88E5"
+        android:angle="135"/>
+
+    <!-- Cantos arredondados embaixo -->
+    <corners
+        android:bottomLeftRadius="32dp"
+        android:bottomRightRadius="32dp"
+        android:topRightRadius="32dp"
+        android:topLeftRadius="32dp"/>
+        />
+</shape>

@@ -1,5 +1,6 @@
 package com.ufpr.equilibrium.network
 
+import com.ufpr.equilibrium.feature_paciente.CadastroPacienteModel
 import com.ufpr.equilibrium.feature_paciente.Paciente
 import retrofit2.Call
 import retrofit2.http.Body
@@ -16,6 +17,9 @@ interface PessoasAPI {
 
     @GET("/patient")
     fun getPacientes(): Call<List<Paciente>>
+
+    @POST("/patient")
+    fun postPatient(@Body request: CadastroPacienteModel): Call<CadastroPacienteModel>
 
     @POST("/evaluation")
     fun postTestes(@Body request: Teste): Call<Teste>

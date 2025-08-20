@@ -17,6 +17,10 @@
         android:theme="@style/Theme.Equilibrium"
         tools:targetApi="31">
         <activity
+            android:name=".feature_professional.UpdateProfessional"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium" />
+        <activity
             android:name=".feature_professional.ListagemPacientes"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium" />

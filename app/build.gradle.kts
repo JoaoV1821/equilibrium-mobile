@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.tensorflow.lite) // ou versão compatível
     implementation(libs.tensorflow.lite.select.tf.ops)
     implementation(libs.tensorflow.android)
+    implementation(libs.androidx.gridlayout)
     testImplementation(libs.junit)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     androidTestImplementation(libs.androidx.junit)

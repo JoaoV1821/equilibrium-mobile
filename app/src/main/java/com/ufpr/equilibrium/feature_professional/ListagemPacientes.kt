@@ -9,18 +9,12 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.ufpr.equilibrium.MainActivity
 import com.ufpr.equilibrium.R
-import com.ufpr.equilibrium.databinding.ActivityListagemPacientesBinding
 import com.ufpr.equilibrium.feature_paciente.Paciente
 import com.ufpr.equilibrium.feature_paciente.PacienteAdapter
 import com.ufpr.equilibrium.network.RetrofitClient
@@ -36,7 +30,7 @@ class ListagemPacientes : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_profissional)
+        setContentView(R.layout.activity_listagem_pacientes)
 
         recyclerView = findViewById(R.id.rv_pacientes)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -53,21 +47,10 @@ class ListagemPacientes : AppCompatActivity() {
 
         builder.setPositiveButton("Sim") { dialog, which ->
             SessionManager.clearSession();
-            startActivity(Intent(this@ListagemPacientes, MainActivity::class.java))
+            startActivity(Intent(this@ListagemPacientes, HomeProfissional::class.java))
         }
 
         builder.setNegativeButton("Não") { dialog, which ->
-
-        }
-
-        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                builder.show();
-            }
-        })
-
-        arrowBtn.setOnClickListener {
-            builder.show()
 
         }
 
@@ -84,7 +67,6 @@ class ListagemPacientes : AppCompatActivity() {
 
 
     }
-
 
     private fun getPacientes() {
 

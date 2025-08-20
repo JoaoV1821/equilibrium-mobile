@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F9FAFB"
     android:padding="16dp">
 
@@ -10,56 +10,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="15dp"
         android:gravity="center_horizontal">
 
         <!-- Título -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:layout_marginBottom="20dp"
             android:text="Cadastro de Pacientes"
             android:textColor="#1565C0"
             android:textSize="30sp"
             android:textStyle="bold" />
 
-        <!-- Campo Nome -->
+        <!-- Nome -->
         <EditText
             android:id="@+id/nome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:background="@drawable/edittext_background"
-            android:hint="Nome completo"
+            android:hint="Nome completo *"
             android:padding="12dp"
             android:textSize="16sp" />
 
-        <!-- Campo CPF -->
+        <!-- CPF -->
         <EditText
             android:id="@+id/cpf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:background="@drawable/edittext_background"
-            android:hint="CPF"
+            android:hint="CPF *"
             android:inputType="number"
             android:padding="12dp"
             android:textSize="16sp" />
 
-        <!-- Campo Data -->
+        <!-- Telefone -->
         <EditText
-            android:id="@+id/dataNasc"
+            android:id="@+id/telefone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/edittext_background"
-            android:hint="Data de nascimento"
-            android:inputType="date"
+            android:hint="Telefone"
+            android:inputType="phone"
             android:padding="12dp"
             android:textSize="16sp" />
 
-        <!-- Card Sexo -->
+        <!-- Sexo -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,7 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sexo"
+                android:text="Sexo *"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -97,7 +96,65 @@
             </RadioGroup>
         </LinearLayout>
 
-        <!-- Card Histórico de Quedas -->
+        <!-- Data de nascimento -->
+        <EditText
+            android:id="@+id/dataNasc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/edittext_background"
+            android:hint="Data de Nascimento * (dd/mm/aaaa)"
+            android:inputType="date"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <!-- Escolaridade -->
+        <EditText
+            android:id="@+id/escolaridade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edittext_background"
+            android:hint="Escolaridade *"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <!-- Nível Socioeconômico -->
+        <EditText
+            android:id="@+id/nivelSocioeconomico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edittext_background"
+            android:hint="Nível Socioeconômico *"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <!-- Peso -->
+        <EditText
+            android:id="@+id/peso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edittext_background"
+            android:hint="Peso (kg) *"
+            android:inputType="numberDecimal"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <!-- Altura -->
+        <EditText
+            android:id="@+id/altura"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/edittext_background"
+            android:hint="Altura (m) *"
+            android:inputType="numberDecimal"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <!-- Histórico de Queda -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -109,7 +166,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Possui histórico de queda?"
+                android:text="Possui histórico de queda? *"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -135,13 +192,86 @@
             </RadioGroup>
         </LinearLayout>
 
+        <!-- Endereço -->
+        <EditText
+            android:id="@+id/cep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edittext_background"
+            android:hint="CEP *"
+            android:inputType="number"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/numero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edittext_background"
+            android:hint="Número *"
+            android:inputType="number"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/rua"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edittext_background"
+            android:hint="Rua *"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/complemento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edittext_background"
+            android:hint="Complemento"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/bairro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edittext_background"
+            android:hint="Bairro *"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/cidade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edittext_background"
+            android:hint="Cidade *"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/estado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:hint="Estado (UF) *"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
         <!-- Botão -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/enviar"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
             android:padding="12dp"
             android:text="Enviar"
             android:textColor="@android:color/white"

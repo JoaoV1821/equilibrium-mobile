@@ -21,6 +21,7 @@ import retrofit2.Response
 import androidx.activity.OnBackPressedCallback
 import com.ufpr.equilibrium.feature_professional.HomeProfissional
 import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.feature_professional.ListagemPacientes
 import com.ufpr.equilibrium.utils.SessionManager
 import com.ufpr.equilibrium.network.Login
 import com.ufpr.equilibrium.network.LoginResult
@@ -98,6 +99,8 @@ class LoginActivity : AppCompatActivity() {
 
                         SessionManager.token = response.body()?.token
                         SessionManager.user = response.body()?.user
+
+                        println(response.body()?.user)
 
                         Toast.makeText(applicationContext, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
 

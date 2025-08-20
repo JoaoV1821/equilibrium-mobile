@@ -3,6 +3,7 @@ package com.ufpr.equilibrium.feature_paciente
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioButton
@@ -12,17 +13,32 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.ufpr.equilibrium.R
-
+import com.ufpr.equilibrium.network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Response
 
 class CadastroActivity : AppCompatActivity() {
 
     private lateinit var nome: EditText
     private lateinit var cpf: EditText
+    private lateinit var telefone: EditText
     private lateinit var dataNascimento: EditText
+    private lateinit var escolaridade:  EditText
+    private lateinit var nivelSocio: EditText
+    private lateinit var peso: EditText
+    private lateinit var altura: EditText
     private lateinit var sexo: RadioGroup
     private lateinit var historicoQueda: RadioGroup
-    private lateinit var radioHistorico: RadioButton
-    private lateinit var radioSexo: RadioButton
+    private lateinit var cep: EditText
+    private lateinit var numero: EditText
+    private lateinit var rua: EditText
+    private lateinit var complemento: EditText
+    private lateinit var bairro: EditText
+    private lateinit var cidade: EditText
+    private lateinit var uf: EditText
+
+    private lateinit var selectedSexo : RadioButton
+    private lateinit var selectedQueda: RadioButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +47,29 @@ class CadastroActivity : AppCompatActivity() {
 
         nome = findViewById(R.id.nome)
         cpf = findViewById(R.id.cpf)
+        escolaridade = findViewById(R.id.escolaridade)
+        nivelSocio = findViewById(R.id.nivelSocioeconomico)
+        peso = findViewById(R.id.peso)
+        numero = findViewById(R.id.numero)
+        rua = findViewById(R.id.rua)
+        complemento = findViewById(R.id.complemento)
+        bairro = findViewById(R.id.bairro)
+        cidade = findViewById(R.id.cidade)
+        uf = findViewById(R.id.estado)
         dataNascimento = findViewById(R.id.dataNasc)
         sexo = findViewById(R.id.radioGroupSexo)
         historicoQueda = findViewById(R.id.radioGroupQueda)
+        altura = findViewById(R.id.altura)
+        telefone = findViewById(R.id.telefone)
+        cep = findViewById(R.id.cep)
 
         cpf.addMask("###.###.###-##")
         dataNascimento.addMask("##/##/####")
+        altura.addMask("#.##")
+
+        telefone.addMask("(##) #####-####")
+
+        cep.addMask("#####-###")
 
         val btnCadastrar = findViewById<Button>(R.id.enviar)
 
@@ -77,7 +110,7 @@ class CadastroActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    postPaciente()
+                    postData()
                 }
             }
         }
@@ -91,13 +124,15 @@ class CadastroActivity : AppCompatActivity() {
 
     }
 
-    private fun postPaciente() {
 
-        radioHistorico = findViewById(historicoQueda.checkedRadioButtonId)
-        radioSexo = findViewById(sexo.checkedRadioButtonId)
+    private  fun postData() {
+        val api = RetrofitClient.instancePessoasAPI
 
-        val nomeStr = nome.text.toString().trim()
-        val cpfStr = cpf.text.toString().trim().replace(Regex("[^\\d]"), "")
+        val idSelectedSexo = sexo.checkedRadioButtonId
+        val idSelectedQueda = historicoQueda.checkedRadioButtonId
+
+        selectedSexo = findViewById(idSelectedSexo)
+        selectedQueda = findViewById(idSelectedQueda)
 
         val dataNascStr = try {
             val sdfEntrada = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
@@ -110,15 +145,40 @@ class CadastroActivity : AppCompatActivity() {
             "" // caso a data seja inválida
         }
 
-        val historico = radioHistorico.text.toString() == "Sim"
-        val sexoStr = radioSexo.text.toString()
-        val paciente = CadastroPacienteModel(nomeStr, cpfStr, dataNascStr, sexoStr, historico )
+        val paciente = CadastroPacienteModel(
+            cpf = cpf.text.toString(),
+            dateOfBirth = dataNascStr,
+            educationLevel = escolaridade.text.toString(),
+            socioEconomicStatus = nivelSocio.text.toString(),
+            cep = cep.text.toString(),
+            street = rua.text.toString(),
+            number = numero.text.toString().toInt(),
+            neighborhood = bairro.text.toString(),
+            city = cidade.text.toString(),
+            state = uf.text.toString(),
+            weight = peso.text.toString().toFloat(),
+            age = 0,
+            downFall = selectedQueda.toString() == "Sim",
+            gender = selectedSexo.text.toString(),
+            profile = "patient"
 
-        println(paciente)
+        )
 
-        Toast.makeText(applicationContext,"Cadastro concluído", Toast.LENGTH_SHORT ).show()
+            val call = api.postPatient(paciente);
 
+            call.enqueue(object : retrofit2.Callback<CadastroPacienteModel> {
+                override fun onResponse(call: Call<CadastroPacienteModel>, response: Response<CadastroPacienteModel>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(applicationContext,"Cadastro concluído", Toast.LENGTH_SHORT ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<CadastroPacienteModel>, t: Throwable) {
+                    Log.e("Erro", "Falha ao enviar o teste", t)
+                }
+            })
     }
+
 
     fun EditText.addMask(mask: String) {
         this.addTextChangedListener(object : TextWatcher {
