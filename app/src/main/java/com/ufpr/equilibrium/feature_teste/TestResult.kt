@@ -9,6 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.feature_paciente.HomePaciente
+import com.ufpr.equilibrium.feature_professional.HomeProfissional
+import com.ufpr.equilibrium.utils.SessionManager
 
 
 class TestResult : AppCompatActivity() {
@@ -33,9 +36,12 @@ class TestResult : AppCompatActivity() {
 
         backButton.setOnClickListener {
 
-            startActivity(Intent(this@TestResult, Testes::class.java))
-        }
+            val intent = if (SessionManager.user?.profile == "patient")
+                Intent(this@TestResult, HomePaciente::class.java) else
+                Intent(this@TestResult, HomeProfissional::class.java)
 
+            startActivity(intent)
+        }
     }
 
     private fun classifyTest(type: String?, time: String?) {

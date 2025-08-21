@@ -56,7 +56,7 @@ class CadastroActivity : AppCompatActivity() {
         bairro = findViewById(R.id.bairro)
         cidade = findViewById(R.id.cidade)
         uf = findViewById(R.id.estado)
-        dataNascimento = findViewById(R.id.dataNasc)
+        dataNascimento = findViewById(R.id.senha)
         sexo = findViewById(R.id.radioGroupSexo)
         historicoQueda = findViewById(R.id.radioGroupQueda)
         altura = findViewById(R.id.altura)
@@ -145,7 +145,10 @@ class CadastroActivity : AppCompatActivity() {
             "" // caso a data seja inválida
         }
 
+        println(selectedQueda.text.toString())
+
         val paciente = CadastroPacienteModel(
+
             cpf = cpf.text.toString(),
             dateOfBirth = dataNascStr,
             educationLevel = escolaridade.text.toString(),
@@ -158,8 +161,9 @@ class CadastroActivity : AppCompatActivity() {
             state = uf.text.toString(),
             weight = peso.text.toString().toFloat(),
             age = 0,
-            downFall = selectedQueda.toString() == "Sim",
+            downFall = selectedQueda.text.toString() == "Sim",
             gender = selectedSexo.text.toString(),
+            height = altura.text.toString().toFloat(),
             profile = "patient"
 
         )

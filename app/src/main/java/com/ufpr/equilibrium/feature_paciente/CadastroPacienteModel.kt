@@ -12,6 +12,7 @@ data class CadastroPacienteModel (
     val city: String,
     val state: String,
     val weight: Float,
+    val height: Float,
     val age: Int,
     val downFall: Boolean,
     val gender: String,

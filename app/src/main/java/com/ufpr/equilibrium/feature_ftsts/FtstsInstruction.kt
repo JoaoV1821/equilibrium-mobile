@@ -9,7 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_healthUnit.HealthUnitActivity
+import com.ufpr.equilibrium.feature_paciente.HomePaciente
 import com.ufpr.equilibrium.feature_professional.HomeProfissional
+import com.ufpr.equilibrium.feature_professional.ListagemPacientes
 import com.ufpr.equilibrium.feature_teste.Contagem
 import com.ufpr.equilibrium.feature_teste.Testes
 import com.ufpr.equilibrium.utils.SessionManager
@@ -28,7 +30,7 @@ class FtstsInstruction : AppCompatActivity() {
             override fun handleOnBackPressed() {
 
                 if (SessionManager.user?.profile == "healthProfessional") {
-                    intent = Intent(this@FtstsInstruction, HomeProfissional::class.java)
+                    intent = Intent(this@FtstsInstruction, ListagemPacientes::class.java)
 
                     startActivity(intent);
 
@@ -50,7 +52,7 @@ class FtstsInstruction : AppCompatActivity() {
 
             } else {
 
-                intent = Intent(this@FtstsInstruction, Testes::class.java)
+                intent = Intent(this@FtstsInstruction, HomePaciente::class.java)
 
                 startActivity(intent)
             }

@@ -20,6 +20,12 @@
             android:name=".feature_professional.UpdateProfessional"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium" />
+
+        <activity
+            android:name=".feature_paciente.HomePaciente"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium" />
+
         <activity
             android:name=".feature_professional.ListagemPacientes"
             android:exported="false"

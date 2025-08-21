@@ -17,6 +17,7 @@ class HomeProfissional : AppCompatActivity() {
 
     private lateinit var newPacient: CardView
     private  lateinit var  newEvaluation: CardView
+    private lateinit var updateCard: CardView
 
     private lateinit var userName: TextView
     private  lateinit var userPhone: TextView
@@ -46,11 +47,13 @@ class HomeProfissional : AppCompatActivity() {
             }
         })
 
-        newPacient = findViewById(R.id.newPatient)
+        newPacient = findViewById(R.id.history)
         newEvaluation = findViewById(R.id.newEvaluation)
         userName = findViewById(R.id.userName)
         userPhone = findViewById(R.id.userPhone)
         userPerfil = findViewById(R.id.userPerfil)
+
+        updateCard = findViewById(R.id.updateCard)
 
         userName.text = SessionManager.user?.name
         userPerfil.text = if ( SessionManager.user?.profile == "healthProfessional") "Profissional de Saúde" else ""
@@ -63,6 +66,11 @@ class HomeProfissional : AppCompatActivity() {
 
         newEvaluation.setOnClickListener {
             intent = Intent(this@HomeProfissional,ListagemPacientes::class.java )
+            startActivity(intent)
+        }
+
+        updateCard.setOnClickListener {
+            intent = Intent(this@HomeProfissional, UpdateProfessional::class.java)
             startActivity(intent)
         }
     }

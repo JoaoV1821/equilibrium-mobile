@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
-import com.ufpr.equilibrium.MainActivity
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_paciente.Paciente
 import com.ufpr.equilibrium.feature_paciente.PacienteAdapter
@@ -34,7 +33,7 @@ class ListagemPacientes : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.rv_pacientes)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        val arrowBtn = findViewById<ImageView>(R.id.arrow_back);
+
 
         pacienteAdapter = PacienteAdapter(this, pacientes)
         recyclerView.adapter = pacienteAdapter;
@@ -65,6 +64,12 @@ class ListagemPacientes : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                intent = Intent(this@ListagemPacientes, HomeProfissional::class.java)
+                startActivity(intent)
+            }
+        })
 
     }
 

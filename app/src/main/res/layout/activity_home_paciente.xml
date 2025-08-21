@@ -16,6 +16,7 @@
         android:id="@+id/header"
         android:layout_width="364dp"
         android:layout_height="194dp"
+        android:layout_marginStart="23dp"
         android:layout_marginTop="68dp"
         android:background="@drawable/header_background"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,23 +28,25 @@
             android:id="@+id/userPerfil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="52dp"
-            android:layout_marginTop="20dp"
-            android:text="Professional"
+            android:layout_marginTop="86dp"
+            android:layout_marginEnd="227dp"
+            android:layout_marginBottom="86dp"
+            android:text="Paciente"
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@id/userName"
-            app:layout_constraintTop_toBottomOf="@id/userName" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/userPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="102dp"
-            android:layout_marginTop="132dp"
-            android:layout_marginEnd="142dp"
-            android:layout_marginBottom="40dp"
-            android:text="(41) 99603-6012"
+            android:layout_marginStart="162dp"
+            android:layout_marginTop="118dp"
+            android:layout_marginEnd="116dp"
+            android:layout_marginBottom="54dp"
+            android:text="14/11/2003"
             android:textColor="#ffffff"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -69,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             android:text="Perfil:"
             android:textColor="@android:color/white"
             android:textSize="16sp"
@@ -81,10 +84,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
-            android:layout_marginTop="132dp"
-            android:layout_marginEnd="271dp"
-            android:layout_marginBottom="40dp"
-            android:text="Telefone:"
+            android:layout_marginTop="118dp"
+            android:layout_marginEnd="211dp"
+            android:layout_marginBottom="54dp"
+            android:text="Data nascimento:"
             android:textColor="#ffffff"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -166,13 +169,13 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    app:srcCompat="@drawable/ic_user" />
+                    app:srcCompat="@drawable/ic_reports" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Novo paciente"
+                    android:text="Histórico"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -181,6 +184,7 @@
 
         <!-- Card Reports -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/metricas"
             android:layout_width="25dp"
             android:layout_height="110dp"
             android:layout_margin="8dp"
@@ -192,21 +196,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:layout_marginTop="35dp"
                 android:paddingTop="50dp">
 
                 <ImageView
                     android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    app:srcCompat="@drawable/ic_questionario" />
+                    android:layout_height="42dp"
+                    app:srcCompat="@drawable/ic_mom" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="IVCF-20"
+                    android:text="Métricas"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -241,7 +245,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Meus dados"
+                    android:text="Atualizar dados"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:textStyle="bold" />

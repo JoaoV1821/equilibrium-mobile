@@ -10,18 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:gravity="center_horizontal">
 
         <!-- Título -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="Cadastro de Pacientes"
-            android:textColor="#1565C0"
-            android:textSize="30sp"
-            android:textStyle="bold" />
 
         <!-- Nome -->
         <EditText
@@ -98,7 +90,7 @@
 
         <!-- Data de nascimento -->
         <EditText
-            android:id="@+id/dataNasc"
+            android:id="@+id/senha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"

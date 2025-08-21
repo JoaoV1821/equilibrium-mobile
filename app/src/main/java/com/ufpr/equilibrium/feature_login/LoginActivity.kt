@@ -21,6 +21,7 @@ import retrofit2.Response
 import androidx.activity.OnBackPressedCallback
 import com.ufpr.equilibrium.feature_professional.HomeProfissional
 import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.feature_paciente.HomePaciente
 import com.ufpr.equilibrium.feature_professional.ListagemPacientes
 import com.ufpr.equilibrium.utils.SessionManager
 import com.ufpr.equilibrium.network.Login
@@ -94,7 +95,7 @@ class LoginActivity : AppCompatActivity() {
         call.enqueue(object : Callback<LoginResult> {
 
             override fun onResponse(call: Call<LoginResult>, response: Response<LoginResult>) {
-                if (response.isSuccessful && response.body()?.user?.profile == "healthProfessional") {
+                if (response.isSuccessful) {
                     errorBar.visibility = View.GONE
 
                         SessionManager.token = response.body()?.token
@@ -104,7 +105,13 @@ class LoginActivity : AppCompatActivity() {
 
                         Toast.makeText(applicationContext, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
 
-                        startActivity(Intent(this@LoginActivity, HomeProfissional::class.java))
+                        if (response.body()?.user!!.profile == "healthProfessional") {
+                            startActivity(Intent(this@LoginActivity, HomeProfissional::class.java))
+
+                        } else if(response.body()?.user!!.profile == "patient") {
+                            startActivity(Intent(this@LoginActivity, HomePaciente::class.java))
+                        }
+
 
                 } else {
                     println(response)

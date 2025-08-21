@@ -157,7 +157,8 @@ class Timer : AppCompatActivity(), SensorEventListener {
             if (pauseButton.text == "Enviar") {
 
                 if (SessionManager.user?.profile == "healthProfessional") {
-                    sendData();
+                    postData();
+
 
                 } else {
 
