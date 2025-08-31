@@ -283,12 +283,11 @@ class Timer : AppCompatActivity(), SensorEventListener {
                 lastAccelZ = sensorData[2].toDouble()
                 lastAccelTimestamp = timestampLong
 
-                //ax.add(event.values[0]);
-                //ay.add(event.values[1]);
-                //az.add(event.values[2]);
+                ax.add(event.values[0]);
+                ay.add(event.values[1]);
+                az.add(event.values[2]);
 
                 sensorWindow.add(sensorData)
-
             }
 
             Sensor.TYPE_GYROSCOPE -> {

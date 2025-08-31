@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.ufpr.equilibrium.feature_login.LoginActivity
 import com.ufpr.equilibrium.feature_paciente.HomePaciente
+import com.ufpr.equilibrium.feature_professional.CadastroProfissional
 import com.ufpr.equilibrium.feature_professional.HomeProfissional
 import com.ufpr.equilibrium.utils.SessionManager
 
@@ -35,10 +36,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         val btnLogin = findViewById<Button>(R.id.profissional)
+        val btnCadastro = findViewById<Button>(R.id.profissional2)
 
 
         btnLogin.setOnClickListener {
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+        }
+
+        btnCadastro.setOnClickListener {
+            startActivity(Intent(this@MainActivity, CadastroProfissional::class.java))
         }
 
     }

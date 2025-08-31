@@ -2,6 +2,7 @@ package com.ufpr.equilibrium.network
 
 import com.ufpr.equilibrium.feature_paciente.CadastroPacienteModel
 import com.ufpr.equilibrium.feature_paciente.Paciente
+import com.ufpr.equilibrium.feature_professional.ProfessionalModel
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -24,6 +25,14 @@ interface PessoasAPI {
     @POST("/evaluation")
     fun postTestes(@Body request: Teste): Call<Teste>
 
+    @POST("/healthProfessional")
+    fun postProfessional(@Body request: ProfessionalModel): Call<ProfessionalModel>
+
     @GET("/healthUnit")
     fun getHealthUnit(): Call<List<HealthUnit>>
 }
+
+
+
+
+

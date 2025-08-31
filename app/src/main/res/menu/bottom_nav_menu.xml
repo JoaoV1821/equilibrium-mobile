@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_amenities"
+        android:title="" />
+
+    <item
+        android:id="@+id/nav_history"
+        android:icon="@drawable/baseline_schedule_24"
+        android:title="" />
+
+    <item
+        android:id="@+id/nav_add"
+        android:icon="@drawable/baseline_add_circle_24"
+        android:title="" />
+
+    <item
+        android:id="@+id/nav_edit"
+        android:icon="@drawable/baseline_edit_24"
+        android:title="" />
+
+    <item
+        android:id="@+id/nav_stats"
+        android:icon="@drawable/baseline_bar_chart_24"
+        android:title="" />
+
+</menu>

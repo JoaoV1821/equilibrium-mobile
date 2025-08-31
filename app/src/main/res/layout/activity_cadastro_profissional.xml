@@ -20,8 +20,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="20dp"
-            android:text="Atualizar dados"
-            android:textColor="#1565C0"
+            android:text="Novo Profissional"
+            android:textColor="#2260FF"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="@drawable/edittext_background"
-            android:hint="especialidade"
+            android:hint="Especialidade"
             android:inputType="date"
             android:padding="12dp"
             android:textSize="16sp" />
@@ -137,16 +137,15 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/enviar"
             style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="match_parent"
+            android:layout_width="207sp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:padding="12dp"
-            android:text="Atualizar"
+            android:text="Enviar"
             android:textColor="@android:color/white"
             android:textSize="18sp"
-            app:backgroundTint="#1565C0"
+            app:backgroundTint="#2260FF"
             app:cornerRadius="12dp" />
-
 
     </LinearLayout>
 </ScrollView>

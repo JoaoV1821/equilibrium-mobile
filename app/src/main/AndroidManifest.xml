@@ -16,8 +16,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Equilibrium"
         tools:targetApi="31">
+
         <activity
             android:name=".feature_professional.UpdateProfessional"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium" />
+
+        <activity
+            android:name=".feature_paciente.MetricasActivity"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium" />
 
@@ -25,7 +31,6 @@
             android:name=".feature_paciente.HomePaciente"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium" />
-
         <activity
             android:name=".feature_professional.ListagemPacientes"
             android:exported="false"
@@ -48,6 +53,16 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".feature_paciente.CadastroActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".feature_professional.CadastroProfissional"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".feature_paciente.UpdatePaciente"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium"
             android:windowSoftInputMode="adjustPan" />

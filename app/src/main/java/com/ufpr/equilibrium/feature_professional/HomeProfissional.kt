@@ -50,7 +50,7 @@ class HomeProfissional : AppCompatActivity() {
         newPacient = findViewById(R.id.history)
         newEvaluation = findViewById(R.id.newEvaluation)
         userName = findViewById(R.id.userName)
-        userPhone = findViewById(R.id.userPhone)
+        userPhone = findViewById(R.id.userNasc)
         userPerfil = findViewById(R.id.userPerfil)
 
         updateCard = findViewById(R.id.updateCard)

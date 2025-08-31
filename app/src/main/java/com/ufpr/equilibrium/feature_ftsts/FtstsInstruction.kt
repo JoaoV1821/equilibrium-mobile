@@ -13,7 +13,6 @@ import com.ufpr.equilibrium.feature_paciente.HomePaciente
 import com.ufpr.equilibrium.feature_professional.HomeProfissional
 import com.ufpr.equilibrium.feature_professional.ListagemPacientes
 import com.ufpr.equilibrium.feature_teste.Contagem
-import com.ufpr.equilibrium.feature_teste.Testes
 import com.ufpr.equilibrium.utils.SessionManager
 
 class FtstsInstruction : AppCompatActivity() {
@@ -35,7 +34,7 @@ class FtstsInstruction : AppCompatActivity() {
                     startActivity(intent);
 
                 } else {
-                    intent = Intent(this@FtstsInstruction, Testes::class.java)
+                    intent = Intent(this@FtstsInstruction, HomePaciente::class.java)
 
                     startActivity(intent)
                 }

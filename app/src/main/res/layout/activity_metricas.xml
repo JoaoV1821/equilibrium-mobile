@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context=".feature_paciente.HomePaciente">
+    tools:context=".feature_paciente.MetricasActivity">
 
     <LinearLayout
         android:id="@+id/row2"
@@ -18,8 +18,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/row1">
-
-        <!-- Card: Melhor desempenho -->
 
         <!-- Card: Desempenho Geral -->
         <androidx.cardview.widget.CardView
@@ -42,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/league_spartan_medium"
-                    android:text="Melhor Desempenho"
+                    android:text="Força"
                     android:textColor="#2260FF"
                     android:textSize="15sp" />
 
@@ -51,7 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="10s"
+                    android:text="Médio"
                     android:textColor="@android:color/black"
                     android:textSize="30sp"
                     android:textStyle="bold" />
@@ -103,12 +101,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="16dp"
-        android:text="Olá, Fulano!"
+        android:layout_marginTop="28dp"
+        android:text="Suas Métricas"
         android:textColor="#2260FF"
         android:textSize="46sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -123,34 +121,7 @@
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvGreeting">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/league_spartan_medium"
-                android:text="Total Testes Realizados"
-                android:textColor="#2260FF"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/tvTotalTestes"
-                android:layout_width="42dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="6dp"
-                android:text="10"
-                android:textColor="@android:color/black"
-                android:textSize="30sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toBottomOf="@id/tvGreeting"/>
 
     <LinearLayout
         android:id="@+id/row1"
@@ -183,10 +154,10 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="82dp"
                     android:layout_height="match_parent"
                     android:fontFamily="@font/league_spartan_medium"
-                    android:text="Testes Realizados No Mês"
+                    android:text="Mobilidade"
                     android:textColor="#2260FF"
 
                     android:textSize="15sp" />
@@ -196,7 +167,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="10"
+                    android:text="Médio"
                     android:textColor="@android:color/black"
                     android:textSize="30sp"
                     android:textStyle="bold" />
@@ -221,20 +192,20 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginTop="15dp"
                     android:fontFamily="@font/league_spartan_medium"
-                    android:text="Data Do Último Teste Realizado"
+                    android:text="Equilíbrio"
                     android:textColor="#2260FF"
                     android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/tvDataUltimo"
-                    android:layout_width="92dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginTop="6dp"
-                    android:text="12/12"
+                    android:text="Bom"
                     android:textColor="@android:color/black"
                     android:textSize="30sp"
                     android:textStyle="bold" />

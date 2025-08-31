@@ -2,10 +2,12 @@ package com.ufpr.equilibrium.feature_paciente
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ufpr.equilibrium.MainActivity
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_ftsts.FtstsInstruction
@@ -13,10 +15,13 @@ import com.ufpr.equilibrium.utils.SessionManager
 
 class HomePaciente: AppCompatActivity() {
 
-    private lateinit var newEvaluation: CardView
-    private lateinit var updateCard: CardView
-    private lateinit var history: CardView
-    private lateinit var metricas: CardView
+    private lateinit var tvTotalTestes: TextView
+    private lateinit var tvTestesMes: TextView
+    private lateinit var tvDataUltimo: TextView
+    private lateinit var tvMelhor: TextView
+    private lateinit var tvDesempenho: TextView
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,14 +48,54 @@ class HomePaciente: AppCompatActivity() {
             }
         })
 
-        newEvaluation = findViewById(R.id.newEvaluation)
-        updateCard = findViewById(R.id.updateCard)
-        history = findViewById(R.id.history)
-        metricas = findViewById(R.id.metricas)
+        tvTotalTestes = findViewById(R.id.tvTotalTestes)
+        tvTestesMes = findViewById(R.id.tvTestesMes)
+        tvDataUltimo = findViewById(R.id.tvDataUltimo)
+        tvMelhor = findViewById(R.id.tvMelhor)
+        tvDesempenho = findViewById(R.id.tvBest)
 
-        newEvaluation.setOnClickListener {
-            startActivity(Intent(this@HomePaciente, FtstsInstruction::class.java))
+        tvTotalTestes.text = "15"
+        tvTestesMes.text = "15"
+        tvDataUltimo.text = "13/12"
+        tvMelhor.text = "15s"
+        tvDesempenho.text = "Ótimo"
+
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomNav.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_stats -> {
+                    startActivity(Intent(this@HomePaciente, MetricasActivity::class.java))
+                }
+                R.id.nav_history -> { /* abrir histórico */ }
+
+                R.id.nav_add -> {
+                    startActivity(Intent(this@HomePaciente, FtstsInstruction::class.java))
+                }
+                R.id.nav_edit -> { /* abrir edição */ }
+            }
+
+            true
         }
+
+
+        //newEvaluation = findViewById(R.id.newEvaluation)
+        //updateCard = findViewById(R.id.updateCard)
+        //history = findViewById(R.id.history)
+        //metricas = findViewById(R.id.metricas)
+        //userName = findViewById(R.id.userName)
+       // dataNasc = findViewById(R.id.userNasc)
+
+        //userName.text = SessionManager.user?.name
+
+        //dataNasc.text = SessionManager.user?.data_nascimento
+
+       // newEvaluation.setOnClickListener {
+        //    startActivity(Intent(this@HomePaciente, FtstsInstruction::class.java))
+       // }
+
+       // updateCard.setOnClickListener {
+          //  startActivity(Intent(this@HomePaciente, UpdatePaciente::class.java))
+        //}
 
     }
 }
