@@ -7,35 +7,38 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_ftsts.FtstsInstruction
 
-class MetricasActivity: AppCompatActivity() {
+class HistoricoActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_metricas)
+
+        setContentView(R.layout.activity_historico)
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
 
         bottomNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
 
+                R.id.nav_graph -> {
+                    startActivity(Intent(this@HistoricoActivity, MetricasActivity::class.java))
 
-                R.id.nav_history -> { /* abrir histórico */ }
+                }
 
                 R.id.nav_home -> {
-
-                    startActivity(Intent(this@MetricasActivity, HomePaciente::class.java))
+                    startActivity(Intent(this@HistoricoActivity, HomePaciente::class.java))
                 }
 
 
                 R.id.nav_add -> {
-                    startActivity(Intent(this@MetricasActivity, FtstsInstruction::class.java))
+                    startActivity(Intent(this@HistoricoActivity, FtstsInstruction::class.java))
                 }
 
-                R.id.nav_edit -> { /* abrir edição */ }
+                R.id.nav_edit -> {
+
+                }
             }
 
             true
         }
-
     }
 }

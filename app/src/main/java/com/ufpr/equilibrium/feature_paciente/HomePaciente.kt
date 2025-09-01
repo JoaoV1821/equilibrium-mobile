@@ -66,7 +66,9 @@ class HomePaciente: AppCompatActivity() {
                 R.id.nav_stats -> {
                     startActivity(Intent(this@HomePaciente, MetricasActivity::class.java))
                 }
-                R.id.nav_history -> { /* abrir histórico */ }
+                R.id.nav_history -> {
+                    startActivity(Intent(this@HomePaciente, HistoricoActivity::class.java))
+                }
 
                 R.id.nav_add -> {
                     startActivity(Intent(this@HomePaciente, FtstsInstruction::class.java))

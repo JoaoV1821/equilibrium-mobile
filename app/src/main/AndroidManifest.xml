@@ -28,6 +28,11 @@
             android:theme="@style/Theme.Equilibrium" />
 
         <activity
+            android:name=".feature_paciente.HistoricoActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium" />
+
+        <activity
             android:name=".feature_paciente.HomePaciente"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium" />
