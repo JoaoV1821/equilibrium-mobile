@@ -1,10 +1,11 @@
 package com.ufpr.equilibrium.network
 
-data class Usuario (
+data class Usuario(
+    val id: String,
     val cpf: String,
-    val name: String,
+    val fullName: String,
     val password: String,
     val phone: String,
     val gender: String,
-    val profile: String
+    val role: String
 )

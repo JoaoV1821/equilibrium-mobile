@@ -27,6 +27,8 @@ object SessionManager {
             prefs?.edit()?.putString("USUARIO", json)?.apply()
         }
 
+
+
     fun clearSession() {
         prefs?.edit()?.clear()?.apply()
     }

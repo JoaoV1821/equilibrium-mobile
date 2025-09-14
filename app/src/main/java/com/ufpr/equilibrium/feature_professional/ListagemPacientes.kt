@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.ufpr.equilibrium.R
-import com.ufpr.equilibrium.feature_paciente.Paciente
 import com.ufpr.equilibrium.feature_paciente.PacienteAdapter
 import com.ufpr.equilibrium.network.RetrofitClient
 import com.ufpr.equilibrium.utils.SessionManager
@@ -41,8 +39,6 @@ class ListagemPacientes : AppCompatActivity() {
         getPacientes();
 
         val builder = AlertDialog.Builder(this);
-
-        builder.setTitle("Deseja sair do aplicativo ?")
 
         builder.setPositiveButton("Sim") { dialog, which ->
             SessionManager.clearSession();
@@ -76,7 +72,7 @@ class ListagemPacientes : AppCompatActivity() {
     private fun getPacientes() {
 
         val api = RetrofitClient.instancePessoasAPI
-        val call = api.getPacientes()
+        val call = api.getPacientes("Bearer " + SessionManager.token)
 
         call.enqueue(object : Callback<List<Paciente>> {
             override fun onResponse(call: Call<List<Paciente>>, response: Response<List<Paciente>>) {
@@ -100,5 +96,4 @@ class ListagemPacientes : AppCompatActivity() {
             }
         })
     }
-
 }

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ufpr.equilibrium.feature_ftsts.FtstsInstruction
 import com.ufpr.equilibrium.utils.PacienteManager
 import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.feature_professional.Paciente
 
 
 class PacienteAdapter(
@@ -34,12 +35,13 @@ class PacienteAdapter(
 
     override fun onBindViewHolder(holder: PacienteViewHolder, position: Int) {
         val paciente = pacientesFiltrados[position]
-        holder.nome.text = paciente.name
-        holder.info.text = "CPF: ${paciente.cpf}\nIdade: ${paciente.age}"
+        holder.nome.text = paciente.fullName
+        holder.info.text = "CPF: ${paciente.cpf}"
 
         holder.btn5sts.setOnClickListener {
             val intent = Intent(context, FtstsInstruction::class.java)
-            PacienteManager.cpf = paciente.cpf
+            PacienteManager.uuid = paciente.id
+
             context.startActivity(intent)
         }
 

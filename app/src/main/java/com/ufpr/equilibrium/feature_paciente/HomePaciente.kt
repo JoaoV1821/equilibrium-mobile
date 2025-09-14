@@ -20,6 +20,7 @@ class HomePaciente: AppCompatActivity() {
     private lateinit var tvDataUltimo: TextView
     private lateinit var tvMelhor: TextView
     private lateinit var tvDesempenho: TextView
+    private lateinit var tvName: TextView
 
 
 
@@ -53,12 +54,14 @@ class HomePaciente: AppCompatActivity() {
         tvDataUltimo = findViewById(R.id.tvDataUltimo)
         tvMelhor = findViewById(R.id.tvMelhor)
         tvDesempenho = findViewById(R.id.tvBest)
+        tvName = findViewById(R.id.tvGreeting)
 
         tvTotalTestes.text = "15"
         tvTestesMes.text = "15"
         tvDataUltimo.text = "13/12"
         tvMelhor.text = "15s"
         tvDesempenho.text = "Ótimo"
+        tvName.text = SessionManager.user!!.fullName
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.setOnNavigationItemSelectedListener { item ->

@@ -12,7 +12,6 @@ import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
-
 import retrofit2.Response
 
 class CadastroProfissional: AppCompatActivity() {

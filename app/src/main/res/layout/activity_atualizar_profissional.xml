@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#F9FAFB"
-    android:padding="16dp">
+    android:background="#F9FAFB">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="384dp"
+        android:layout_height="622dp"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_marginTop="60dp"
-        android:gravity="center_horizontal">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
 
-        <!-- Título -->
+        app:layout_constraintHorizontal_bias="0.407"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.403">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="20dp"
-            android:text="Atualizar dados"
-            android:textColor="#1565C0"
+            android:text="Atualizar Dados"
+            android:textColor="#2260FF"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -33,18 +37,6 @@
             android:layout_marginBottom="12dp"
             android:background="@drawable/edittext_background"
             android:hint="Nome completo"
-            android:padding="12dp"
-            android:textSize="16sp" />
-
-        <!-- Campo CPF -->
-        <EditText
-            android:id="@+id/cpf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/edittext_background"
-            android:hint="CPF"
-            android:inputType="number"
             android:padding="12dp"
             android:textSize="16sp" />
 
@@ -89,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="@drawable/edittext_background"
-            android:hint="especialidade"
+            android:hint="Especialidade"
             android:inputType="date"
             android:padding="12dp"
             android:textSize="16sp" />
@@ -97,18 +89,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/card_background"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:padding="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="Sexo"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
+                android:textStyle="bold" />
 
             <RadioGroup
                 android:id="@+id/radioGroupSexo"
@@ -131,22 +123,37 @@
             </RadioGroup>
         </LinearLayout>
 
-        <!-- Card Histórico de Quedas -->
-
-        <!-- Botão -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/enviar"
             style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="match_parent"
+            android:layout_width="181dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:padding="12dp"
-            android:text="Atualizar"
+            android:text="Enviar"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
-            app:backgroundTint="#1565C0"
+            android:textSize="15sp"
+            app:backgroundTint="#2260FF"
             app:cornerRadius="12dp" />
 
 
     </LinearLayout>
-</ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        app:itemIconSize="28dp"
+        app:labelVisibilityMode="unlabeled"
+        android:background="@color/blue"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:menu="@menu/bottom_nav_menu_professional"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+

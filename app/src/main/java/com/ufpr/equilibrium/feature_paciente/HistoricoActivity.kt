@@ -19,7 +19,7 @@ class HistoricoActivity: AppCompatActivity() {
         bottomNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
 
-                R.id.nav_graph -> {
+                R.id.nav_stats -> {
                     startActivity(Intent(this@HistoricoActivity, MetricasActivity::class.java))
 
                 }

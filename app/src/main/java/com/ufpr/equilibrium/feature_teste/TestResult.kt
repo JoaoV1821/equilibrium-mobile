@@ -36,7 +36,7 @@ class TestResult : AppCompatActivity() {
 
         backButton.setOnClickListener {
 
-            val intent = if (SessionManager.user?.profile == "patient")
+            val intent = if (SessionManager.user?.role == "PATIENT")
                 Intent(this@TestResult, HomePaciente::class.java) else
                 Intent(this@TestResult, HomeProfissional::class.java)
 
@@ -59,9 +59,9 @@ class TestResult : AppCompatActivity() {
                 type == "TUG" && timeInSeconds in 21..29 -> "Risco Moderado de queda"
                 type == "TUG" && timeInSeconds >= 30 -> "Alto risco de quedas"
 
-                type == "5TSTS" && timeInSeconds in 1..11 -> "Baixo risco de queda"
-                type == "5TSTS" && timeInSeconds in 12..15 -> "Risco Moderado de queda"
-                type == "5TSTS" && timeInSeconds >= 16 -> "Alto risco de quedas"
+                type == "FTSTS" && timeInSeconds in 1..11 -> "Baixo risco de queda"
+                type == "FTSTS" && timeInSeconds in 12..15 -> "Risco Moderado de queda"
+                type == "FTSTS" && timeInSeconds >= 16 -> "Alto risco de quedas"
 
                 else -> "Resultado não classificado"
             }

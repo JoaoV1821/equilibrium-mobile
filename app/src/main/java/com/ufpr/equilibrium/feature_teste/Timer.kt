@@ -114,9 +114,6 @@ class Timer : AppCompatActivity(), SensorEventListener {
     private var time = "";
 
     private lateinit var typeTeste:String
-
-
-    // Fora do método: definições necessárias
     private val sensorWindow = mutableListOf<FloatArray>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,7 +123,7 @@ class Timer : AppCompatActivity(), SensorEventListener {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
 
-                if (intent.getStringExtra("teste") == "5TSTS") {
+                if (intent.getStringExtra("teste") == "FTSTS") {
                     startActivity(Intent(this@Timer, FtstsInstruction::class.java))
                     finish()
 
@@ -151,13 +148,14 @@ class Timer : AppCompatActivity(), SensorEventListener {
 
         classifier = HARClassifier(applicationContext)
 
-
         pauseButton.setOnClickListener {
 
             if (pauseButton.text == "Enviar") {
 
-                if (SessionManager.user?.profile == "healthProfessional") {
+                if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
+
                     postData();
+
 
 
                 } else {
@@ -171,6 +169,7 @@ class Timer : AppCompatActivity(), SensorEventListener {
                 }
 
             } else {
+
                 toggleTimer()
             }
         }
@@ -179,7 +178,8 @@ class Timer : AppCompatActivity(), SensorEventListener {
 
         arrowBack.setOnClickListener {
 
-            if (intent.getStringExtra("teste")?.uppercase() == "5TSTS") {
+            if (intent.getStringExtra("teste")?.uppercase() == "FTSTS") {
+
                 startActivity(Intent(this@Timer, FtstsInstruction::class.java))
                 finish()
 
@@ -303,9 +303,9 @@ class Timer : AppCompatActivity(), SensorEventListener {
                 lastGyroY = sensorData[1].toDouble();
                 lastGyroX = sensorData[0].toDouble()
 
-               // gx.add(event.values[0]);
-                //gy.add(event.values[1]);
-               // gz.add(event.values[2]);
+               gx.add(event.values[0]);
+                gy.add(event.values[1]);
+               gz.add(event.values[2]);
 
                 lastGyroTimestamp = timestampLong
 
@@ -331,8 +331,6 @@ class Timer : AppCompatActivity(), SensorEventListener {
                 //lx.add(event.values[0]);
                 //ly.add(event.values[1]);
                 //lz.add(event.values[2]);
-
-
 
             }
         }
@@ -375,9 +373,9 @@ class Timer : AppCompatActivity(), SensorEventListener {
                 diff <= 25 -> {
                     val merged = JSONObject().apply {
                         put("timestamp", accDateStr)
-                        put("acc_x", acc.optDouble("x"))
-                        put("acc_y", acc.optDouble("y"))
-                        put("acc_z", acc.optDouble("z"))
+                        put("accel_x", acc.optDouble("x"))
+                        put("accel_y", acc.optDouble("y"))
+                        put("accel_z", acc.optDouble("z"))
                         put("gyro_x", gyr.optDouble("x"))
                         put("gyro_y", gyr.optDouble("y"))
                         put("gyro_z", gyr.optDouble("z"))
@@ -391,7 +389,6 @@ class Timer : AppCompatActivity(), SensorEventListener {
             }
         }
     }
-
 
 
 
@@ -499,34 +496,48 @@ class Timer : AppCompatActivity(), SensorEventListener {
         }
 
         println(intent.getStringExtra("teste"))
+
         println(PacienteManager.cpf);
         println(SessionManager.user?.cpf)
+
         println(sensorList)
 
         println("teste unidade")
         println(intent.getStringExtra("id_unidade"))
 
-        val teste = Teste(
+        val teste = Teste (
+
             type = intent.getStringExtra("teste"),
-            cpfPatient = PacienteManager.cpf,
-            cpfHealthProfessional = SessionManager.user?.cpf,
-            id_healthUnit = intent.getStringExtra("id_unidade")?.toInt(),
+            patientId = PacienteManager.uuid.toString(),
+            healthProfessionalId = SessionManager.user?.id.toString(),
+            healthcareUnitId = intent.getStringExtra("id_unidade"),
             date = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()),
             totalTime = time,
-            sensorData = sensorList
+            sensorData = sensorList,
+            time_init = isoUtc(startTime),
+            time_end = isoUtc(System.currentTimeMillis())
         )
 
-        if (SessionManager.user?.profile== "healthProfessional") {
-            val call = api.postTestes(teste);
+        if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
+            val call = api.postTestes(teste, "Bearer " + SessionManager.token.toString());
 
             call.enqueue(object : retrofit2.Callback<Teste> {
                 override fun onResponse(call: Call<Teste>, response: Response<Teste>) {
+
                     if (response.isSuccessful) {
+
                         Toast.makeText(
                             applicationContext,
                             "Teste enviado com sucesso!",
                             Toast.LENGTH_SHORT
                         ).show()
+
+                        intent = Intent(this@Timer, TestResult::class.java)
+
+                        intent.putExtra("time", time);
+                        intent.putExtra("teste", typeTeste)
+
+                        startActivity(intent)
                     }
                 }
 
@@ -552,7 +563,7 @@ class Timer : AppCompatActivity(), SensorEventListener {
             val csvFile = File(folder, "sensor_data.csv")
 
             FileWriter(csvFile, /* append = */ false).use { writer ->
-                writer.append("timestamp,acc_x,acc_y,acc_z,gyro_x,gyro_y,gyro_z\n")
+                writer.append("timestamp,accel_x,accel_y,accel_z,gyro_x,gyro_y,gyro_z\n")
                 synchronized(result) {
                     for (json in result) writer.append(convertJsonToCsv(json))
                     result.clear()
@@ -561,13 +572,16 @@ class Timer : AppCompatActivity(), SensorEventListener {
             }
 
             val uri = FileProvider.getUriForFile(this, "${packageName}.provider", csvFile)
+
             val sendIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/csv"
                 putExtra(Intent.EXTRA_STREAM, uri)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 setPackage("com.whatsapp")
             }
+
             startActivity(Intent.createChooser(sendIntent, "Enviar CSV via WhatsApp"))
+
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -584,9 +598,9 @@ class Timer : AppCompatActivity(), SensorEventListener {
         }
 
         val ts  = getS("timestamp", "time")
-        val ax  = getD("acc_x", "accel_x", "x")
-        val ay  = getD("acc_y", "accel_y", "y")
-        val az  = getD("acc_z", "accel_z", "z")
+        val ax  = getD("accel_x", "accel_x", "x")
+        val ay  = getD("accel_y", "accel_y", "y")
+        val az  = getD("accel_z", "accel_z", "z")
         val gx  = getD("gyro_x", "gx", "wx")
         val gy  = getD("gyro_y", "gy", "wy")
         val gz  = getD("gyro_z", "gz", "wz")
@@ -594,5 +608,9 @@ class Timer : AppCompatActivity(), SensorEventListener {
         return "\n$ts,$ax,$ay,$az,$gx,$gy,$gz"
     }
 
-
+    private fun isoUtc(dateMillis: Long): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        return sdf.format(Date(dateMillis))
+    }
 }

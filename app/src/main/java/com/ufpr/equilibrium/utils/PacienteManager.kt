@@ -2,6 +2,7 @@ package com.ufpr.equilibrium.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.util.UUID
 
 object PacienteManager {
 
@@ -18,6 +19,13 @@ object PacienteManager {
     var teste: String?
         get() = prefs?.getString("CPF", null)
         set(value) = prefs?.edit()?.putString("CPF", value)?.apply()!!
+
+    var uuid: UUID?
+        get() = prefs?.getString("id", null)?.let { UUID.fromString(it) }
+        set(value) {
+            prefs?.edit()?.putString("id", value?.toString())?.apply()
+        }
+
 
     fun clearPacienteCpf() {
         prefs?.edit()?.clear()?.apply()

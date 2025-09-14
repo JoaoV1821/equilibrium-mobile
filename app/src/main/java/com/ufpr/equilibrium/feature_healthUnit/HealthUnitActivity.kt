@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ufpr.equilibrium.feature_teste.Contagem
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.network.RetrofitClient
-import com.ufpr.equilibrium.network.HealthUnit
+import com.ufpr.equilibrium.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,7 +59,7 @@ class HealthUnitActivity : AppCompatActivity() {
     }
 
     private fun handlerHealthUnits() {
-        val call = RetrofitClient.instancePessoasAPI.getHealthUnit()
+        val call = RetrofitClient.instancePessoasAPI.getHealthUnit("Bearer " + SessionManager.token)
 
         call.enqueue(object : Callback<List<HealthUnit>> {
             override fun onResponse(
@@ -90,7 +90,7 @@ class HealthUnitActivity : AppCompatActivity() {
                             id: Long
 
                         ) {
-                            selectedUnitId = healthUnitList[position].id.toString()
+                            selectedUnitId = healthUnitList[position].id
 
                             println(selectedUnitId)
                         }

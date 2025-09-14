@@ -58,10 +58,20 @@ dependencies {
     implementation(libs.tensorflow.lite.select.tf.ops)
     implementation(libs.tensorflow.android)
     implementation(libs.androidx.gridlayout)
+
     testImplementation(libs.junit)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+}
 
-
+// Task to install and launch the debug build on a connected device
+tasks.register("runDebugOnDevice") {
+    dependsOn("installDebug")
+    doLast {
+        // Requires 'adb' available in PATH (Android SDK platform-tools)
+        exec {
+            commandLine("adb", "shell", "am", "start", "-n", "com.ufpr.equilibrium/.MainActivity")
+        }
+    }
 }

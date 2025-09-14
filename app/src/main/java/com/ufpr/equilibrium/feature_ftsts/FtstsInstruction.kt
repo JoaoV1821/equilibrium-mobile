@@ -26,9 +26,10 @@ class FtstsInstruction : AppCompatActivity() {
         val ftsts = findViewById<Button>(R.id.next_button);
 
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            
             override fun handleOnBackPressed() {
 
-                if (SessionManager.user?.profile == "healthProfessional") {
+                if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
                     intent = Intent(this@FtstsInstruction, ListagemPacientes::class.java)
 
                     startActivity(intent);
@@ -44,7 +45,7 @@ class FtstsInstruction : AppCompatActivity() {
 
         arrowBtn.setOnClickListener {
 
-            if (SessionManager.user?.profile == "healthProfessional") {
+            if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
                 intent = Intent(this@FtstsInstruction, HomeProfissional::class.java)
 
                 startActivity(intent);
@@ -59,7 +60,7 @@ class FtstsInstruction : AppCompatActivity() {
 
         ftsts.setOnClickListener {
 
-           val intent = if (SessionManager.user?.profile == "healthProfessional") {
+           val intent = if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
 
                val cpf = Intent().getStringExtra("cpf")
                intent.putExtra("cpf",cpf)
@@ -71,7 +72,7 @@ class FtstsInstruction : AppCompatActivity() {
                 Intent(this, Contagem::class.java)
             }
 
-            intent.putExtra("teste", "5TSTS")
+            intent.putExtra("teste", "FTSTS")
 
             startActivity(intent)
         }

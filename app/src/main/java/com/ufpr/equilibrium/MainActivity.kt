@@ -26,10 +26,10 @@ class MainActivity : AppCompatActivity() {
         SessionManager.init(this)
 
         if (SessionManager.isLoggedIn()) {
-            if (SessionManager.user?.profile == "healthProfissional") {
+            if (SessionManager.user?.role == "healthProfessional") {
                 startActivity(Intent(this@MainActivity, HomeProfissional::class.java))
 
-            } else if (SessionManager.user?.profile == "patient") {
+            } else if (SessionManager.user?.role == "patient") {
                 startActivity(Intent(this@MainActivity, HomePaciente::class.java))
             }
 

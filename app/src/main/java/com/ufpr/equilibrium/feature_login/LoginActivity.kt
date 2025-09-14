@@ -22,11 +22,11 @@ import androidx.activity.OnBackPressedCallback
 import com.ufpr.equilibrium.feature_professional.HomeProfissional
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_paciente.HomePaciente
-import com.ufpr.equilibrium.feature_professional.ListagemPacientes
 import com.ufpr.equilibrium.utils.SessionManager
-import com.ufpr.equilibrium.network.Login
-import com.ufpr.equilibrium.network.LoginResult
 import com.ufpr.equilibrium.network.RetrofitClient
+import android.util.Base64
+import com.ufpr.equilibrium.network.Usuario
+import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var cpf: EditText
@@ -95,34 +95,51 @@ class LoginActivity : AppCompatActivity() {
         call.enqueue(object : Callback<LoginResult> {
 
             override fun onResponse(call: Call<LoginResult>, response: Response<LoginResult>) {
+                println(response.body())
+
                 if (response.isSuccessful) {
                     errorBar.visibility = View.GONE
 
-                        SessionManager.token = response.body()?.token
-                        SessionManager.user = response.body()?.user
+                        SessionManager.token = response.body()?.access_token
 
-                        println(response.body()?.user)
+                        val payloadJson = decodeJwtPayload(SessionManager.token.toString())
 
-                        Toast.makeText(applicationContext, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        println(payloadJson)
 
-                        if (response.body()?.user!!.profile == "healthProfessional") {
-                            startActivity(Intent(this@LoginActivity, HomeProfissional::class.java))
+                        if (payloadJson != null) {
 
-                        } else if(response.body()?.user!!.profile == "patient") {
-                            startActivity(Intent(this@LoginActivity, HomePaciente::class.java))
+                            val id = payloadJson.optString("sub")
+                            val cpf = payloadJson.optString("cpf")
+                            val fullName = payloadJson.optString("username")
+                            val password = payloadJson.optString("password")
+                            val phone = payloadJson.optString("phone")
+                            val gender = payloadJson.optString("gender")
+                            val role = payloadJson.optString("role")
+
+                            val user = Usuario(id, cpf, fullName, password, phone, gender, role)
+
+                            SessionManager.user = user
+
+                            Toast.makeText(applicationContext, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
+
+                            if (SessionManager.user!!.role == "HEALTH_PROFESSIONAL") {
+                                startActivity(Intent(this@LoginActivity, HomeProfissional::class.java))
+
+                            } else if (SessionManager.user!!.role == "PATIENT") {
+                                startActivity(Intent(this@LoginActivity, HomePaciente::class.java))
+                            }
                         }
-
 
                 } else {
                     println(response)
                     errorBar.visibility = View.VISIBLE
-
                 }
             }
 
             override fun onFailure(call: Call<LoginResult>, t: Throwable) {
                 Log.e("Erro", "Falha no login", t)
                 Toast.makeText(applicationContext, "Erro ao conectar ao servidor", Toast.LENGTH_SHORT).show()
+
             }
         })
     }
@@ -176,5 +193,18 @@ class LoginActivity : AppCompatActivity() {
                 this@addMask.setSelection(maskedText.length)
             }
         })
+    }
+
+
+    fun decodeJwtPayload(token: String): JSONObject? {
+        return try {
+            val parts = token.split(".")
+            if (parts.size != 3) return null
+
+            val payload = String(Base64.decode(parts[1], Base64.URL_SAFE))
+            JSONObject(payload) // retorna como JSON
+        } catch (e: Exception) {
+            null
+        }
     }
 }
