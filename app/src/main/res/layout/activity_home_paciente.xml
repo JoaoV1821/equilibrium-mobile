@@ -20,7 +20,6 @@
         app:layout_constraintTop_toBottomOf="@id/row1">
 
         <!-- Card: Melhor desempenho -->
-
         <!-- Card: Desempenho Geral -->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
@@ -110,10 +109,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.09"
+        app:layout_constraintHorizontal_bias="0.042"
         app:layout_constraintStart_toEndOf="@+id/tvName"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.004" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tvName"

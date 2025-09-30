@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:text="Pacientes"
-        android:textColor="#1976D2"
+        android:textColor="#2260FF"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

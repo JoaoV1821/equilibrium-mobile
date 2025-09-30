@@ -43,7 +43,6 @@ class HomeProfissional : AppCompatActivity() {
             tvName.text = "Usuário"
         }
 
-
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 builder.show()

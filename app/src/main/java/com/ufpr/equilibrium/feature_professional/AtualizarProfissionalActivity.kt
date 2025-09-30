@@ -1,27 +1,15 @@
 package com.ufpr.equilibrium.feature_professional
 
-
-
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ufpr.equilibrium.R
-import com.ufpr.equilibrium.feature_ftsts.FtstsInstruction
 import com.ufpr.equilibrium.feature_paciente.HistoricoActivity
 import com.ufpr.equilibrium.feature_paciente.MetricasActivity
-import com.ufpr.equilibrium.network.RetrofitClient
-import retrofit2.Call
-import retrofit2.Callback
-
-import retrofit2.Response
-
 
 class AtualizarProfissionalActivity:  AppCompatActivity() {
 
@@ -31,7 +19,6 @@ class AtualizarProfissionalActivity:  AppCompatActivity() {
     private lateinit var email: EditText
     private  lateinit var especialidade: EditText
     private lateinit var sexo: RadioGroup
-    private lateinit var selectedSexo : RadioButton
     private lateinit var submit: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +56,10 @@ class AtualizarProfissionalActivity:  AppCompatActivity() {
 
                 R.id.nav_home -> {
                     startActivity(Intent(this@AtualizarProfissionalActivity, HomeProfissional::class.java))
+                }
+
+                R.id.nav_evaluation -> {
+                    startActivity(Intent(this@AtualizarProfissionalActivity, ListagemPacientes::class.java))
                 }
             }
 

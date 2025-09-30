@@ -14,7 +14,7 @@
         android:layout_height="55dp"
         android:backgroundTint="#2260FF"
         android:fontFamily="@font/league_spartan_medium"
-        android:text="Novo profissional"
+        android:text="Novo paciente"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="20sp"
         android:typeface="normal"

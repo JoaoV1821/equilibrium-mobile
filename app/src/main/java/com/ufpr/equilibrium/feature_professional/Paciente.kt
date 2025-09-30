@@ -3,7 +3,6 @@ package com.ufpr.equilibrium.feature_professional
 import java.util.UUID
 
 data class Paciente (
-
     val id: UUID,
     val fullName: String,
     val cpf: String,

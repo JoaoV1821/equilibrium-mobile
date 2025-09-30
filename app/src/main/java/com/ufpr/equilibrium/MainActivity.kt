@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.ufpr.equilibrium.feature_login.LoginActivity
 import com.ufpr.equilibrium.feature_paciente.HomePaciente
+import com.ufpr.equilibrium.feature_professional.CadastroPacienteActivity
 import com.ufpr.equilibrium.feature_professional.CadastroProfissional
 import com.ufpr.equilibrium.feature_professional.HomeProfissional
 import com.ufpr.equilibrium.utils.SessionManager
@@ -26,10 +27,11 @@ class MainActivity : AppCompatActivity() {
         SessionManager.init(this)
 
         if (SessionManager.isLoggedIn()) {
-            if (SessionManager.user?.role == "healthProfessional") {
+
+            if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
                 startActivity(Intent(this@MainActivity, HomeProfissional::class.java))
 
-            } else if (SessionManager.user?.role == "patient") {
+            } else if (SessionManager.user?.role == "PATIENT") {
                 startActivity(Intent(this@MainActivity, HomePaciente::class.java))
             }
 
@@ -44,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnCadastro.setOnClickListener {
-            startActivity(Intent(this@MainActivity, CadastroProfissional::class.java))
+            startActivity(Intent(this@MainActivity, CadastroPacienteActivity::class.java))
         }
 
     }

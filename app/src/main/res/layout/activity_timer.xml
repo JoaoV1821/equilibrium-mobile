@@ -45,14 +45,14 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="97dp"
+        android:layout_width="118dp"
         android:layout_height="40dp"
         android:layout_marginStart="168dp"
         android:layout_marginTop="83dp"
         android:layout_marginEnd="146dp"
         android:layout_marginBottom="608dp"
         android:fontFamily="@font/league_spartan_medium"
-        android:text="5TSTS"
+        android:text="30s CST"
         android:textColor="#2260FF"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"

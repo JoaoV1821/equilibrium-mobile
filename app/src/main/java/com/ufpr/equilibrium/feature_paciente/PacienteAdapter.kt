@@ -19,7 +19,7 @@ class PacienteAdapter(
     private var pacientes: List<Paciente>
 ) : RecyclerView.Adapter<PacienteAdapter.PacienteViewHolder>() {
 
-    private var pacientesFiltrados: List<Paciente> = pacientes.toList()
+    private var pacientesFiltrados: MutableList<Paciente> = pacientes.toMutableList()
 
     class PacienteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nome: TextView = itemView.findViewById(R.id.tv_nome_paciente)
@@ -35,34 +35,32 @@ class PacienteAdapter(
 
     override fun onBindViewHolder(holder: PacienteViewHolder, position: Int) {
         val paciente = pacientesFiltrados[position]
+
         holder.nome.text = paciente.fullName
         holder.info.text = "CPF: ${paciente.cpf}"
 
         holder.btn5sts.setOnClickListener {
-            val intent = Intent(context, FtstsInstruction::class.java)
             PacienteManager.uuid = paciente.id
-
-            context.startActivity(intent)
+            context.startActivity(Intent(context, FtstsInstruction::class.java))
         }
-
-
     }
 
     override fun getItemCount(): Int = pacientesFiltrados.size
 
-    // Atualiza a lista completa
+    /** Atualiza a lista completa exibida pelo adapter */
     fun atualizarLista(novaLista: List<Paciente>) {
         this.pacientes = novaLista
-        this.pacientesFiltrados = novaLista
+        this.pacientesFiltrados = novaLista.toMutableList()
         notifyDataSetChanged()
     }
 
-    // Filtra por CPF
+    /** Filtra por CPF (ignora máscara/pontos/traços) */
     fun filtrarPorCpf(cpf: String) {
-        pacientesFiltrados = if (cpf.isBlank()) {
-            pacientes
+        val query = cpf.filter { it.isDigit() }
+        pacientesFiltrados = if (query.isBlank()) {
+            pacientes.toMutableList()
         } else {
-            pacientes.filter { it.cpf.contains(cpf, ignoreCase = true) }
+            pacientes.filter { it.cpf.filter(Char::isDigit).contains(query) }.toMutableList()
         }
         notifyDataSetChanged()
     }

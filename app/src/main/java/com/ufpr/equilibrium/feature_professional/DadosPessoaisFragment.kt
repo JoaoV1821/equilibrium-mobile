@@ -14,7 +14,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
+import com.ufpr.equilibrium.MainActivity
 import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.utils.SessionManager
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -48,13 +50,19 @@ class DadosPessoaisFragment : Fragment() {
 
         val viewModel = ViewModelProvider(requireActivity()).get(FormViewModel::class.java)
 
-        // Aplicar máscaras
         aplicarMascaraCpf(editTextCpf)
         aplicarMascaraCelular(editTextCelular)
         aplicarMascaraData(dataNasc)
 
         btnVoltar.setOnClickListener {
-            startActivity(Intent(requireContext(), HomeProfissional::class.java))
+
+            if (SessionManager.isLoggedIn()) {
+                startActivity(Intent(requireContext(), HomeProfissional::class.java))
+
+            } else {
+                startActivity(Intent(requireContext(), MainActivity::class.java))
+            }
+
         }
 
         btnEnviar.setOnClickListener {

@@ -1,17 +1,20 @@
 package com.ufpr.equilibrium.feature_professional
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
 import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.feature_login.LoginActivity
 import com.ufpr.equilibrium.network.RetrofitClient
 import com.ufpr.equilibrium.utils.SessionManager
 import retrofit2.Call
@@ -34,6 +37,7 @@ class EnderecoFragment : Fragment() {
 
     override fun onCreateView (
 
+
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,6 +48,7 @@ class EnderecoFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
 
         val btnVoltar = view.findViewById<MaterialButton>(R.id.voltar)
@@ -95,14 +100,18 @@ class EnderecoFragment : Fragment() {
                     val date = sdfInput.parse(viewModel.dataNasc.value ?: "")
                     val birthdayIso = date?.let { sdfOutput.format(it) } ?: ""
 
-                    val paciente = PacienteModel (
+                    val user = User (
 
                         fullName = viewModel.nome.value.toString(),
-                        cpf = viewModel.cpf.value.toString(),
+                        cpf = viewModel.cpf.value.toString().replace(Regex("[.-]"), ""),
+                        gender = if (viewModel.sexo.value.toString() == "Masculino") "MALE" else "FEMALE")
+
+                    val paciente = PacienteModel (
+
                         birthday = birthdayIso,
                         weight = viewModel.peso.value.toString().toInt(),
                         height = viewModel.altura.value.toString().toFloat(),
-                        zipcode = viewModel.cep.value.toString(),
+                        zipCode = viewModel.cep.value.toString(),
                         street = viewModel.rua.value.toString(),
                         number = viewModel.numero.value.toString(),
                         complement = viewModel.complemento.value.toString(),
@@ -111,7 +120,8 @@ class EnderecoFragment : Fragment() {
                         state = viewModel.estado.value.toString(),
                         socio_economic_level = viewModel.nivelSocio.value.toString(),
                         scholarship = viewModel.escolaridade.value.toString(),
-                        gender = if (viewModel.sexo.value.toString() == "M") "MALE" else "FEMALE"
+                        user = user
+
                     )
 
                     println(paciente)
@@ -120,18 +130,43 @@ class EnderecoFragment : Fragment() {
 
                     api.postPatient(paciente, "Bearer " + SessionManager.token).enqueue(object : Callback<PacienteModel> {
                         override fun onResponse(call: Call<PacienteModel>, response: Response<PacienteModel>) {
+
                             if (response.isSuccessful) {
-                                Toast.makeText(requireContext(), "Paciente enviado com sucesso!", Toast.LENGTH_SHORT).show()
+
+                                AlertDialog.Builder(requireContext())
+                                    .setTitle("Cadastro concluído")
+                                    .setMessage("O paciente foi cadastrado com sucesso!")
+                                    .setPositiveButton("OK") { dialog, _ ->
+                                        dialog.dismiss()
+
+                                        if (SessionManager.isLoggedIn()) {
+
+                                            val intent = Intent(requireContext(), HomeProfissional::class.java)
+                                            startActivity(intent)
+
+                                        } else {
+
+                                            val intent = Intent(requireContext(), LoginActivity::class.java)
+                                            startActivity(intent)
+                                        }
+
+                                        requireActivity().finish()
+                                    }
+                                    .show()
+
                             } else {
-                                Toast.makeText(requireContext(), "Erro ao enviar paciente: ${response.code()}", Toast.LENGTH_SHORT).show()
+                                AlertDialog.Builder(requireContext())
+                                    .setTitle("Erro")
+                                    .setMessage("Erro ao enviar paciente: ${response.code()}")
+                                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                                    .show()
                             }
                         }
 
                         override fun onFailure(call: Call<PacienteModel>, t: Throwable) {
                             Toast.makeText(requireContext(), "Falha na requisição: ${t.message}", Toast.LENGTH_SHORT).show()
                         }
-                })
-
+                   })
                 }
             }
         }
