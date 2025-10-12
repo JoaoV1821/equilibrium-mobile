@@ -105,7 +105,9 @@
                 android:inputType="numberDecimal"
                 android:padding="12dp"
                 android:textSize="16sp"
-                android:imeOptions="actionNext" />
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                />
 
             <!-- Altura -->
             <EditText
@@ -114,11 +116,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/edittext_background"
-                android:hint="Altura (m) *"
+                android:hint="Altura (cm) *"
                 android:inputType="numberDecimal"
                 android:padding="12dp"
                 android:textSize="16sp"
-                android:imeOptions="actionNext" />
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                />
 
             <!-- Botões -->
             <LinearLayout

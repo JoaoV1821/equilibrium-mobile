@@ -12,6 +12,7 @@ import com.ufpr.equilibrium.MainActivity
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_ftsts.FtstsInstruction
 import com.ufpr.equilibrium.utils.SessionManager
+import java.util.Locale
 
 class HomePaciente: AppCompatActivity() {
 
@@ -56,12 +57,24 @@ class HomePaciente: AppCompatActivity() {
         tvDesempenho = findViewById(R.id.tvBest)
         tvName = findViewById(R.id.tvGreeting)
 
+        val firstName = SessionManager.user?.fullName
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+            ?.split(Regex("\\s+"))
+            ?.firstOrNull()
+            ?.replaceFirstChar { ch ->
+                // Garante capitalização correta em pt-BR
+                if (ch.isLowerCase()) ch.titlecase(Locale("pt", "BR")) else ch.toString()
+            }
+
+        tvName.text = firstName ?: "Olá"
+
         tvTotalTestes.text = "15"
         tvTestesMes.text = "15"
         tvDataUltimo.text = "13/12"
         tvMelhor.text = "15s"
         tvDesempenho.text = "Ótimo"
-        tvName.text = SessionManager.user!!.fullName
+
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.setOnNavigationItemSelectedListener { item ->

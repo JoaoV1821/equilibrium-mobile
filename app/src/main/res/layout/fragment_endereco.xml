@@ -67,7 +67,9 @@
                 android:hint="CEP *"
                 android:inputType="number"
                 android:padding="12dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:maxLines="1"
+                />
 
             <!-- Número -->
             <EditText
@@ -79,7 +81,9 @@
                 android:hint="Número *"
                 android:inputType="number"
                 android:padding="12dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:maxLines="1"
+                />
 
             <!-- Rua -->
             <EditText
@@ -90,7 +94,9 @@
                 android:background="@drawable/edittext_background"
                 android:hint="Rua *"
                 android:padding="12dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:maxLines="1"
+                />
 
             <!-- Complemento -->
             <EditText
@@ -101,7 +107,10 @@
                 android:background="@drawable/edittext_background"
                 android:hint="Complemento"
                 android:padding="12dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:maxLines="1"
+
+                />
 
             <!-- Bairro -->
             <EditText
@@ -112,7 +121,10 @@
                 android:background="@drawable/edittext_background"
                 android:hint="Bairro *"
                 android:padding="12dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:maxLines="1"
+
+                />
 
             <!-- Cidade -->
             <EditText
@@ -123,7 +135,10 @@
                 android:background="@drawable/edittext_background"
                 android:hint="Cidade *"
                 android:padding="12dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:maxLines="1"
+
+                />
 
             <!-- Estado -->
             <EditText
@@ -134,7 +149,10 @@
                 android:background="@drawable/edittext_background"
                 android:hint="Estado (UF) *"
                 android:padding="12dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:maxLines="1"
+
+                />
 
             <!-- Botões -->
             <LinearLayout

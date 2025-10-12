@@ -122,7 +122,7 @@ class LoginActivity : AppCompatActivity() {
 
                             Toast.makeText(applicationContext, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
 
-                            if (SessionManager.user!!.role == "HEALTH_PROFESSIONAL") {
+                            if (SessionManager.user!!.role == "HEALTH_PROFESSIONAL" || SessionManager.user!!.role == "MANAGER") {
                                 startActivity(Intent(this@LoginActivity, HomeProfissional::class.java))
 
                             } else if (SessionManager.user!!.role == "PATIENT") {

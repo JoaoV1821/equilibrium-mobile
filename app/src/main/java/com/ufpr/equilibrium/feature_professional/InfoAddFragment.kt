@@ -80,11 +80,6 @@ class InfoAddFragment : Fragment() {
         escolaridade.setAdapter(escolaridadeAdapter)
 
         // Configuração de máscara / filtros
-        peso.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-        altura.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-
-        peso.filters = arrayOf(InputFilter.LengthFilter(5))   // Ex: 120.5
-        altura.filters = arrayOf(InputFilter.LengthFilter(4)) // Ex: 1.75
 
         btnVoltar.setOnClickListener {
             val viewPager = activity?.findViewById<ViewPager2>(R.id.viewPager)
@@ -101,8 +96,8 @@ class InfoAddFragment : Fragment() {
 
                 viewModel.escolaridade.value = escolaridadeApiValue
                 viewModel.nivelSocio.value = nivelSocioApiValue
-                viewModel.peso.value = peso.text.toString().replace(",", ".").toInt()
-                viewModel.altura.value = altura.text.toString().replace(",", ".").toFloat()
+                viewModel.peso.value = peso.text.toString().toFloat()
+                viewModel.altura.value = altura.text.toString().toInt()
 
                 val viewPager = activity?.findViewById<ViewPager2>(R.id.viewPager)
                 viewPager?.let {
@@ -141,10 +136,7 @@ class InfoAddFragment : Fragment() {
                 mostrarErro("Informe um peso válido (20kg - 300kg)")
                 false
             }
-            !isNumeroValido(txtAltura, 1.0f, 2.5f) -> {
-                mostrarErro("Informe uma altura válida (1.0m - 2.5m)")
-                false
-            }
+
             else -> true
         }
     }

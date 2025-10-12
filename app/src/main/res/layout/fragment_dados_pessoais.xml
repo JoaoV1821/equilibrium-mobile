@@ -63,6 +63,7 @@
                 android:hint="Nome completo *"
                 android:padding="12dp"
                 android:textSize="16sp"
+                android:maxLines="1"
                 android:imeOptions="actionNext" />
 
             <!-- CPF -->
@@ -76,7 +77,9 @@
                 android:inputType="number"
                 android:padding="12dp"
                 android:textSize="16sp"
-                android:imeOptions="actionNext" />
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                />
 
             <!-- Telefone -->
             <EditText
@@ -89,6 +92,7 @@
                 android:inputType="phone"
                 android:padding="12dp"
                 android:textSize="16sp"
+                android:maxLines="1"
                 android:imeOptions="actionNext" />
 
             <!-- Sexo (card-like) -->
@@ -104,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Sexo *"
+                    android:text="Sexo biológico *"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -140,7 +144,9 @@
                 android:inputType="number"
                 android:padding="12dp"
                 android:textSize="16sp"
-                android:imeOptions="actionDone" />
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                />
 
             <!-- Botões: usam weights para preencher igualmente -->
             <LinearLayout

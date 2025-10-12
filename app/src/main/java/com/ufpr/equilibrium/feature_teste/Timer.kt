@@ -32,7 +32,6 @@ import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListener {
 

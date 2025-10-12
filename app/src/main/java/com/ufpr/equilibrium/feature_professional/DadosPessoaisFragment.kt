@@ -1,7 +1,9 @@
 package com.ufpr.equilibrium.feature_professional
+
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,7 @@ import com.ufpr.equilibrium.MainActivity
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.utils.SessionManager
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 class DadosPessoaisFragment : Fragment() {
@@ -50,19 +53,19 @@ class DadosPessoaisFragment : Fragment() {
 
         val viewModel = ViewModelProvider(requireActivity()).get(FormViewModel::class.java)
 
+        // Evita ENTER/quebras de linha em todos os campos
+        bloquearQuebraDeLinha(editTextNome, editTextCpf, editTextCelular, dataNasc)
+
         aplicarMascaraCpf(editTextCpf)
         aplicarMascaraCelular(editTextCelular)
         aplicarMascaraData(dataNasc)
 
         btnVoltar.setOnClickListener {
-
             if (SessionManager.isLoggedIn()) {
                 startActivity(Intent(requireContext(), HomeProfissional::class.java))
-
             } else {
                 startActivity(Intent(requireContext(), MainActivity::class.java))
             }
-
         }
 
         btnEnviar.setOnClickListener {
@@ -86,6 +89,8 @@ class DadosPessoaisFragment : Fragment() {
         }
     }
 
+    // -------------------- Validações --------------------
+
     private fun validarCampos(): Boolean {
         val nome = editTextNome.text.toString().trim()
         val cpf = editTextCpf.text.toString().trim()
@@ -106,8 +111,8 @@ class DadosPessoaisFragment : Fragment() {
                 mostrarErro("Telefone inválido")
                 return false
             }
-            !validarData(dataNascimento) -> {
-                mostrarErro("Data de nascimento inválida (dd/MM/yyyy)")
+            !validarData(dataNascimento, minIdade = 0, maxIdade = 120) -> {
+                mostrarErro("Data de nascimento inválida ou fora da faixa (0–120 anos)")
                 return false
             }
             sexoSelecionado == -1 -> {
@@ -118,11 +123,33 @@ class DadosPessoaisFragment : Fragment() {
         return true
     }
 
-    private fun validarData(data: String): Boolean {
+
+    private fun validarData(data: String, minIdade: Int = 0, maxIdade: Int = 120): Boolean {
         return try {
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            sdf.isLenient = false
-            sdf.parse(data) != null
+            if (data.length != 10) return false // dd/MM/yyyy
+
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
+                isLenient = false
+            }
+
+            val dt = sdf.parse(data) ?: return false
+
+            val hoje = Calendar.getInstance()
+            val nasc = Calendar.getInstance().apply { time = dt }
+
+            // não pode ser no futuro
+            if (nasc.after(hoje)) return false
+
+            // calcula idade exata
+            var idade = hoje.get(Calendar.YEAR) - nasc.get(Calendar.YEAR)
+            val fezAniversario = when {
+                hoje.get(Calendar.MONTH) > nasc.get(Calendar.MONTH) -> true
+                hoje.get(Calendar.MONTH) < nasc.get(Calendar.MONTH) -> false
+                else -> hoje.get(Calendar.DAY_OF_MONTH) >= nasc.get(Calendar.DAY_OF_MONTH)
+            }
+            if (!fezAniversario) idade--
+
+            idade in minIdade..maxIdade
         } catch (e: Exception) {
             false
         }
@@ -131,6 +158,8 @@ class DadosPessoaisFragment : Fragment() {
     private fun mostrarErro(mensagem: String) {
         Toast.makeText(requireContext(), mensagem, Toast.LENGTH_SHORT).show()
     }
+
+    // -------------------- Máscaras --------------------
 
     private fun aplicarMascaraCpf(editText: EditText) {
         editText.addTextChangedListener(object : TextWatcher {
@@ -188,7 +217,6 @@ class DadosPessoaisFragment : Fragment() {
         })
     }
 
-
     private fun aplicarMascaraData(editText: EditText) {
         editText.addTextChangedListener(object : TextWatcher {
             private var isUpdating = false
@@ -208,5 +236,16 @@ class DadosPessoaisFragment : Fragment() {
                 isUpdating = false
             }
         })
+    }
+
+    // -------------------- Util --------------------
+
+    private fun bloquearQuebraDeLinha(vararg edits: EditText) {
+        val semQuebra = InputFilter { source, _, _, _, _, _ ->
+            if (source != null && (source.contains("\n") || source.contains("\r"))) {
+                source.toString().replace("\n", "").replace("\r", "")
+            } else null
+        }
+        edits.forEach { it.filters = it.filters.plus(semQuebra) }
     }
 }
