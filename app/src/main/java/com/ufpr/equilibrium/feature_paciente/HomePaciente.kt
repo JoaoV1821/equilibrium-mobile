@@ -54,14 +54,31 @@ class HomePaciente: AppCompatActivity() {
         tvDataUltimo = findViewById(R.id.tvDataUltimo)
         tvMelhor = findViewById(R.id.tvMelhor)
         tvDesempenho = findViewById(R.id.tvBest)
-        tvName = findViewById(R.id.tvGreeting)
+
 
         tvTotalTestes.text = "15"
         tvTestesMes.text = "15"
         tvDataUltimo.text = "13/12"
         tvMelhor.text = "15s"
         tvDesempenho.text = "Ótimo"
-        tvName.text = SessionManager.user!!.fullName
+
+
+        tvName = findViewById(R.id.tvGreeting)
+
+        SessionManager.user?.let { user ->
+            val firstName = user.fullName
+                .trim()
+                .split(Regex("\\s+"))       // separa por 1+ espaços
+                .firstOrNull()
+                ?.replaceFirstChar {        // capitaliza a 1ª letra, se vier minúscula
+                    if (it.isLowerCase()) it.titlecase(java.util.Locale.getDefault()) else it.toString()
+                }
+                ?: "Usuário"
+
+            tvName.text = firstName
+        } ?: run {
+            tvName.text = "Usuário"
+        }
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.setOnNavigationItemSelectedListener { item ->

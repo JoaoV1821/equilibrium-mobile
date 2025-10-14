@@ -13,7 +13,6 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.ufpr.equilibrium.R
@@ -32,7 +31,6 @@ import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListener {
 
@@ -79,10 +77,11 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     private var results: FloatArray? = null
     private val N_SAMPLES = 100
 
-    // ========= 30s CST =========
-    private val DURATION_MS = 30_000L
-    private var remainingMs = DURATION_MS
-    private var countDownJob: Job? = null
+    // ========= 5TSTS (contador progressivo) =========
+    // ★ removido countdown fixo; agora contamos para cima
+    private var elapsedMs = 0L
+    private var timerJob: Job? = null
+    private var paused = false
 
     private var repetitions = 0
     private var lastRepTimestamp = 0L
@@ -120,8 +119,8 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         title = findViewById(R.id.title)
         pauseButton = findViewById(R.id.pauseButton)
 
-        typeTeste = "5TSTS" // ajuste se necessário
-        title.text = "30s CST"
+        typeTeste = "5TSTS"
+        title.text = "5TSTS" // ★ título ajustado
 
         val refreshBtn = findViewById<ImageView>(R.id.refresh)
         val arrowBack = findViewById<ImageView>(R.id.arrow_back)
@@ -133,22 +132,37 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
 
         classifier = HARClassifier(applicationContext)
 
-        pauseButton.text = "Enviar"
-        pauseButton.isEnabled = false
+        // ★ fluxo do botão:
+        //   - enquanto rodando: "Pausar" -> pausa o teste
+        //   - pausado: "Enviar" -> envia ou navega
+        pauseButton.text = "Pausar"
+        pauseButton.isEnabled = true
 
         pauseButton.setOnClickListener {
-            if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
-                postData()
+            if (!paused && running.get()) {
+                // PAUSAR
+                paused = true
+                stopTimerAndSensors()
+                speak("Teste pausado")
+                pauseButton.text = "Enviar"
             } else {
-                val intent = Intent(this@Timer, FtstsInstruction::class.java)
-                intent.putExtra("time", "00:30")
-                intent.putExtra("repetitions", repetitions)
-                intent.putExtra("teste", typeTeste)
-                startActivity(intent)
+                // ENVIAR
+                if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
+                    postData()
+                } else {
+                    val intent = Intent(this@Timer, FtstsInstruction::class.java)
+                    intent.putExtra("time", timeDisplay.safeTime())
+                    intent.putExtra("repetitions", repetitions)
+                    intent.putExtra("teste", typeTeste)
+                    startActivity(intent)
+                }
             }
         }
 
-        refreshBtn.setOnClickListener { resetTimer() }
+        val refreshAction = {
+            resetTimer()
+        }
+        refreshBtn.setOnClickListener { refreshAction() }
         arrowBack.setOnClickListener {
             startActivity(Intent(this@Timer, FtstsInstruction::class.java))
             finish()
@@ -156,7 +170,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
 
         textToSpeech = TextToSpeech(this, this)
 
-        startTimerAndSensors()
+        startTimerAndSensors() // inicia contando de 00:00 para cima
     }
 
     // ====== TTS ======
@@ -171,56 +185,22 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         }
     }
 
-    private fun numberInPortuguese(n: Int): String = when (n) {
-        30 -> "trinta"
-        29 -> "vinte e nove"
-        28 -> "vinte e oito"
-        27 -> "vinte e sete"
-        26 -> "vinte e seis"
-        25 -> "vinte e cinco"
-        24 -> "vinte e quatro"
-        23 -> "vinte e três"
-        22 -> "vinte e dois"
-        21 -> "vinte e um"
-        20 -> "vinte"
-        19 -> "dezenove"
-        18 -> "dezoito"
-        17 -> "dezessete"
-        16 -> "dezesseis"
-        15 -> "quinze"
-        14 -> "catorze"
-        13 -> "treze"
-        12 -> "doze"
-        11 -> "onze"
-        10 -> "dez"
-        0 -> "zero"
-        else -> n.toString()
-    }
-
-    private fun maybeSpeakSecond(msLeft: Long) {
-        val sec = ((if (msLeft < 0) 0 else msLeft) / 1000).toInt()
-        if (sec == lastSpokenSecond) return
-        lastSpokenSecond = sec
-        when (sec) {
-            in 1..10 -> speak(numberInPortuguese(sec))
-        }
-    }
-
     // ====== Timer/Sensores ======
     private fun startTimerAndSensors() {
         startTime = System.currentTimeMillis()
-        remainingMs = DURATION_MS
+        elapsedMs = 0L
         lastSpokenSecond = -1
+        paused = false
         running.set(true)
 
-        startCountDown()
+        startCountUp()
         startSensorCollection()
     }
 
     private fun stopTimerAndSensors() {
         running.set(false)
         sensorManager.unregisterListener(this)
-        countDownJob?.cancel()
+        timerJob?.cancel()
     }
 
     private fun resetTimer() {
@@ -236,32 +216,25 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         lastStandPeakTs = 0L
         sittingLikely = true
         lastSpokenSecond = -1
+        elapsedMs = 0L
+        paused = false
+        timerTextView.text = "00:00"
+        pauseButton.text = "Pausar"
 
         finish()
         startActivity(Intent(this@Timer, FtstsInstruction::class.java))
     }
 
-    private fun startCountDown() {
-        countDownJob = coroutineScope.launch(Dispatchers.Main) {
-            maybeSpeakSecond(remainingMs)
-
-            while (running.get() && remainingMs >= 0) {
-                timerTextView.text = formatTime(remainingMs)
-                timeDisplay = formatTime(remainingMs)
-                maybeSpeakSecond(remainingMs)
+    // ★ novo cronômetro progressivo
+    private fun startCountUp() {
+        timerJob = coroutineScope.launch(Dispatchers.Main) {
+            while (running.get()) {
+                timerTextView.text = formatTime(elapsedMs)
+                timeDisplay = formatTime(elapsedMs)
                 delay(200)
-                remainingMs -= 200
+                elapsedMs += 200
             }
-            if (running.get()) onTimeUp()
         }
-    }
-
-    private fun onTimeUp() {
-        stopTimerAndSensors()
-        timerTextView.text = "00:00"
-        speak("Tempo encerrado")
-        pauseButton.isEnabled = true
-        Toast.makeText(this, "Tempo encerrado! Repetições: $repetitions", Toast.LENGTH_SHORT).show()
     }
 
     @SuppressLint("DefaultLocale")
@@ -387,7 +360,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     private fun postData() {
         val api = RetrofitClient.instancePessoasAPI
 
-        // 🔹 Monta sensorData somando APENAS pontos válidos exigidos pelo backend
+        // 🔹 Monta sensorData com pontos válidos
         val sensorList: List<Map<String, Any>> = result.map { json ->
             mapOf(
                 "timestamp" to json.optString("timestamp", ""),
@@ -400,19 +373,20 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
             )
         }
 
-        // ❗ NÃO adiciona objetos “summary” dentro de sensorData
+        // ★ totalTime agora é o tempo decorrido do 5TSTS
+        val total = timeDisplay.safeTime()
 
         val teste = Teste(
-            type = "FTSTS",
+            type = "FTSTS", // ★ ajustado
             patientId = PacienteManager.uuid.toString(),
             healthProfessionalId = SessionManager.user?.id.toString(),
             healthcareUnitId = intent.getStringExtra("id_unidade"),
             date = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()),
-            totalTime = "00:30",
-            sensorData = sensorList,                     // somente pontos válidos
+            totalTime = total,                    // ★ usa o tempo real
+            sensorData = sensorList,
             time_init = isoUtc(startTime),
             time_end = isoUtc(System.currentTimeMillis())
-            // se o seu DTO tiver campo repetitions, você pode incluí-lo aqui
+            // inclua repetitions no DTO se existir
         )
 
         if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
@@ -420,15 +394,14 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
             call.enqueue(object : retrofit2.Callback<Teste> {
                 override fun onResponse(call: Call<Teste>, response: Response<Teste>) {
                     if (response.isSuccessful) {
-                       speak("Teste enviado com sucesso!")
+                        speak("Teste enviado com sucesso!")
                         val intent = Intent(this@Timer, FtstsInstruction::class.java)
-                        intent.putExtra("time", "00:30")
+                        intent.putExtra("time", total)
                         intent.putExtra("repetitions", repetitions)
                         intent.putExtra("teste", typeTeste)
                         startActivity(intent)
                     } else {
                         speak("Falha ao enviar o teste. Entre em contato com o suporte")
-
                     }
                 }
                 override fun onFailure(call: Call<Teste>, t: Throwable) {
@@ -437,7 +410,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
             })
         } else {
             val intent = Intent(this@Timer, TestResult::class.java)
-            intent.putExtra("time", "00:30")
+            intent.putExtra("time", total)
             intent.putExtra("repetitions", repetitions)
             intent.putExtra("teste", typeTeste)
             startActivity(intent)
@@ -470,8 +443,14 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
 
     override fun onDestroy() {
         super.onDestroy()
-        countDownJob?.cancel()
+        timerJob?.cancel()
         textToSpeech?.stop()
         textToSpeech?.shutdown()
+    }
+
+    // ===== Helpers =====
+    private fun String.safeTime(): String {
+        // garante "MM:SS" mesmo se timeDisplay estiver vazio
+        return if (this.matches(Regex("\\d{2}:\\d{2}"))) this else "00:00"
     }
 }

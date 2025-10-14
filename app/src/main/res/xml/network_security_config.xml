@@ -12,8 +12,7 @@
         <domain includeSubdomains="true">10.0.0.0</domain>
         <domain includeSubdomains="true">172.16.0.0</domain>
 
-        <!-- IP público da API -->
-        <domain includeSubdomains="true">200.236.3.85</domain>
-        <domain includeSubdomains="true">20.201.114.238</domain>
+        <!-- API hostname (TLS) -->
+        <domain includeSubdomains="true">equilibrium.giize.com</domain>
     </domain-config>
 </network-security-config>

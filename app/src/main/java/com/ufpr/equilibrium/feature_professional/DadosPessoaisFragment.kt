@@ -18,6 +18,7 @@ import com.ufpr.equilibrium.MainActivity
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.utils.SessionManager
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 class DadosPessoaisFragment : Fragment() {
@@ -120,13 +121,36 @@ class DadosPessoaisFragment : Fragment() {
 
     private fun validarData(data: String): Boolean {
         return try {
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            sdf.isLenient = false
-            sdf.parse(data) != null
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
+                isLenient = false
+            }
+            val nascimento = sdf.parse(data) ?: return false
+
+            val hoje = Calendar.getInstance()
+            val calNasc = Calendar.getInstance().apply { time = nascimento }
+
+            // 1) Não aceitar data no futuro
+            if (nascimento.after(hoje.time)) return false
+
+            // 2) Não aceitar datas muito antigas (ex.: antes de 01/01/1900)
+            val min = Calendar.getInstance().apply { set(1900, Calendar.JANUARY, 1, 0, 0, 0); set(Calendar.MILLISECOND, 0) }
+            if (nascimento.before(min.time)) return false
+
+            // 3) Não aceitar idades irreais (ex.: > 120 anos)
+            val idade = run {
+                var anos = hoje.get(Calendar.YEAR) - calNasc.get(Calendar.YEAR)
+                // Ajuste se ainda não fez aniversário no ano corrente
+                val antesDoAniversario = hoje.get(Calendar.DAY_OF_YEAR) < calNasc.get(Calendar.DAY_OF_YEAR)
+                if (antesDoAniversario) anos--
+                anos
+            }
+
+            idade in 0..120
         } catch (e: Exception) {
             false
         }
     }
+
 
     private fun mostrarErro(mensagem: String) {
         Toast.makeText(requireContext(), mensagem, Toast.LENGTH_SHORT).show()

@@ -36,13 +36,23 @@ class HomeProfissional : AppCompatActivity() {
 
         tvName = findViewById(R.id.tvGreeting);
 
+        tvName = findViewById(R.id.tvGreeting)
+
         SessionManager.user?.let { user ->
-            tvName.text = user.fullName
+            val firstName = user.fullName
+                .trim()
+                .split(Regex("\\s+"))
+                .firstOrNull()
+                ?.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(java.util.Locale.getDefault()) else it.toString()
+                }
+                ?: "Usuário"
+
+            tvName.text = firstName
 
         } ?: run {
             tvName.text = "Usuário"
         }
-
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 builder.show()

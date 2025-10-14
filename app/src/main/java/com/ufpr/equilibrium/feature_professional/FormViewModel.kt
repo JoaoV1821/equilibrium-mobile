@@ -13,7 +13,7 @@ class FormViewModel : ViewModel() {
     val escolaridade = MutableLiveData<String>()
     val nivelSocio = MutableLiveData<String>()
     val peso = MutableLiveData<Int>()
-    val altura = MutableLiveData<Float>()
+    val altura = MutableLiveData<Int>()
     val historicoQueda = MutableLiveData<Boolean>()
 
     val cep = MutableLiveData<String>()
