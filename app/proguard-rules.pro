@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep Retrofit/Gson models to avoid stripping fields used via reflection
+-keep class com.ufpr.equilibrium.network.** { *; }
+
+# Keep annotations and generic signatures used by Retrofit/Gson
+-keepattributes Signature, *Annotation*

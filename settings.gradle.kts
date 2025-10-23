@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "equilibrium"
 include(":app")
+include(":core-common")
+include(":domain")
+include(":data")

@@ -52,7 +52,7 @@
         android:layout_marginEnd="146dp"
         android:layout_marginBottom="608dp"
         android:fontFamily="@font/league_spartan_medium"
-        android:text="30s CST"
+        android:text="5TSTS"
         android:textColor="#2260FF"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"

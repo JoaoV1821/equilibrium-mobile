@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -15,11 +19,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -43,7 +51,9 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":core-common"))
+    implementation(project(":domain"))
+    implementation(project(":data"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -54,15 +64,41 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.tensorflow.lite) // ou versão compatível
-    implementation(libs.tensorflow.lite.select.tf.ops)
-    implementation(libs.tensorflow.android)
+    // Removed heavy TensorFlow dependencies to reduce APK size
     implementation(libs.androidx.gridlayout)
 
     testImplementation(libs.junit)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+}
+
+detekt {
+    config = files(rootProject.file("config/detekt/detekt.yml"))
+}
+
+ktlint {
+    android.set(true)
+    ignoreFailures.set(false)
+}
+
+kapt {
+    javacOptions {
+        option("-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED")
+        option("-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED")
+        option("-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED")
+        option("-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED")
+        option("-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED")
+        option("-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
+    }
 }
 
 // Task to install and launch the debug build on a connected device

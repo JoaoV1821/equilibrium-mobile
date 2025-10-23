@@ -1,0 +1,11 @@
+build:
+  maxIssues: 9999
+style:
+  WildcardImport:
+    active: false
+  MagicNumber:
+    active: false
+  MaxLineLength:
+    active: false
+
+

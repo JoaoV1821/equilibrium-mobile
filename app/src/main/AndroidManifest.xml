@@ -15,7 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Equilibrium"
+        android:name=".EquilibriumApp"
         tools:targetApi="31">
+
+        
 
         <activity
             android:name=".feature_professional.AtualizarProfissionalActivity"
@@ -62,11 +65,6 @@
             android:theme="@style/Theme.Equilibrium"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".feature_paciente.CadastroActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Equilibrium"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
             android:name=".feature_professional.CadastroProfissional"
             android:exported="false"
             android:theme="@style/Theme.Equilibrium"
@@ -92,9 +90,6 @@
             android:exported="false" />
         <activity
             android:name=".feature_teste.Contagem"
-            android:exported="false" />
-        <activity
-            android:name=".feature_tug.TugInstruction"
             android:exported="false" />
         <activity
             android:name=".feature_ftsts.FtstsInstruction"

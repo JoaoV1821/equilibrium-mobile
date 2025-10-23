@@ -59,7 +59,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
-    private lateinit var classifier: HARClassifier
+
 
     // ======= buffers antigos mantidos (se forem usados pela sua classificação) =======
     private val ax = mutableListOf<Float>()
@@ -130,7 +130,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
         linearAceleration = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
 
-        classifier = HARClassifier(applicationContext)
+
 
         // ★ fluxo do botão:
         //   - enquanto rodando: "Pausar" -> pausa o teste

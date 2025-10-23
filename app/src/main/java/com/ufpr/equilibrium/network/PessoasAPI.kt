@@ -1,8 +1,6 @@
 package com.ufpr.equilibrium.network
 
 import com.ufpr.equilibrium.feature_healthUnit.HealthUnit
-import com.ufpr.equilibrium.feature_login.Login
-import com.ufpr.equilibrium.feature_login.LoginResult
 import com.ufpr.equilibrium.feature_professional.PacienteModel
 import com.ufpr.equilibrium.feature_professional.PacientesEnvelope
 import com.ufpr.equilibrium.feature_professional.ProfessionalModel
@@ -24,10 +22,7 @@ interface PessoasAPI {
         @Query("cpf") cpf: String
     ): Call<Usuario>
 
-    @POST("auth/login")
-    fun authenticate(
-        @Body request: Login
-    ): Call<LoginResult>
+    // legacy login removed; use data module AuthRepositoryImpl
 
     // /patient -> envelope com data + meta (como no seu log)
     @GET("patient")

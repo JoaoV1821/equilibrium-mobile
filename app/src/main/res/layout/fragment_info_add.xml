@@ -76,6 +76,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Nível Socioeconômico -->
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/nivelSocioeconomicoLayout"
                 android:layout_width="match_parent"
