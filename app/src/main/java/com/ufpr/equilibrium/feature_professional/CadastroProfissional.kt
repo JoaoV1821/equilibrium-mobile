@@ -9,12 +9,16 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ufpr.equilibrium.R
-import com.ufpr.equilibrium.network.RetrofitClient
+import com.ufpr.equilibrium.network.PessoasAPI
+import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+@AndroidEntryPoint
 class CadastroProfissional: AppCompatActivity() {
+    @Inject lateinit var pessoasAPI: PessoasAPI
 
     private lateinit var nome: EditText
     private lateinit var cpf: EditText
@@ -49,8 +53,6 @@ class CadastroProfissional: AppCompatActivity() {
 
     private fun postProfessional () {
 
-        val api = RetrofitClient.instancePessoasAPI
-
         val idSelectedSexo = sexo.checkedRadioButtonId
 
         selectedSexo = findViewById(idSelectedSexo)
@@ -66,7 +68,7 @@ class CadastroProfissional: AppCompatActivity() {
             profile = "healthProfessional"
         )
 
-        val call = api.postProfessional(professional)
+        val call = pessoasAPI.postProfessional(professional)
 
         call.enqueue(object : Callback<ProfessionalModel> {
 

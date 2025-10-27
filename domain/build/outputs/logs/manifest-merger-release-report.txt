@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\joaov\OneDrive\Documentos\projetos\tecnoaging\equilibrium-mobile\domain\build\intermediates\tmp\ProcessLibraryManifest\release\tempAndroidManifest12749108719039475731.xml:2:13-83
+INJECTED from C:\Users\joaov\OneDrive\Documentos\projetos\tecnoaging\equilibrium-mobile\domain\build\intermediates\tmp\ProcessLibraryManifest\release\tempAndroidManifest12749108719039475731.xml:2:13-83
+	package
+		INJECTED from C:\Users\joaov\OneDrive\Documentos\projetos\tecnoaging\equilibrium-mobile\domain\build\intermediates\tmp\ProcessLibraryManifest\release\tempAndroidManifest12749108719039475731.xml
+	xmlns:android
+		ADDED from C:\Users\joaov\OneDrive\Documentos\projetos\tecnoaging\equilibrium-mobile\domain\build\intermediates\tmp\ProcessLibraryManifest\release\tempAndroidManifest12749108719039475731.xml:2:23-81
+uses-sdk
+INJECTED from C:\Users\joaov\OneDrive\Documentos\projetos\tecnoaging\equilibrium-mobile\domain\build\intermediates\tmp\ProcessLibraryManifest\release\tempAndroidManifest12749108719039475731.xml reason: use-sdk injection requested
+INJECTED from C:\Users\joaov\OneDrive\Documentos\projetos\tecnoaging\equilibrium-mobile\domain\build\intermediates\tmp\ProcessLibraryManifest\release\tempAndroidManifest12749108719039475731.xml
+INJECTED from C:\Users\joaov\OneDrive\Documentos\projetos\tecnoaging\equilibrium-mobile\domain\build\intermediates\tmp\ProcessLibraryManifest\release\tempAndroidManifest12749108719039475731.xml
+	android:targetSdkVersion
+		INJECTED from C:\Users\joaov\OneDrive\Documentos\projetos\tecnoaging\equilibrium-mobile\domain\build\intermediates\tmp\ProcessLibraryManifest\release\tempAndroidManifest12749108719039475731.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\joaov\OneDrive\Documentos\projetos\tecnoaging\equilibrium-mobile\domain\build\intermediates\tmp\ProcessLibraryManifest\release\tempAndroidManifest12749108719039475731.xml

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:text="Etapa 3 de 3"
         android:textColor="#2260FF"
-        android:textSize="20sp"
+        android:textSize="@dimen/font_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,10 +28,10 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="@dimen/space_20"
         android:text="Endereço Residencial"
         android:textColor="#2260FF"
-        android:textSize="30sp"
+        android:textSize="@dimen/font_display"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/textView"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,8 +54,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:layout_marginTop="50dp"
-            android:padding="16dp">
+            android:layout_marginTop="@dimen/space_32"
+            android:padding="@dimen/space_16">
 
             <!-- CEP -->
             <EditText
@@ -88,7 +88,7 @@
                 />
 
             <!-- Rua -->
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/rua"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                 />
 
             <!-- Bairro -->
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/bairro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
                 />
 
             <!-- Cidade -->
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/cidade"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                 />
 
             <!-- Estado -->
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/estado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

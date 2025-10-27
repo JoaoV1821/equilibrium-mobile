@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_paciente.PacienteAdapter
-import com.ufpr.equilibrium.network.RetrofitClient
+import com.ufpr.equilibrium.network.PessoasAPI
+import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 import com.ufpr.equilibrium.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
@@ -62,7 +64,9 @@ data class PacienteModelList(
 
 // ---------------------------------------------------
 
+@AndroidEntryPoint
 class ListagemPacientes : AppCompatActivity() {
+    @Inject lateinit var pessoasAPI: PessoasAPI
     private lateinit var recyclerView: RecyclerView
     private lateinit var pacienteAdapter: PacienteAdapter
     private val pacientes = mutableListOf<Paciente>()
@@ -104,8 +108,7 @@ class ListagemPacientes : AppCompatActivity() {
     }
 
     private fun getPacientes() {
-        val api = RetrofitClient.instancePessoasAPI
-        val call = api.getPacientes("Bearer ${SessionManager.token}")
+        val call = pessoasAPI.getPacientes()
 
         call.enqueue(object : Callback<PacientesEnvelope> {
             override fun onResponse(

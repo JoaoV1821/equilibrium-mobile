@@ -1,6 +1,6 @@
 package com.ufpr.equilibrium.domain.model
 
-data class UserSession(
+data class UserSession (
     val token: String,
     val id: String?,
     val cpf: String?,

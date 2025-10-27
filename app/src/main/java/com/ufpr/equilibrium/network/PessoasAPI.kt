@@ -27,7 +27,6 @@ interface PessoasAPI {
     // /patient -> envelope com data + meta (como no seu log)
     @GET("patient")
     fun getPacientes(
-        @Header("Authorization") token: String,
         // opcional: suporte a paginação do backend
         @Query("page") page: Int? = null,
         @Query("pageSize") pageSize: Int? = null
@@ -36,8 +35,7 @@ interface PessoasAPI {
     // /patient aceita o JSON plano do PacienteModel (sem "user")
     @POST("patient")
     fun postPatient(
-        @Body request: PacienteModel,
-        @Header("Authorization") token: String
+        @Body request: PacienteModel
     ): Call<PacienteModel>
 
     @POST("evaluation")
@@ -54,7 +52,5 @@ interface PessoasAPI {
 
     // /health-unit: confira se retorna lista “plana” mesmo.
     @GET("health-unit")
-    fun getHealthUnit(
-        @Header("Authorization") token: String
-    ): Call<List<HealthUnit>>
+    fun getHealthUnit(): Call<List<HealthUnit>>
 }

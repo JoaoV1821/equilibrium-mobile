@@ -1,0 +1,1 @@
+com.ufpr.equilibrium.domain

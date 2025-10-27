@@ -28,10 +28,12 @@
         android:layout_marginTop="36dp"
         android:backgroundTint="#2260FF"
         android:text="Pausar"
-        app:layout_constraintEnd_toEndOf="@+id/timerTextView"
-        app:layout_constraintHorizontal_bias="0.92"
-        app:layout_constraintStart_toStartOf="@+id/timerTextView"
-        app:layout_constraintTop_toBottomOf="@+id/timerTextView" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.762"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timerTextView"
+        app:layout_constraintVertical_bias="0.034" />
 
     <ImageView
         android:id="@+id/refresh"
@@ -39,38 +41,40 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pauseButton"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timerTextView"
+        app:layout_constraintVertical_bias="0.034"
         app:srcCompat="@drawable/img" />
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="118dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="168dp"
-        android:layout_marginTop="83dp"
-        android:layout_marginEnd="146dp"
-        android:layout_marginBottom="608dp"
+        android:layout_width="97dp"
+        android:layout_height="35dp"
         android:fontFamily="@font/league_spartan_medium"
         android:text="5TSTS"
         android:textColor="#2260FF"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.541"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.129" />
 
     <ImageView
         android:id="@+id/arrow_back"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="23dp"
+        android:layout_height="16dp"
         android:layout_marginStart="67dp"
         android:layout_marginTop="91dp"
-        android:layout_marginEnd="319dp"
-        android:layout_marginBottom="615dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.021"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.012"
         app:srcCompat="@drawable/arrow" />
 </androidx.constraintlayout.widget.ConstraintLayout>

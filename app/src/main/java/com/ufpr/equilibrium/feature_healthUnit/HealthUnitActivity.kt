@@ -8,13 +8,17 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.ufpr.equilibrium.feature_teste.Contagem
 import com.ufpr.equilibrium.R
-import com.ufpr.equilibrium.network.RetrofitClient
+import com.ufpr.equilibrium.network.PessoasAPI
 import com.ufpr.equilibrium.utils.SessionManager
+import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+@AndroidEntryPoint
 class HealthUnitActivity : AppCompatActivity() {
+    @Inject lateinit var pessoasAPI: PessoasAPI
 
     private lateinit var spinner: Spinner
     private lateinit var btnConfirmar: Button
@@ -59,7 +63,7 @@ class HealthUnitActivity : AppCompatActivity() {
     }
 
     private fun handlerHealthUnits() {
-        val call = RetrofitClient.instancePessoasAPI.getHealthUnit("Bearer " + SessionManager.token)
+        val call = pessoasAPI.getHealthUnit()
 
         call.enqueue(object : Callback<List<HealthUnit>> {
             override fun onResponse(

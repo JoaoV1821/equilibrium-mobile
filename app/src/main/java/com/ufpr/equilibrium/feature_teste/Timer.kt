@@ -20,6 +20,7 @@ import com.ufpr.equilibrium.network.RetrofitClient
 import com.ufpr.equilibrium.network.Teste
 import com.ufpr.equilibrium.utils.PacienteManager
 import com.ufpr.equilibrium.utils.SessionManager
+import com.ufpr.equilibrium.utils.RoleHelpers
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import retrofit2.Call
@@ -147,7 +148,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
                 pauseButton.text = "Enviar"
             } else {
                 // ENVIAR
-                if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
+                if (RoleHelpers.isHealthProfessional()) {
                     postData()
                 } else {
                     val intent = Intent(this@Timer, FtstsInstruction::class.java)
@@ -389,7 +390,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
             // inclua repetitions no DTO se existir
         )
 
-        if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
+        if (RoleHelpers.isHealthProfessional()) {
             val call = api.postTestes(teste, "Bearer ${SessionManager.token}")
             call.enqueue(object : retrofit2.Callback<Teste> {
                 override fun onResponse(call: Call<Teste>, response: Response<Teste>) {

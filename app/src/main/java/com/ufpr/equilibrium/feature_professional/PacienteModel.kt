@@ -4,7 +4,7 @@ data class PacienteModel(
     val user: User,
     val birthday: String,
     val weight: Int,
-    val height: Float,
+    val height: Int?,
     val zipCode: String,
     val street: String,
     val number: String,

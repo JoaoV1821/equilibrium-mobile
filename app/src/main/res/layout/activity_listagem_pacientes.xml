@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".feature_professional.HomeProfissional">
 
     <!-- Botão voltar -->
@@ -16,10 +17,10 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="@dimen/space_24"
         android:text="Pacientes"
         android:textColor="#2260FF"
-        android:textSize="34sp"
+        android:textSize="@dimen/font_display"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.453"
@@ -30,11 +31,11 @@
         android:id="@+id/searchLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/container_padding"
+        android:layout_marginTop="@dimen/space_16"
+        android:layout_marginEnd="@dimen/container_padding"
+        android:layout_marginBottom="@dimen/space_8"
         app:boxBackgroundColor="#F5F5F5"
         app:boxBackgroundMode="outline"
         app:boxCornerRadiusBottomEnd="16dp"
@@ -58,11 +59,11 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:hint="Digite um CPF"
-            android:paddingStart="16dp"
+            android:paddingStart="@dimen/space_16"
             android:paddingEnd="48dp"
-            android:paddingTop="10dp"
+            android:paddingTop="@dimen/space_8"
             android:textColorHint="#888888"
-            android:textSize="16sp" />
+            android:textSize="@dimen/font_body" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Lista de Pacientes -->
@@ -70,8 +71,10 @@
         android:id="@+id/rv_pacientes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:padding="16dp"
+        android:layout_marginTop="@dimen/space_8"
+        android:padding="@dimen/space_16"
+        android:paddingBottom="@dimen/space_16"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

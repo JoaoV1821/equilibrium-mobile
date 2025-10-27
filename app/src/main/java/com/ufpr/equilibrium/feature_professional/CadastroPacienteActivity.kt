@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.viewpager2.widget.ViewPager2
 import com.ufpr.equilibrium.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CadastroPacienteActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

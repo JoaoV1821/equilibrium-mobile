@@ -13,6 +13,7 @@ import com.ufpr.equilibrium.feature_professional.CadastroPacienteActivity
 import com.ufpr.equilibrium.feature_professional.CadastroProfissional
 import com.ufpr.equilibrium.feature_professional.HomeProfissional
 import com.ufpr.equilibrium.utils.SessionManager
+import com.ufpr.equilibrium.utils.RoleHelpers
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,14 +28,11 @@ class MainActivity : AppCompatActivity() {
         SessionManager.init(this)
 
         if (SessionManager.isLoggedIn()) {
-
-            if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
+            if (RoleHelpers.isHealthProfessional()) {
                 startActivity(Intent(this@MainActivity, HomeProfissional::class.java))
-
-            } else if (SessionManager.user?.role == "PATIENT") {
+            } else if (RoleHelpers.isPatient()) {
                 startActivity(Intent(this@MainActivity, HomePaciente::class.java))
             }
-
         }
 
         val btnLogin = findViewById<Button>(R.id.profissional)

@@ -14,6 +14,7 @@ import com.ufpr.equilibrium.feature_professional.HomeProfissional
 import com.ufpr.equilibrium.feature_professional.ListagemPacientes
 import com.ufpr.equilibrium.feature_teste.Contagem
 import com.ufpr.equilibrium.utils.SessionManager
+import com.ufpr.equilibrium.utils.RoleHelpers
 
 class FtstsInstruction : AppCompatActivity() {
 
@@ -29,7 +30,7 @@ class FtstsInstruction : AppCompatActivity() {
             
             override fun handleOnBackPressed() {
 
-                if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
+                if (RoleHelpers.isHealthProfessional()) {
                     intent = Intent(this@FtstsInstruction, ListagemPacientes::class.java)
 
                     startActivity(intent);
@@ -45,7 +46,7 @@ class FtstsInstruction : AppCompatActivity() {
 
         arrowBtn.setOnClickListener {
 
-            if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
+            if (RoleHelpers.isHealthProfessional()) {
                 intent = Intent(this@FtstsInstruction, HomeProfissional::class.java)
 
                 startActivity(intent);
@@ -60,7 +61,7 @@ class FtstsInstruction : AppCompatActivity() {
 
         ftsts.setOnClickListener {
 
-           val intent = if (SessionManager.user?.role == "HEALTH_PROFESSIONAL") {
+           val intent = if (RoleHelpers.isHealthProfessional()) {
 
                val cpf = Intent().getStringExtra("cpf")
                intent.putExtra("cpf",cpf)

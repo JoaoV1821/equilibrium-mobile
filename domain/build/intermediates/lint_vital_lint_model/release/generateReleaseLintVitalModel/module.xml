@@ -1,0 +1,19 @@
+<lint-module
+    format="1"
+    dir="C:\Users\joaov\OneDrive\Documentos\projetos\tecnoaging\equilibrium-mobile\domain"
+    name=":domain"
+    type="LIBRARY"
+    maven="equilibrium:domain:unspecified"
+    agpVersion="8.6.0"
+    buildFolder="build"
+    bootClassPath="C:\Users\joaov\AppData\Local\Android\Sdk\platforms\android-35\android.jar;C:\Users\joaov\AppData\Local\Android\Sdk\build-tools\34.0.0\core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-35"
+    neverShrinking="true">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>

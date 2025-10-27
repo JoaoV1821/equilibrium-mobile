@@ -11,8 +11,8 @@
         android:id="@+id/row2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="@dimen/container_padding"
+        android:layout_marginTop="@dimen/space_8"
         android:orientation="horizontal"
         android:weightSum="2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,10 +32,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/space_16">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -69,10 +69,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/space_16">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -101,13 +101,13 @@
         android:id="@+id/tvGreeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"
-        android:layout_marginTop="28dp"
+        android:layout_margin="@dimen/space_24"
+        android:layout_marginTop="@dimen/space_24"
         android:text="Fulano"
         android:textColor="#2260FF"
-        android:textSize="46sp"
+        android:textSize="@dimen/font_display"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.042"
         app:layout_constraintStart_toEndOf="@+id/tvName"
@@ -118,12 +118,12 @@
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"
+        android:layout_margin="@dimen/space_24"
         android:text="Olá"
         android:textColor="#2260FF"
-        android:textSize="46sp"
+        android:textSize="@dimen/font_display"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.046"
         app:layout_constraintStart_toStartOf="parent"
@@ -134,8 +134,8 @@
         android:id="@+id/cardTotal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_margin="@dimen/space_16"
+        android:layout_marginTop="@dimen/space_16"
         app:cardCornerRadius="12dp"
         app:cardElevation="6dp"
         app:cardUseCompatPadding="true"
@@ -148,7 +148,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/space_16">
 
             <TextView
                 android:layout_width="match_parent"
@@ -156,16 +156,16 @@
                 android:fontFamily="@font/league_spartan_medium"
                 android:text="Total Testes Realizados"
                 android:textColor="#2260FF"
-                android:textSize="20sp" />
+                android:textSize="@dimen/font_title" />
 
             <TextView
                 android:id="@+id/tvTotalTestes"
-                android:layout_width="42dp"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:text="10"
                 android:textColor="@android:color/black"
-                android:textSize="30sp"
+                android:textSize="@dimen/font_headline"
                 android:textStyle="bold" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -174,8 +174,8 @@
         android:id="@+id/row1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="@dimen/container_padding"
+        android:layout_marginTop="@dimen/space_8"
         android:orientation="horizontal"
         android:weightSum="2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -195,10 +195,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="@dimen/space_12"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/space_16">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -224,7 +224,7 @@
         <!-- Card: Data Último Teste -->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="200sp"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="1"
             app:cardCornerRadius="12dp"
@@ -236,7 +236,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/space_16">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -249,8 +249,8 @@
 
                 <TextView
                     android:id="@+id/tvDataUltimo"
-                    android:layout_width="92dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="12/12"
                     android:textColor="@android:color/black"
@@ -263,7 +263,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="@dimen/button_height"
         android:background="@color/blue"
         app:itemIconSize="28dp"
         app:itemIconTint="@color/white"

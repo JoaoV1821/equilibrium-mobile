@@ -3,6 +3,9 @@ package com.ufpr.equilibrium.feature_professional
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,17 +18,25 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_login.LoginActivity
-import com.ufpr.equilibrium.network.RetrofitClient
+import com.ufpr.equilibrium.network.PessoasAPI
+import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 import com.ufpr.equilibrium.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.TimeZone
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONObject
+import android.widget.ArrayAdapter
 
 
+@AndroidEntryPoint
 class EnderecoFragment : Fragment() {
+
+    @Inject lateinit var pessoasAPI: PessoasAPI
 
     private lateinit var cep: EditText
     private lateinit var numero: EditText
@@ -34,6 +45,13 @@ class EnderecoFragment : Fragment() {
     private lateinit var bairro : EditText
     private lateinit var cidade: EditText
     private lateinit var uf: EditText
+
+    private lateinit var ruaAdapter: ArrayAdapter<String>
+    private lateinit var bairroAdapter: ArrayAdapter<String>
+    private lateinit var cidadeAdapter: ArrayAdapter<String>
+    private lateinit var ufAdapter: ArrayAdapter<String>
+
+    // Places removido
 
     override fun onCreateView (
 
@@ -62,7 +80,32 @@ class EnderecoFragment : Fragment() {
         cidade = view.findViewById(R.id.cidade)
         uf = view.findViewById(R.id.estado)
 
+        // Setup adapters for AutoCompleteTextViews
+        ruaAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
+        bairroAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
+        cidadeAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
+        ufAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
+
+        (rua as? android.widget.AutoCompleteTextView)?.setAdapter(ruaAdapter)
+        (bairro as? android.widget.AutoCompleteTextView)?.setAdapter(bairroAdapter)
+        (cidade as? android.widget.AutoCompleteTextView)?.setAdapter(cidadeAdapter)
+        (uf as? android.widget.AutoCompleteTextView)?.setAdapter(ufAdapter)
+
         val viewModel = ViewModelProvider(requireActivity()).get(FormViewModel::class.java)
+
+        // Sem Google Places: apenas ViaCEP
+
+        // Busca CEP automático quando completar 8 dígitos
+        cep.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val digits = s?.toString()?.replace(Regex("[^\\d]"), "") ?: ""
+                if (digits.length == 8) fetchAddressByCep(digits)
+            }
+        })
+
+        // Sem Google Places: sugestões apenas do ViaCEP
 
         btnVoltar.setOnClickListener {
             val viewPager = activity?.findViewById<ViewPager2>(R.id.viewPager)
@@ -93,12 +136,12 @@ class EnderecoFragment : Fragment() {
 
                     val sdfInput = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-                    val sdfOutput =
-                        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                    sdfOutput.timeZone = TimeZone.getTimeZone("UTC")
+                    val sdfOutput = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
                     val date = sdfInput.parse(viewModel.dataNasc.value ?: "")
-                    val birthdayIso = date?.let { sdfOutput.format(it) } ?: ""
+                    val birthdayOnly = date?.let { sdfOutput.format(it) } ?: ""
+                    
+                    val zipDigitsOnly = viewModel.cep.value.toString().replace(Regex("[^\\d]"), "")
 
                     val user = User (
 
@@ -108,16 +151,16 @@ class EnderecoFragment : Fragment() {
 
                     val paciente = PacienteModel (
 
-                        birthday = birthdayIso,
+                        birthday = birthdayOnly,
                         weight = viewModel.peso.value.toString().toInt(),
-                        height = viewModel.altura.value.toString().toFloat(),
-                        zipCode = viewModel.cep.value.toString(),
+                        height =  viewModel.altura.value ,
+                        zipCode = zipDigitsOnly,
                         street = viewModel.rua.value.toString(),
                         number = viewModel.numero.value.toString(),
                         complement = viewModel.complemento.value.toString(),
                         neighborhood = viewModel.bairro.value.toString(),
                         city = viewModel.cidade.value.toString(),
-                        state = viewModel.estado.value.toString(),
+                        state = viewModel.uf.value.toString(),
                         socio_economic_level = viewModel.nivelSocio.value.toString(),
                         scholarship = viewModel.escolaridade.value.toString(),
                         user = user
@@ -126,9 +169,7 @@ class EnderecoFragment : Fragment() {
 
                     println(paciente)
 
-                    val api = RetrofitClient.instancePessoasAPI
-
-                    api.postPatient(paciente, "Bearer " + SessionManager.token).enqueue(object : Callback<PacienteModel> {
+                    pessoasAPI.postPatient(paciente).enqueue(object : Callback<PacienteModel> {
                         override fun onResponse(call: Call<PacienteModel>, response: Response<PacienteModel>) {
 
                             if (response.isSuccessful) {
@@ -160,6 +201,8 @@ class EnderecoFragment : Fragment() {
                                     .setMessage("Erro ao enviar paciente: ${response.code()}")
                                     .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
                                     .show()
+
+                                    Log.e("postPatient", response.errorBody()?.string().orEmpty())
                             }
                         }
 
@@ -171,4 +214,51 @@ class EnderecoFragment : Fragment() {
             }
         }
     }
+
+    private fun fetchAddressByCep(cep: String) {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url("https://viacep.com.br/ws/$cep/json/")
+            .build()
+
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: java.io.IOException) {
+                Log.e("ViaCEP", "Falha ao buscar CEP", e)
+            }
+
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                response.use {
+                    if (!it.isSuccessful) return
+                    val body = it.body?.string() ?: return
+                    val json = JSONObject(body)
+                    if (json.optBoolean("erro", false)) return
+                    val logradouro = json.optString("logradouro")
+                    val bairroValue = json.optString("bairro")
+                    val localidade = json.optString("localidade")
+                    val ufValue = json.optString("uf")
+
+                    requireActivity().runOnUiThread {
+                        // Update text
+                        if (logradouro.isNotBlank()) rua.setText(logradouro)
+                        if (bairroValue.isNotBlank()) bairro.setText(bairroValue)
+                        if (localidade.isNotBlank()) cidade.setText(localidade)
+                        if (ufValue.isNotBlank()) uf.setText(ufValue)
+
+                        // Update adapters with suggestions and show dropdowns
+                        ruaAdapter.clear(); if (logradouro.isNotBlank()) ruaAdapter.add(logradouro)
+                        bairroAdapter.clear(); if (bairroValue.isNotBlank()) bairroAdapter.add(bairroValue)
+                        cidadeAdapter.clear(); if (localidade.isNotBlank()) cidadeAdapter.add(localidade)
+                        ufAdapter.clear(); if (ufValue.isNotBlank()) ufAdapter.add(ufValue)
+
+                        (rua as? android.widget.AutoCompleteTextView)?.showDropDown()
+                        (bairro as? android.widget.AutoCompleteTextView)?.showDropDown()
+                        (cidade as? android.widget.AutoCompleteTextView)?.showDropDown()
+                        (uf as? android.widget.AutoCompleteTextView)?.showDropDown()
+                    }
+                }
+            }
+        })
+    }
+
+    // Sem Google Places
 }

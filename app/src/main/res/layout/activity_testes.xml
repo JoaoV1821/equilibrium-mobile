@@ -7,32 +7,32 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/container_padding">
 
     <!-- 5STS Card -->
 
     <FrameLayout
         android:id="@+id/ftsts"
-        android:layout_width="338dp"
-        android:layout_height="287dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="284dp"
-        android:layout_marginEnd="25dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/space_24"
         android:background="@drawable/ftsts"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textView2"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintWidth_percent="0.9" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="@dimen/space_24"
         android:fontFamily="@font/league_spartan_medium"
         android:text="Testes"
         android:textColor="#2260FF"
-        android:textSize="45sp"
+        android:textSize="@dimen/font_display"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,9 +40,9 @@
 
     <ImageView
         android:id="@+id/arrow_button"
-        android:layout_width="15dp"
-        android:layout_height="19dp"
-        android:layout_marginTop="76dp"
+        android:layout_width="@dimen/icon_touch"
+        android:layout_height="@dimen/icon_touch"
+        android:layout_marginTop="@dimen/space_24"
         app:layout_constraintEnd_toStartOf="@+id/textView2"
         app:layout_constraintHorizontal_bias="0.393"
         app:layout_constraintStart_toStartOf="parent"

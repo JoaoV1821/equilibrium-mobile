@@ -12,6 +12,8 @@ import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_paciente.HomePaciente
 import com.ufpr.equilibrium.feature_professional.HomeProfissional
 import com.ufpr.equilibrium.utils.SessionManager
+import com.ufpr.equilibrium.domain.risk.RiskClassifier
+import com.ufpr.equilibrium.domain.risk.RiskLevel
 
 
 class TestResult : AppCompatActivity() {
@@ -53,17 +55,11 @@ class TestResult : AppCompatActivity() {
             val seconds = parts[1].toInt()
             val timeInSeconds = minutes * 60 + seconds
 
-            result = when {
-
-                type == "TUG" && timeInSeconds in 10..20 -> "Baixo risco de queda"
-                type == "TUG" && timeInSeconds in 21..29 -> "Risco Moderado de queda"
-                type == "TUG" && timeInSeconds >= 30 -> "Alto risco de quedas"
-
-                type == "FTSTS" && timeInSeconds in 1..11 -> "Baixo risco de queda"
-                type == "FTSTS" && timeInSeconds in 12..15 -> "Risco Moderado de queda"
-                type == "FTSTS" && timeInSeconds >= 16 -> "Alto risco de quedas"
-
-                else -> "Resultado não classificado"
+            result = when (RiskClassifier.classify(type, timeInSeconds)) {
+                RiskLevel.LOW -> "Baixo risco de queda"
+                RiskLevel.MODERATE -> "Risco Moderado de queda"
+                RiskLevel.HIGH -> "Alto risco de quedas"
+                RiskLevel.UNKNOWN -> "Resultado não classificado"
             }
 
             textResult.text = result
