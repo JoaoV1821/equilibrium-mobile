@@ -12,7 +12,9 @@ object  RetrofitClient {
     }
 
     private val client = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor())
         .addInterceptor(logging)
+        .addInterceptor(UnauthorizedInterceptor())
         .build()
 
     val instancePessoasAPI: PessoasAPI by lazy {

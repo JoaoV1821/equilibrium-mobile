@@ -4,9 +4,10 @@ package com.ufpr.equilibrium.data.network;
 import com.ufpr.equilibrium.domain.auth.TokenProvider;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
+import dagger.internal.Providers;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
-import javax.inject.Provider;
 
 @ScopeMetadata
 @QualifierMetadata
@@ -16,7 +17,9 @@ import javax.inject.Provider;
     "rawtypes",
     "KotlinInternal",
     "KotlinInternalInJava",
-    "cast"
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class AuthInterceptor_Factory implements Factory<AuthInterceptor> {
   private final Provider<TokenProvider> tokenProvider;
@@ -28,6 +31,10 @@ public final class AuthInterceptor_Factory implements Factory<AuthInterceptor> {
   @Override
   public AuthInterceptor get() {
     return newInstance(tokenProvider.get());
+  }
+
+  public static AuthInterceptor_Factory create(javax.inject.Provider<TokenProvider> tokenProvider) {
+    return new AuthInterceptor_Factory(Providers.asDaggerProvider(tokenProvider));
   }
 
   public static AuthInterceptor_Factory create(Provider<TokenProvider> tokenProvider) {

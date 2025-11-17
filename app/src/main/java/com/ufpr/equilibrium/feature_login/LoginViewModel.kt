@@ -26,10 +26,10 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
     val uiState: StateFlow<LoginUiState> = _uiState
 
-    fun login(username: String, password: String) {
+    fun login(cpf: String, password: String) {
         _uiState.value = LoginUiState.Loading
         viewModelScope.launch {
-            when (val result = loginUseCase(username, password)) {
+            when (val result = loginUseCase(cpf, password)) {
                 is Result.Success -> _uiState.value = LoginUiState.Success(result.value)
                 is Result.Error -> _uiState.value = LoginUiState.Error(result.cause.message ?: "Erro desconhecido")
             }

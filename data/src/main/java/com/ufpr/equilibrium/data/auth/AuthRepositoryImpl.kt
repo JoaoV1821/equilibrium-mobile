@@ -13,9 +13,9 @@ class AuthRepositoryImpl @Inject constructor(
     private val service: PessoasService
 ) : AuthRepository {
 
-    override suspend fun login(username: String, password: String): Result<UserSession> {
+    override suspend fun login(cpf: String, password: String): Result<UserSession> {
         return try {
-            val result = service.login(LoginRequestDto(username, password))
+            val result = service.login(LoginRequestDto(cpf, password))
             val token = result.access_token
             val payload = decodeJwtPayload(token)
 

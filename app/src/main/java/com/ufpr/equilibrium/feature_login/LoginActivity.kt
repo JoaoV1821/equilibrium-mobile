@@ -83,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
                     is LoginUiState.Loading -> { /* show loading if needed */ }
                     is LoginUiState.Error -> {
                         errorBar.visibility = View.VISIBLE
-                        Toast.makeText(applicationContext, state.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, getString(R.string.login_error_generic), Toast.LENGTH_SHORT).show()
                     }
                     is LoginUiState.Success -> {
                         errorBar.visibility = View.GONE

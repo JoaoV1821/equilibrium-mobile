@@ -19,6 +19,7 @@ import com.google.android.material.button.MaterialButton
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_login.LoginActivity
 import com.ufpr.equilibrium.network.PessoasAPI
+import com.ufpr.equilibrium.utils.ErrorMessages
 import javax.inject.Inject
 import dagger.hilt.android.AndroidEntryPoint
 import com.ufpr.equilibrium.utils.SessionManager
@@ -196,19 +197,19 @@ class EnderecoFragment : Fragment() {
                                     .show()
 
                             } else {
+                                val message = ErrorMessages.forHttpStatus(requireContext(), response.code())
                                 AlertDialog.Builder(requireContext())
                                     .setTitle("Erro")
-                                    .setMessage("Erro ao enviar paciente: ${response.code()}")
+                                    .setMessage(message)
                                     .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
                                     .show()
-
-                                    Log.e("postPatient", response.errorBody()?.string().orEmpty())
+                                Log.e("postPatient", response.errorBody()?.string().orEmpty())
                             }
                         }
 
-                        override fun onFailure(call: Call<PacienteModel>, t: Throwable) {
-                            Toast.makeText(requireContext(), "Falha na requisição: ${t.message}", Toast.LENGTH_SHORT).show()
-                        }
+                    override fun onFailure(call: Call<PacienteModel>, t: Throwable) {
+                        Toast.makeText(requireContext(), getString(R.string.error_network), Toast.LENGTH_SHORT).show()
+                    }
                    })
                 }
             }

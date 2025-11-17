@@ -5,9 +5,10 @@ import com.ufpr.equilibrium.data.remote.PessoasService;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
+import dagger.internal.Providers;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
-import javax.inject.Provider;
 import retrofit2.Retrofit;
 
 @ScopeMetadata("javax.inject.Singleton")
@@ -18,7 +19,9 @@ import retrofit2.Retrofit;
     "rawtypes",
     "KotlinInternal",
     "KotlinInternalInJava",
-    "cast"
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class NetworkModule_ProvidePessoasServiceFactory implements Factory<PessoasService> {
   private final Provider<Retrofit> retrofitProvider;
@@ -30,6 +33,11 @@ public final class NetworkModule_ProvidePessoasServiceFactory implements Factory
   @Override
   public PessoasService get() {
     return providePessoasService(retrofitProvider.get());
+  }
+
+  public static NetworkModule_ProvidePessoasServiceFactory create(
+      javax.inject.Provider<Retrofit> retrofitProvider) {
+    return new NetworkModule_ProvidePessoasServiceFactory(Providers.asDaggerProvider(retrofitProvider));
   }
 
   public static NetworkModule_ProvidePessoasServiceFactory create(

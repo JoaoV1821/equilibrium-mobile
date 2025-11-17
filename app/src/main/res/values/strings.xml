@@ -41,4 +41,26 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     
+    <!-- Friendly error/success messages -->
+    <string name="error_generic">Algo deu errado. Tente novamente.</string>
+    <string name="error_network">Falha de conexão. Verifique sua internet e tente novamente.</string>
+    <string name="error_server">Houve um problema no servidor. Tente novamente mais tarde.</string>
+    <string name="error_bad_request">Verifique os dados informados e tente novamente.</string>
+    <string name="error_unauthorized">Sessão expirada ou credenciais inválidas. Faça login novamente.</string>
+    <string name="error_forbidden">Você não tem permissão para realizar esta ação.</string>
+    <string name="error_not_found">Recurso não encontrado.</string>
+    <string name="error_conflict">Conflito de informações. Verifique e tente novamente.</string>
+    <string name="error_unprocessable">Há informações inválidas. Revise os campos e tente novamente.</string>
+    <string name="error_too_many_requests">Muitas tentativas. Aguarde um pouco e tente novamente.</string>
+    <string name="error_unknown">Ocorreu um erro inesperado. Tente novamente.</string>
+    <string name="login_error_generic">Não foi possível fazer login. Verifique os dados e tente novamente.</string>
+    <string name="error_patient_submit_generic">Não foi possível cadastrar o paciente. Tente novamente.</string>
+    <string name="error_load_health_units">Não foi possível carregar as unidades. Tente novamente.</string>
+    <string name="error_select_health_unit">Selecione uma unidade de saúde.</string>
+    <string name="error_send_test">Não foi possível enviar o teste. Tente novamente.</string>
+    
+    <string name="success_login">Login realizado com sucesso!</string>
+    <string name="success_test_sent">Teste enviado com sucesso!</string>
+    <string name="success_professional_created">Profissional cadastrado com sucesso!</string>
+    
 </resources>

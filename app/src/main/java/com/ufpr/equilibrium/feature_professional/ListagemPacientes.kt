@@ -70,6 +70,15 @@ class ListagemPacientes : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var pacienteAdapter: PacienteAdapter
     private val pacientes = mutableListOf<Paciente>()
+    
+    // Variáveis de controle de paginação
+    private var currentPage = 1
+    private var isLoading = false
+    private var hasMorePages = true
+    private val pageSize = 20 // Tamanho da página
+    private var currentFilter = "" // Rastreia o filtro atual para preservá-lo durante paginação
+    private var isSearching = false // Indica se está em modo de busca
+    private var searchCall: Call<PacientesEnvelope>? = null // Call da busca para poder cancelar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +90,11 @@ class ListagemPacientes : AppCompatActivity() {
         pacienteAdapter = PacienteAdapter(this, pacientes)
         recyclerView.adapter = pacienteAdapter
 
-        getPacientes()
+        // Adiciona scroll listener para paginação
+        setupScrollListener()
+
+        // Carrega a primeira página
+        getPacientes(1, isFirstLoad = true)
 
         val builder = AlertDialog.Builder(this)
         builder.setPositiveButton("Sim") { _, _ ->
@@ -93,7 +106,27 @@ class ListagemPacientes : AppCompatActivity() {
         val searchInput = findViewById<TextInputEditText>(R.id.searchInput)
         searchInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                pacienteAdapter.filtrarPorCpf(s.toString())
+                val filterText = s.toString()
+                currentFilter = filterText
+                
+                // Primeiro tenta filtrar localmente
+                pacienteAdapter.filtrarPorCpf(filterText)
+                
+                // Se o filtro tem 11 dígitos (CPF completo) e não encontrou localmente, busca no servidor
+                val cpfDigits = filterText.filter { it.isDigit() }
+                if (cpfDigits.length == 11) {
+                    // Verifica se o CPF completo está na lista local (correspondência exata)
+                    val foundLocally = pacientes.any { 
+                        it.cpf.filter { char -> char.isDigit() } == cpfDigits 
+                    }
+                    if (!foundLocally && !isSearching) {
+                        searchPacienteByCpf(cpfDigits)
+                    }
+                } else {
+                    // Cancela busca anterior se o CPF não está completo
+                    searchCall?.cancel()
+                    isSearching = false
+                }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -107,23 +140,126 @@ class ListagemPacientes : AppCompatActivity() {
         })
     }
 
-    private fun getPacientes() {
-        val call = pessoasAPI.getPacientes()
+    private fun setupScrollListener() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+                if (layoutManager != null) {
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                    
+                    // Carrega mais itens quando está próximo do final (últimos 5 itens)
+                    if (!isLoading && hasMorePages) {
+                        if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 5
+                            && firstVisibleItemPosition >= 0) {
+                            loadNextPage()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun loadNextPage() {
+        if (!isLoading && hasMorePages) {
+            currentPage++
+            getPacientes(currentPage, isFirstLoad = false)
+        }
+    }
+
+    private fun searchPacienteByCpf(cpf: String) {
+        // Cancela busca anterior se houver
+        searchCall?.cancel()
+        isSearching = true
+        
+        searchCall = pessoasAPI.getPacientes(cpf = cpf, page = 1, pageSize = 1)
+        
+        searchCall?.enqueue(object : Callback<PacientesEnvelope> {
+            override fun onResponse(
+                call: Call<PacientesEnvelope>,
+                response: Response<PacientesEnvelope>
+            ) {
+                isSearching = false
+                
+                if (response.isSuccessful) {
+                    val envelope = response.body()
+                    val listaApi = envelope?.data.orEmpty()
+                    val lista = listaApi.map { it.toDomain() }
+                    
+                    if (lista.isNotEmpty()) {
+                        // Adiciona o paciente encontrado à lista se ainda não estiver
+                        val pacienteEncontrado = lista.first()
+                        val jaExiste = pacientes.any { it.cpf.filter { it.isDigit() } == cpf }
+                        
+                        if (!jaExiste) {
+                            pacientes.add(pacienteEncontrado)
+                            pacienteAdapter.atualizarLista(pacientes.toList())
+                            pacienteAdapter.filtrarPorCpf(currentFilter)
+                        }
+                    }
+                }
+            }
+            
+            override fun onFailure(call: Call<PacientesEnvelope>, t: Throwable) {
+                isSearching = false
+                // Silenciosamente falha - não mostra erro para não incomodar o usuário
+                // Só loga se não foi cancelado
+                val wasCanceled = t.message?.contains("Canceled", ignoreCase = true) == true
+                if (!wasCanceled) {
+                    Log.d("Busca", "Paciente não encontrado no servidor para CPF: $cpf")
+                }
+            }
+        })
+    }
+
+    private fun getPacientes(page: Int, isFirstLoad: Boolean = false) {
+        if (isLoading) return
+        
+        isLoading = true
+        
+        val call = pessoasAPI.getPacientes(page = page, pageSize = pageSize)
 
         call.enqueue(object : Callback<PacientesEnvelope> {
             override fun onResponse(
                 call: Call<PacientesEnvelope>,
                 response: Response<PacientesEnvelope>
             ) {
+                isLoading = false
+                
                 if (response.isSuccessful) {
-                    val listaApi = response.body()?.data.orEmpty()
+                    val envelope = response.body()
+                    val listaApi = envelope?.data.orEmpty()
                     val lista = listaApi.map { it.toDomain() }
+                    
+                    // Atualiza informações de paginação
+                    val meta = envelope?.meta
+                    val lastPage = meta?.lastPage ?: currentPage
+                    hasMorePages = currentPage < lastPage
 
-                    pacientes.clear()
-                    pacientes.addAll(lista)
-                    pacienteAdapter.atualizarLista(lista)
+                    if (isFirstLoad) {
+                        // Primeira carga: limpa e adiciona
+                        pacientes.clear()
+                        pacientes.addAll(lista)
+                    } else {
+                        // Carregamento subsequente: adiciona à lista existente
+                        pacientes.addAll(lista)
+                    }
+                    
+                    // Atualiza o adapter com a lista completa e reaplica o filtro se houver
+                    pacienteAdapter.atualizarLista(pacientes.toList())
+                    if (currentFilter.isNotEmpty()) {
+                        pacienteAdapter.filtrarPorCpf(currentFilter)
+                    }
                 } else {
-                    Toast.makeText(
+                    // Em caso de erro, volta a página anterior
+                    if (!isFirstLoad) {
+                        currentPage--
+                    }
+
+                    Toast.makeText (
                         applicationContext,
                         "Erro ao buscar pacientes",
                         Toast.LENGTH_SHORT
@@ -132,6 +268,11 @@ class ListagemPacientes : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<PacientesEnvelope>, t: Throwable) {
+                isLoading = false
+                // Em caso de falha, volta a página anterior
+                if (!isFirstLoad) {
+                    currentPage--
+                }
                 Log.e("Erro", "Falha ao buscar pacientes", t)
                 Toast.makeText(
                     applicationContext,

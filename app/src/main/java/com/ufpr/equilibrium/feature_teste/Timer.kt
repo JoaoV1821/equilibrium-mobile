@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -21,6 +22,7 @@ import com.ufpr.equilibrium.network.Teste
 import com.ufpr.equilibrium.utils.PacienteManager
 import com.ufpr.equilibrium.utils.SessionManager
 import com.ufpr.equilibrium.utils.RoleHelpers
+import com.ufpr.equilibrium.utils.ErrorMessages
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import retrofit2.Call
@@ -89,11 +91,6 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     private var lastStandPeakTs = 0L
     private var sittingLikely = true
 
-    private val ACC_Z_PEAK = 6.0
-    private val ACC_Z_VALLEY = -3.0
-    private val GYR_Y_PEAK = 1.0
-    private val REFRACTORY_MS = 800L
-
     private var lastGyroY = 0.0
     private var lastLinearZ = 0.0
 
@@ -121,10 +118,10 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         pauseButton = findViewById(R.id.pauseButton)
 
         typeTeste = "5TSTS"
-        title.text = "5TSTS" // ★ título ajustado
+        title.text = "5TSTS" 
 
         val refreshBtn = findViewById<ImageView>(R.id.refresh)
-        val arrowBack = findViewById<ImageView>(R.id.arrow_back)
+
 
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -133,7 +130,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
 
 
 
-        // ★ fluxo do botão:
+        
         //   - enquanto rodando: "Pausar" -> pausa o teste
         //   - pausado: "Enviar" -> envia ou navega
         pauseButton.text = "Pausar"
@@ -164,10 +161,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
             resetTimer()
         }
         refreshBtn.setOnClickListener { refreshAction() }
-        arrowBack.setOnClickListener {
-            startActivity(Intent(this@Timer, FtstsInstruction::class.java))
-            finish()
-        }
+
 
         textToSpeech = TextToSpeech(this, this)
 
@@ -288,22 +282,10 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         }
 
         tryMergeSensorData()
-        detectRepetition(System.currentTimeMillis())
+
     }
 
-    private fun detectRepetition(now: Long) {
-        val standPeak = lastLinearZ > ACC_Z_PEAK && abs(lastGyroY) > GYR_Y_PEAK
-        if (standPeak) lastStandPeakTs = now
 
-        val likelyCycleClosed = (lastStandPeakTs > 0 &&
-                (lastLinearZ < ACC_Z_VALLEY || (now - lastStandPeakTs) > 400))
-        val refractoryOk = (now - lastRepTimestamp) > REFRACTORY_MS
-
-        if (standPeak && likelyCycleClosed && refractoryOk) {
-            repetitions += 1
-            lastRepTimestamp = now
-        }
-    }
 
     private fun tryMergeSensorData() {
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
@@ -378,7 +360,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         val total = timeDisplay.safeTime()
 
         val teste = Teste(
-            type = "FTSTS", // ★ ajustado
+            type = "FTSTS",
             patientId = PacienteManager.uuid.toString(),
             healthProfessionalId = SessionManager.user?.id.toString(),
             healthcareUnitId = intent.getStringExtra("id_unidade"),
@@ -387,34 +369,45 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
             sensorData = sensorList,
             time_init = isoUtc(startTime),
             time_end = isoUtc(System.currentTimeMillis())
-            // inclua repetitions no DTO se existir
+
         )
+
+        println(teste.sensorData)
 
         if (RoleHelpers.isHealthProfessional()) {
             val call = api.postTestes(teste, "Bearer ${SessionManager.token}")
             call.enqueue(object : retrofit2.Callback<Teste> {
                 override fun onResponse(call: Call<Teste>, response: Response<Teste>) {
                     if (response.isSuccessful) {
-                        speak("Teste enviado com sucesso!")
-                        val intent = Intent(this@Timer, FtstsInstruction::class.java)
+                        speak(getString(R.string.success_test_sent))
+                        
+                        val intent = Intent(this@Timer, TestResult::class.java)
                         intent.putExtra("time", total)
                         intent.putExtra("repetitions", repetitions)
                         intent.putExtra("teste", typeTeste)
                         startActivity(intent)
+                        finish()
                     } else {
-                        speak("Falha ao enviar o teste. Entre em contato com o suporte")
+                        val msg = ErrorMessages.forHttpStatus(this@Timer, response.code())
+                        speak(msg)
+                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
                     }
                 }
                 override fun onFailure(call: Call<Teste>, t: Throwable) {
                     Log.e("Erro", "Falha ao enviar o teste", t)
+                    val msg = getString(R.string.error_network)
+                    speak(msg)
+                    Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
                 }
             })
         } else {
+            // Para pacientes, também navega para TestResult
             val intent = Intent(this@Timer, TestResult::class.java)
             intent.putExtra("time", total)
             intent.putExtra("repetitions", repetitions)
             intent.putExtra("teste", typeTeste)
             startActivity(intent)
+            finish()
         }
     }
 

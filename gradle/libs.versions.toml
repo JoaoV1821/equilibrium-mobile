@@ -1,9 +1,10 @@
 [versions]
-agp = "8.6.0"
+agp = "8.7.2"
 auth0 = "2.11.0"
 desugar_jdk_libs = "2.1.5"
+firebaseBom = "34.5.0"
 javaJwt = "4.4.0"
-kotlin = "1.9.24"
+kotlin = "2.1.10"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -25,13 +26,14 @@ ui = "1.7.8"
 gridlayout = "1.1.0"
 coroutines = "1.8.1"
 lifecycle = "2.8.6"
-hilt = "2.51.1"
+hilt = "2.54"
 detekt = "1.23.6"
 ktlintGradle = "12.1.1"
 mockwebserver = "4.11.0"
 mockk = "1.13.10"
 coroutinesTest = "1.8.1"
 places = "5.0.0"
+compilercommon = "3.2.0-alpha11"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +45,7 @@ androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview
 auth0 = { module = "com.auth0.android:auth0", version.ref = "auth0" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 java-jwt = { module = "com.auth0:java-jwt", version.ref = "javaJwt" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -69,6 +72,7 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", v
 mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "mockwebserver" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
+androidx-compilercommon = { group = "androidx.databinding", name = "compilerCommon", version.ref = "compilercommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

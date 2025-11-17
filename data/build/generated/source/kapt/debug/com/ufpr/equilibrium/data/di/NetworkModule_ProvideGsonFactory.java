@@ -16,7 +16,9 @@ import dagger.internal.ScopeMetadata;
     "rawtypes",
     "KotlinInternal",
     "KotlinInternalInJava",
-    "cast"
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class NetworkModule_ProvideGsonFactory implements Factory<Gson> {
   @Override
@@ -33,6 +35,6 @@ public final class NetworkModule_ProvideGsonFactory implements Factory<Gson> {
   }
 
   private static final class InstanceHolder {
-    private static final NetworkModule_ProvideGsonFactory INSTANCE = new NetworkModule_ProvideGsonFactory();
+    static final NetworkModule_ProvideGsonFactory INSTANCE = new NetworkModule_ProvideGsonFactory();
   }
 }

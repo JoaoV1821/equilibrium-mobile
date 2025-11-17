@@ -8,4 +8,15 @@ plugins {
     alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.ktlint) apply false
+    id("com.google.gms.google-services") version "4.4.4" apply false
+}
+
+// Fix duplicate class: com.google.common.util.concurrent.ListenableFuture
+// Some transitive AndroidX libs pull `com.google.guava:listenablefuture:1.0`
+// while others bring `com.google.guava:guava`. Exclude the standalone
+// `listenablefuture` artifact so only Guava's classes remain.
+subprojects {
+    configurations.all {
+        exclude(group = "com.google.guava", module = "listenablefuture")
+    }
 }

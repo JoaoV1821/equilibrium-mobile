@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -27,13 +28,25 @@ class MainActivity : AppCompatActivity() {
 
         SessionManager.init(this)
 
-        if (SessionManager.isLoggedIn()) {
+        // Só redireciona para Home se o usuário estiver logado E a activity estiver sendo criada pela primeira vez
+        // (não quando está voltando de outra tela)
+        if (savedInstanceState == null && SessionManager.isLoggedIn()) {
             if (RoleHelpers.isHealthProfessional()) {
                 startActivity(Intent(this@MainActivity, HomeProfissional::class.java))
+                finish() // Fecha a MainActivity para não voltar para ela
             } else if (RoleHelpers.isPatient()) {
                 startActivity(Intent(this@MainActivity, HomePaciente::class.java))
+                finish() // Fecha a MainActivity para não voltar para ela
             }
         }
+
+        // Configura o comportamento do botão voltar: fecha o app
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Fecha o app completamente quando o usuário pressionar voltar na MainActivity
+                finishAffinity()
+            }
+        })
 
         val btnLogin = findViewById<Button>(R.id.profissional)
         val btnCadastro = findViewById<Button>(R.id.profissional2)

@@ -29,7 +29,9 @@ interface PessoasAPI {
     fun getPacientes(
         // opcional: suporte a paginação do backend
         @Query("page") page: Int? = null,
-        @Query("pageSize") pageSize: Int? = null
+        @Query("pageSize") pageSize: Int? = null,
+        // opcional: busca por CPF
+        @Query("cpf") cpf: String? = null
     ): Call<PacientesEnvelope>
 
     // /patient aceita o JSON plano do PacienteModel (sem "user")

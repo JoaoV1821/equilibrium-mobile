@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
+
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -51,7 +53,7 @@ android {
 }
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.24"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.1.10"))
     implementation(project(":core-common"))
     implementation(project(":domain"))
     implementation(project(":data"))
@@ -67,6 +69,10 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     // Removed heavy TensorFlow dependencies to reduce APK size
     implementation(libs.androidx.gridlayout)
+    implementation(libs.androidx.compilercommon)
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
     // Google Places Autocomplete
 
     testImplementation(libs.junit)

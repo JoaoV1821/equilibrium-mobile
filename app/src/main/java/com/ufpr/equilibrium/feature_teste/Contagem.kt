@@ -19,7 +19,7 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var currentPage = 0
 
     // Contagem de 10 até 1 e depois "JÁ!"
-    private val countdownList = listOf("10","9","8","7","6","5","4","3","2","1","JÁ!")
+    private val countdownList = listOf("5","4","3","2","1","JÁ!")
     private var countdownRunning = false
 
     companion object {
@@ -59,7 +59,7 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener {
 
             // Fala introdutória antes da contagem de 10 s
             speakText(
-                "Dez segundos para começar o teste! Faça os ajustes necessários",
+                "Cinco segundos para começar o teste! Faça os ajustes necessários",
                 INTRO_UTTERANCE_ID
             )
         }

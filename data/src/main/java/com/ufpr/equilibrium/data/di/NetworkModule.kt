@@ -4,7 +4,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.ufpr.equilibrium.data.remote.PessoasService
 import com.ufpr.equilibrium.data.BuildConfig
+import android.app.Application
 import com.ufpr.equilibrium.data.network.AuthInterceptor
+import com.ufpr.equilibrium.data.network.UnauthorizedInterceptor
 import com.ufpr.equilibrium.domain.auth.TokenProvider
 import dagger.Module
 import dagger.Provides
@@ -24,6 +26,11 @@ object NetworkModule {
     fun provideAuthInterceptor(tokenProvider: TokenProvider): AuthInterceptor =
         AuthInterceptor(tokenProvider)
 
+    @Provides
+    @Singleton
+    fun provideUnauthorizedInterceptor(application: Application): UnauthorizedInterceptor =
+        UnauthorizedInterceptor(application)
+
 
     @Provides
     @Singleton
@@ -31,11 +38,15 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor,
+        unauthorizedInterceptor: UnauthorizedInterceptor
+    ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor(authInterceptor)
+            .addInterceptor(unauthorizedInterceptor)
             .build()
     }
 

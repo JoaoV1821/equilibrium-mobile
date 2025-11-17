@@ -2,12 +2,14 @@
 package com.ufpr.equilibrium.data.di;
 
 import com.ufpr.equilibrium.data.network.AuthInterceptor;
+import com.ufpr.equilibrium.data.network.UnauthorizedInterceptor;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
+import dagger.internal.Providers;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
-import javax.inject.Provider;
 import okhttp3.OkHttpClient;
 
 @ScopeMetadata("javax.inject.Singleton")
@@ -18,27 +20,40 @@ import okhttp3.OkHttpClient;
     "rawtypes",
     "KotlinInternal",
     "KotlinInternalInJava",
-    "cast"
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class NetworkModule_ProvideOkHttpClientFactory implements Factory<OkHttpClient> {
   private final Provider<AuthInterceptor> authInterceptorProvider;
 
-  public NetworkModule_ProvideOkHttpClientFactory(
-      Provider<AuthInterceptor> authInterceptorProvider) {
+  private final Provider<UnauthorizedInterceptor> unauthorizedInterceptorProvider;
+
+  public NetworkModule_ProvideOkHttpClientFactory(Provider<AuthInterceptor> authInterceptorProvider,
+      Provider<UnauthorizedInterceptor> unauthorizedInterceptorProvider) {
     this.authInterceptorProvider = authInterceptorProvider;
+    this.unauthorizedInterceptorProvider = unauthorizedInterceptorProvider;
   }
 
   @Override
   public OkHttpClient get() {
-    return provideOkHttpClient(authInterceptorProvider.get());
+    return provideOkHttpClient(authInterceptorProvider.get(), unauthorizedInterceptorProvider.get());
   }
 
   public static NetworkModule_ProvideOkHttpClientFactory create(
-      Provider<AuthInterceptor> authInterceptorProvider) {
-    return new NetworkModule_ProvideOkHttpClientFactory(authInterceptorProvider);
+      javax.inject.Provider<AuthInterceptor> authInterceptorProvider,
+      javax.inject.Provider<UnauthorizedInterceptor> unauthorizedInterceptorProvider) {
+    return new NetworkModule_ProvideOkHttpClientFactory(Providers.asDaggerProvider(authInterceptorProvider), Providers.asDaggerProvider(unauthorizedInterceptorProvider));
   }
 
-  public static OkHttpClient provideOkHttpClient(AuthInterceptor authInterceptor) {
-    return Preconditions.checkNotNullFromProvides(NetworkModule.INSTANCE.provideOkHttpClient(authInterceptor));
+  public static NetworkModule_ProvideOkHttpClientFactory create(
+      Provider<AuthInterceptor> authInterceptorProvider,
+      Provider<UnauthorizedInterceptor> unauthorizedInterceptorProvider) {
+    return new NetworkModule_ProvideOkHttpClientFactory(authInterceptorProvider, unauthorizedInterceptorProvider);
+  }
+
+  public static OkHttpClient provideOkHttpClient(AuthInterceptor authInterceptor,
+      UnauthorizedInterceptor unauthorizedInterceptor) {
+    return Preconditions.checkNotNullFromProvides(NetworkModule.INSTANCE.provideOkHttpClient(authInterceptor, unauthorizedInterceptor));
   }
 }

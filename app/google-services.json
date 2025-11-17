@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "394687962778",
+    "project_id": "tecnoaging-e912b",
+    "storage_bucket": "tecnoaging-e912b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394687962778:android:6770278e8d0c22920fc923",
+        "android_client_info": {
+          "package_name": "com.ufpr.equilibrium"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjmtsp-9xw6-AKMjy-GQr6kCz0APRtA7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

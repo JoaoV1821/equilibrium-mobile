@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.24"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.1.10"))
     implementation(project(":core-common"))
     implementation(project(":domain"))
 

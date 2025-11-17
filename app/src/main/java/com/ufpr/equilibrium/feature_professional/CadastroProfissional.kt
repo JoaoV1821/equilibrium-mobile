@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.network.PessoasAPI
+import com.ufpr.equilibrium.utils.ErrorMessages
 import javax.inject.Inject
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
@@ -76,7 +77,14 @@ class CadastroProfissional: AppCompatActivity() {
                if (response.isSuccessful) {
                    Toast.makeText(
                        applicationContext,
-                       "Profissional Cadastrado com sucesso!",
+                       getString(R.string.success_professional_created),
+                       Toast.LENGTH_SHORT
+                   ).show()
+               } else {
+                   val msg = ErrorMessages.forHttpStatus(this@CadastroProfissional, response.code())
+                   Toast.makeText(
+                       applicationContext,
+                       msg,
                        Toast.LENGTH_SHORT
                    ).show()
                }
@@ -86,7 +94,7 @@ class CadastroProfissional: AppCompatActivity() {
                 Log.e("Erro", "Falha no login", t)
                 Toast.makeText(
                     applicationContext,
-                    "Erro ao conectar ao servidor",
+                    getString(R.string.error_network),
                     Toast.LENGTH_SHORT
                 ).show()
             }

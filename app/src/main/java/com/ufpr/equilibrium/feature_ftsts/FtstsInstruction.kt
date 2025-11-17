@@ -23,7 +23,7 @@ class FtstsInstruction : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_ftsts_instruction)
 
-        val arrowBtn = findViewById<ImageView>(R.id.arrow_button);
+      
         val ftsts = findViewById<Button>(R.id.next_button);
 
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
@@ -44,20 +44,7 @@ class FtstsInstruction : AppCompatActivity() {
         })
 
 
-        arrowBtn.setOnClickListener {
-
-            if (RoleHelpers.isHealthProfessional()) {
-                intent = Intent(this@FtstsInstruction, HomeProfissional::class.java)
-
-                startActivity(intent);
-
-            } else {
-
-                intent = Intent(this@FtstsInstruction, HomePaciente::class.java)
-
-                startActivity(intent)
-            }
-        }
+        
 
         ftsts.setOnClickListener {
 

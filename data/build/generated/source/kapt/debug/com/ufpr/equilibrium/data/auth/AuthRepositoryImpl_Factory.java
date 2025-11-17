@@ -4,9 +4,10 @@ package com.ufpr.equilibrium.data.auth;
 import com.ufpr.equilibrium.data.remote.PessoasService;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
+import dagger.internal.Providers;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
-import javax.inject.Provider;
 
 @ScopeMetadata
 @QualifierMetadata
@@ -16,7 +17,9 @@ import javax.inject.Provider;
     "rawtypes",
     "KotlinInternal",
     "KotlinInternalInJava",
-    "cast"
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class AuthRepositoryImpl_Factory implements Factory<AuthRepositoryImpl> {
   private final Provider<PessoasService> serviceProvider;
@@ -28,6 +31,11 @@ public final class AuthRepositoryImpl_Factory implements Factory<AuthRepositoryI
   @Override
   public AuthRepositoryImpl get() {
     return newInstance(serviceProvider.get());
+  }
+
+  public static AuthRepositoryImpl_Factory create(
+      javax.inject.Provider<PessoasService> serviceProvider) {
+    return new AuthRepositoryImpl_Factory(Providers.asDaggerProvider(serviceProvider));
   }
 
   public static AuthRepositoryImpl_Factory create(Provider<PessoasService> serviceProvider) {

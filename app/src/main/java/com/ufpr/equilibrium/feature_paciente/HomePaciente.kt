@@ -4,9 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ufpr.equilibrium.MainActivity
 import com.ufpr.equilibrium.R
@@ -26,8 +31,18 @@ class HomePaciente: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         setContentView(R.layout.activity_home_paciente)
+        
+        // Ajusta o padding superior do layout para respeitar a status bar
+        findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.rootLayout)?.let { rootLayout ->
+            ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                view.updatePadding(top = systemBars.top)
+                insets
+            }
+        }
 
 
         val builder = AlertDialog.Builder(this);
@@ -81,6 +96,16 @@ class HomePaciente: AppCompatActivity() {
         }
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+        
+        // Ajusta a margem do BottomNavigationView para respeitar a safe area
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNav) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updateLayoutParams<androidx.constraintlayout.widget.ConstraintLayout.LayoutParams> {
+                bottomMargin = systemBars.bottom
+            }
+            insets
+        }
+        
         bottomNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_stats -> {

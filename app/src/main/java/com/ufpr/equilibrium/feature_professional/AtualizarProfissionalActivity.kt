@@ -5,7 +5,11 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioGroup
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_paciente.HistoricoActivity
@@ -23,6 +27,7 @@ class AtualizarProfissionalActivity:  AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         setContentView(R.layout.activity_atualizar_profissional)
 
@@ -40,6 +45,16 @@ class AtualizarProfissionalActivity:  AppCompatActivity() {
         }
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+        
+        // Ajusta a margem do BottomNavigationView para respeitar a safe area
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNav) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updateLayoutParams<androidx.constraintlayout.widget.ConstraintLayout.LayoutParams> {
+                bottomMargin = systemBars.bottom
+            }
+            insets
+        }
+        
         bottomNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_stats -> {
@@ -56,10 +71,6 @@ class AtualizarProfissionalActivity:  AppCompatActivity() {
 
                 R.id.nav_home -> {
                     startActivity(Intent(this@AtualizarProfissionalActivity, HomeProfissional::class.java))
-                }
-
-                R.id.nav_evaluation -> {
-                    startActivity(Intent(this@AtualizarProfissionalActivity, ListagemPacientes::class.java))
                 }
             }
 

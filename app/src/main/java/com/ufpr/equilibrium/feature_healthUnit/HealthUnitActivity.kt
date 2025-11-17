@@ -10,6 +10,7 @@ import com.ufpr.equilibrium.feature_teste.Contagem
 import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.network.PessoasAPI
 import com.ufpr.equilibrium.utils.SessionManager
+import com.ufpr.equilibrium.utils.ErrorMessages
 import javax.inject.Inject
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
@@ -57,7 +58,7 @@ class HealthUnitActivity : AppCompatActivity() {
                 finish()
 
             } else {
-                Toast.makeText(this, "Selecione uma unidade de saúde.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_select_health_unit), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -105,13 +106,14 @@ class HealthUnitActivity : AppCompatActivity() {
                     }
 
                 } else {
-                    Toast.makeText(this@HealthUnitActivity, "Erro ao carregar unidades", Toast.LENGTH_SHORT).show()
+                    val msg = ErrorMessages.forHttpStatus(this@HealthUnitActivity, response.code())
+                    Toast.makeText(this@HealthUnitActivity, msg, Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<HealthUnit>>, t: Throwable) {
                 Log.e("API", "Falha na requisição", t)
-                Toast.makeText(this@HealthUnitActivity, "Falha na conexão", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@HealthUnitActivity, getString(R.string.error_network), Toast.LENGTH_SHORT).show()
             }
         })
     }

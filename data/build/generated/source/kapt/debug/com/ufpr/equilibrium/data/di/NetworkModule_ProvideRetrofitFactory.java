@@ -5,9 +5,10 @@ import com.google.gson.Gson;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
+import dagger.internal.Providers;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
-import javax.inject.Provider;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
@@ -19,7 +20,9 @@ import retrofit2.Retrofit;
     "rawtypes",
     "KotlinInternal",
     "KotlinInternalInJava",
-    "cast"
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class NetworkModule_ProvideRetrofitFactory implements Factory<Retrofit> {
   private final Provider<OkHttpClient> clientProvider;
@@ -35,6 +38,12 @@ public final class NetworkModule_ProvideRetrofitFactory implements Factory<Retro
   @Override
   public Retrofit get() {
     return provideRetrofit(clientProvider.get(), gsonProvider.get());
+  }
+
+  public static NetworkModule_ProvideRetrofitFactory create(
+      javax.inject.Provider<OkHttpClient> clientProvider,
+      javax.inject.Provider<Gson> gsonProvider) {
+    return new NetworkModule_ProvideRetrofitFactory(Providers.asDaggerProvider(clientProvider), Providers.asDaggerProvider(gsonProvider));
   }
 
   public static NetworkModule_ProvideRetrofitFactory create(Provider<OkHttpClient> clientProvider,

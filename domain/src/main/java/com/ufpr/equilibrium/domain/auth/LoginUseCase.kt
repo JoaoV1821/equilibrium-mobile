@@ -6,8 +6,8 @@ import com.ufpr.equilibrium.domain.model.UserSession
 class LoginUseCase(
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(username: String, password: String): Result<UserSession> {
-        return repository.login(username, password)
+    suspend operator fun invoke(cpf: String, password: String): Result<UserSession> {
+        return repository.login(cpf, password)
     }
 }
 
