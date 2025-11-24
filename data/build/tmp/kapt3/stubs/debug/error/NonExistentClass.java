@@ -1,4 +1,2 @@
 package error;
-
-public final class NonExistentClass {
-}
+public class NonExistentClass {}

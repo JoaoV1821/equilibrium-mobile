@@ -8,21 +8,132 @@
     android:background="@android:color/white"
     tools:context=".feature_paciente.HomePaciente">
 
+    <!-- Header -->
+    <ImageView
+        android:id="@+id/imgAvatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="@dimen/space_24"
+        android:layout_marginTop="@dimen/space_24"
+        android:contentDescription="avatar"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_person_m3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvRole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Profissional"
+        android:textColor="#666666"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/imgAvatar"
+        app:layout_constraintTop_toTopOf="@id/imgAvatar" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nome do usuário"
+        android:textColor="#111111"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/imgAvatar"
+        app:layout_constraintTop_toBottomOf="@id/tvRole"
+        app:layout_constraintEnd_toStartOf="@+id/icMenu"
+        app:layout_constraintHorizontal_bias="0" />
+
+    <ImageView
+        android:id="@+id/icMenu"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="menu"
+        android:padding="8dp"
+        android:src="@drawable/ic_hamburger"
+        app:layout_constraintTop_toTopOf="@id/imgAvatar"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Metrics row -->
+
+    <!-- Chart -->
+
+    <!-- Bottom navigation pill -->
+
     <LinearLayout
-        android:id="@+id/row2"
+        android:id="@+id/metricsRow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/container_padding"
-        android:layout_marginTop="@dimen/space_8"
         android:orientation="horizontal"
-        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/row1">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.186">
 
-        <!-- Card: Melhor desempenho -->
+        <!-- Card Avaliações -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="269dp"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:minHeight="170dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            app:cardUseCompatPadding="true">
 
-        <!-- Card: Desempenho Geral -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvAvaliacoesTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="136dp"
+                    android:text="Testes feitos no mês"
+                    android:textColor="#6B6B6B"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.471" />
+
+                <TextView
+                    android:id="@+id/tvAvaliacoesValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#111111"
+                    android:textSize="36sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="49dp"
+                    android:layout_height="49dp"
+                    android:src="@drawable/ic_evaluation"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.849"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.917"
+                    app:tint="@color/blue_light" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card Avaliação Mensal -->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -33,248 +144,184 @@
             app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
+                android:layout_width="161dp"
+                android:layout_height="246dp"
                 android:orientation="vertical"
                 android:padding="@dimen/space_16">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/league_spartan_medium"
-                    android:text="Desempenho geral no Mês"
-                    android:textColor="#2260FF"
-                    android:textSize="15sp" />
+                    android:text="Avaliação Mensal"
+                    android:textColor="#111111"
+                    android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/tvMelhor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="10s"
-                    android:textColor="@android:color/black"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
+                <!-- Labels meta / hoje -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/frameLayout"
+                    android:layout_width="142dp"
+                    android:layout_height="127dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center">
+
+                    <com.ufpr.equilibrium.feature_professional.SemicircleProgressView
+                        android:id="@+id/semicircle"
+                        android:layout_width="118dp"
+                        android:layout_height="125dp"
+                        tools:layout_editor_absoluteX="8dp"
+                        tools:layout_editor_absoluteY="1dp" />
+
+                    <TextView
+                        android:id="@+id/tvMonthlyPercent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0%"
+                        android:textColor="#111111"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/semicircle"
+                        app:layout_constraintEnd_toEndOf="@+id/semicircle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.408" />
+
+                    <TextView
+                        android:id="@+id/tvDelta"
+                        android:layout_width="124dp"
+                        android:layout_height="23dp"
+                        android:background="@drawable/bg_pill_green"
+                        android:paddingLeft="12dp"
+                        android:paddingTop="6dp"
+                        android:paddingRight="12dp"
+                        android:paddingBottom="6dp"
+                        android:text="+10% desde o mês passado"
+                        android:textColor="@color/blue"
+                        android:textSize="8sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/semicircle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.111"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.774" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="134dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="4dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Meta"
+                            android:textColor="#666666"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tvMetaValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:background="#E6E6E6" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hoje"
+                            android:textColor="#666666"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tvHojeValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="53dp"
-            android:layout_height="150dp"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="6dp"
-            app:cardUseCompatPadding="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="@dimen/space_16">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/league_spartan_medium"
-                    android:text="Desempenho Geral"
-                    android:textColor="#2260FF"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tvBest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Médio"
-                    android:textColor="@android:color/black"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/tvGreeting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/space_24"
-        android:layout_marginTop="@dimen/space_24"
-        android:text="Fulano"
-        android:textColor="#2260FF"
-        android:textSize="@dimen/font_display"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tvName"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/space_24"
-        android:text="Olá"
-        android:textColor="#2260FF"
-        android:textSize="@dimen/font_display"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.046"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardTotal"
+        android:id="@+id/cardChart"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/space_16"
-        android:layout_marginTop="@dimen/space_16"
+        android:layout_height="220dp"
+        android:layout_marginHorizontal="@dimen/container_padding"
+        android:layout_marginTop="44dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="6dp"
         app:cardUseCompatPadding="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvGreeting">
+        app:layout_constraintTop_toBottomOf="@id/metricsRow"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="@dimen/space_16">
+            android:padding="12dp">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/league_spartan_medium"
-                android:text="Total Testes Realizados"
-                android:textColor="#2260FF"
-                android:textSize="@dimen/font_title" />
-
-            <TextView
-                android:id="@+id/tvTotalTestes"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvChartTitle"
+                android:layout_width="196dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="10"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/font_headline"
+                android:layout_marginBottom="6dp"
+                android:gravity="center"
+                android:text="Avaliações Mensais"
+                android:textColor="#111111"
+                android:textSize="16sp"
                 android:textStyle="bold" />
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/lineChartMonthly"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
-    <LinearLayout
-        android:id="@+id/row1"
+    <include
+        layout="@layout/include_pill_bottom_nav_professional"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/container_padding"
-        android:layout_marginTop="@dimen/space_8"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardTotal">
-
-        <!-- Card: Testes Realizados no Mês -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="6dp"
-            app:cardUseCompatPadding="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="@dimen/space_12"
-                android:orientation="vertical"
-                android:padding="@dimen/space_16">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/league_spartan_medium"
-                    android:text="Testes Realizados No Mês"
-                    android:textColor="#2260FF"
-
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tvTestesMes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="10"
-                    android:textColor="@android:color/black"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Card: Data Último Teste -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="6dp"
-            app:cardUseCompatPadding="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="@dimen/space_16">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="15dp"
-                    android:fontFamily="@font/league_spartan_medium"
-                    android:text="Total de pacientes cadastrados"
-                    android:textColor="#2260FF"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tvDataUltimo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="10"
-                    android:textColor="@android:color/black"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-    </LinearLayout>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/button_height"
-        app:itemIconSize="28dp"
-        app:labelVisibilityMode="unlabeled"
-        android:background="@color/blue"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
-        app:menu="@menu/bottom_nav_menu_professional"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

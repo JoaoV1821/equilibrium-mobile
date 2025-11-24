@@ -53,13 +53,14 @@ android {
 }
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.1.10"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.0.21"))
     implementation(project(":core-common"))
     implementation(project(":domain"))
     implementation(project(":data"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.retrofit)
@@ -72,6 +73,8 @@ dependencies {
     implementation(libs.androidx.compilercommon)
     implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation(libs.google.material)
+    implementation(libs.androidx.cardview)
 
     // Google Places Autocomplete
 
@@ -87,6 +90,14 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    // Charting library for monthly trends (use JitPack coordinate)
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // Room (persistência das respostas do questionário)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 }
 
 detekt {

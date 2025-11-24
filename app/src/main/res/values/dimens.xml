@@ -22,5 +22,7 @@
     <dimen name="button_height">48dp</dimen>
     <dimen name="button_min_touch">48dp</dimen>
     <dimen name="icon_touch">24dp</dimen>
+    <dimen name="semicircle_stroke">14dp</dimen>
+    <dimen name="semicircle_dot_radius">6dp</dimen>
 </resources>
 

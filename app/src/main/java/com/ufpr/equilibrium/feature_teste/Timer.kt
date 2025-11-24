@@ -80,8 +80,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     private var results: FloatArray? = null
     private val N_SAMPLES = 100
 
-    // ========= 5TSTS (contador progressivo) =========
-    // ★ removido countdown fixo; agora contamos para cima
+
     private var elapsedMs = 0L
     private var timerJob: Job? = null
     private var paused = false
@@ -116,9 +115,10 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         timerTextView = findViewById(R.id.timerTextView)
         title = findViewById(R.id.title)
         pauseButton = findViewById(R.id.pauseButton)
+        timerTextView.text = "00:30"
 
-        typeTeste = "5TSTS"
-        title.text = "5TSTS" 
+        typeTeste = "30CST"
+        title.text = "30CST"
 
         val refreshBtn = findViewById<ImageView>(R.id.refresh)
 
@@ -130,36 +130,47 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
 
 
 
-        
+
         //   - enquanto rodando: "Pausar" -> pausa o teste
         //   - pausado: "Enviar" -> envia ou navega
         pauseButton.text = "Pausar"
         pauseButton.isEnabled = true
 
+
         pauseButton.setOnClickListener {
+
+            // Se está rodando → PAUSAR
             if (!paused && running.get()) {
-                // PAUSAR
                 paused = true
                 stopTimerAndSensors()
                 speak("Teste pausado")
                 pauseButton.text = "Enviar"
-            } else {
-                // ENVIAR
+                return@setOnClickListener
+            }
+
+            // Se está pausado → ENVIAR
+            if (paused) {
                 if (RoleHelpers.isHealthProfessional()) {
+                    // profissional → enviar para a API
                     postData()
+
                 } else {
-                    val intent = Intent(this@Timer, FtstsInstruction::class.java)
+                    // paciente → vai direto para resultado
+                    val intent = Intent(this@Timer, TestResult::class.java)
                     intent.putExtra("time", timeDisplay.safeTime())
                     intent.putExtra("repetitions", repetitions)
                     intent.putExtra("teste", typeTeste)
                     startActivity(intent)
+                    finish()
                 }
             }
         }
 
+
         val refreshAction = {
             resetTimer()
         }
+
         refreshBtn.setOnClickListener { refreshAction() }
 
 
@@ -188,7 +199,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         paused = false
         running.set(true)
 
-        startCountUp()
+        startCountdown()
         startSensorCollection()
     }
 
@@ -213,24 +224,46 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         lastSpokenSecond = -1
         elapsedMs = 0L
         paused = false
-        timerTextView.text = "00:00"
+        timerTextView.text = "00:30"
         pauseButton.text = "Pausar"
 
         finish()
         startActivity(Intent(this@Timer, FtstsInstruction::class.java))
     }
 
-    // ★ novo cronômetro progressivo
-    private fun startCountUp() {
+    private fun startCountdown() {
+        elapsedMs = 30_000L
+
         timerJob = coroutineScope.launch(Dispatchers.Main) {
-            while (running.get()) {
+            while (running.get() && elapsedMs >= 0) {
+
                 timerTextView.text = formatTime(elapsedMs)
                 timeDisplay = formatTime(elapsedMs)
+
                 delay(200)
-                elapsedMs += 200
+                elapsedMs -= 200
+
+                if (elapsedMs <= 0) {
+                    // zera a contagem
+                    timerTextView.text = "00:00"
+                    timeDisplay = "00:00"
+
+                    running.set(false)
+                    stopTimerAndSensors()
+                    speak("Teste concluído")
+
+                    // muda para modo ENVIAR
+                    paused = true
+                    pauseButton.text = "Enviar"
+                    pauseButton.isEnabled = true
+
+                    // NÃO enviar automaticamente
+                    return@launch
+                }
             }
         }
     }
+
 
     @SuppressLint("DefaultLocale")
     private fun formatTime(ms: Long): String {
@@ -380,7 +413,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
                 override fun onResponse(call: Call<Teste>, response: Response<Teste>) {
                     if (response.isSuccessful) {
                         speak(getString(R.string.success_test_sent))
-                        
+
                         val intent = Intent(this@Timer, TestResult::class.java)
                         intent.putExtra("time", total)
                         intent.putExtra("repetitions", repetitions)

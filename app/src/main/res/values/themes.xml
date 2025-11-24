@@ -6,4 +6,12 @@
     </style>
 
     <style name="Theme.Equilibrium" parent="Base.Theme.Equilibrium" />
+
+    <!-- Provide a BottomNavigationView widget style placeholder (keeps compatibility with older Material versions). -->
+    <style name="Widget.Equilibrium.BottomNav.NoActiveIndicator" parent="Widget.MaterialComponents.BottomNavigationView" />
+
+    <style name="Theme.Equilibrium.NoNavIndicator" parent="Theme.Equilibrium">
+        <!-- Apply the BottomNavigationView style via the theme attribute supported by MaterialComponents -->
+        <item name="bottomNavigationStyle">@style/Widget.Equilibrium.BottomNav.NoActiveIndicator</item>
+    </style>
 </resources>

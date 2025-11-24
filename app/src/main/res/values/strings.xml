@@ -62,5 +62,19 @@
     <string name="success_login">Login realizado com sucesso!</string>
     <string name="success_test_sent">Teste enviado com sucesso!</string>
     <string name="success_professional_created">Profissional cadastrado com sucesso!</string>
+
+    <string name="confirm_send_title">Enviar resultado</string>
+    <string name="confirm_send_message">Deseja enviar os dados do teste para o servidor?</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+
+    <!-- Questionário (restored to avoid resource linking errors) -->
+    <string name="questionnaire_title">Questionário</string>
+    <string name="finish">Finalizar</string>
+    <string name="option_0">Opção 0</string>
+    <string name="option_1">Opção 1</string>
+    <string name="option_2">Opção 2</string>
+    <string name="option_3">Opção 3</string>
+    <string name="obs_hint">Observações (opcional)</string>
     
 </resources>

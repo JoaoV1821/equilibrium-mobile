@@ -3,5 +3,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="blue">#2260FF</color>
+    <!-- Lighter blue used for the pill to match the previous active indicator -->
+    <color name="blue_light">#5A8CFF</color>
+    <color name="gray_light">#EDEFF3</color>
 </resources>
 

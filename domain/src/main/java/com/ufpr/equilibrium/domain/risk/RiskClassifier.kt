@@ -11,12 +11,14 @@ object RiskClassifier {
                 timeSeconds >= 30 -> RiskLevel.HIGH
                 else -> RiskLevel.UNKNOWN
             }
+
             "FTSTS" -> when {
                 timeSeconds in 1..11 -> RiskLevel.LOW
                 timeSeconds in 12..15 -> RiskLevel.MODERATE
                 timeSeconds >= 16 -> RiskLevel.HIGH
                 else -> RiskLevel.UNKNOWN
             }
+            
             else -> RiskLevel.UNKNOWN
         }
     }

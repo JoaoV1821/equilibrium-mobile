@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Increase the horizontal container padding on larger screens so content stays centered -->
+    <dimen name="container_padding">64dp</dimen>
+
+    <!-- Optionally increase other spacing for large screens -->
+    <dimen name="space_24">32dp</dimen>
+    <dimen name="space_32">40dp</dimen>
+</resources>

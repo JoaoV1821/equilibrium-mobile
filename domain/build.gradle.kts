@@ -24,7 +24,7 @@ android {
 }
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.1.10"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.0.21"))
     implementation(project(":core-common"))
     implementation(libs.coroutines.core)
 }
