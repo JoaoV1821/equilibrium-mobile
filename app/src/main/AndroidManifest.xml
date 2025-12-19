@@ -115,7 +115,11 @@
             android:name=".feature_teste.Testes"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <!-- QuestionnaireActivity removed -->
+        <activity
+            android:name=".feature_questionnaire.QuestionnaireActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Equilibrium"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

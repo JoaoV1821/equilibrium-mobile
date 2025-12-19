@@ -10,55 +10,55 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/profissional2"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/button_height"
+        android:layout_width="239dp"
+        android:layout_height="62dp"
         android:backgroundTint="#2260FF"
         android:fontFamily="@font/league_spartan_medium"
-        android:text="Novo paciente"
+        android:text="Novo participante"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="@dimen/font_title"
         android:typeface="normal"
-        app:cornerRadius="80dp"
+        app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.537"
+        app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.747" />
+        app:layout_constraintVertical_bias="0.789" />
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="236dp"
-        android:layout_height="128dp"
+        android:layout_width="604dp"
+        android:layout_height="505dp"
         android:adjustViewBounds="true"
         android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="wrap"
-        app:layout_constraintHorizontal_bias="0.594"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.395"
+        app:layout_constraintVertical_bias="0.263"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.7"></ImageView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/profissional"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/button_height"
+        android:layout_width="236dp"
+        android:layout_height="57dp"
+        android:layout_marginBottom="14dp"
         android:backgroundTint="#2260FF"
         android:fontFamily="@font/league_spartan_medium"
         android:text="Entrar"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="@dimen/font_title"
-        app:cornerRadius="80dp"
+        app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.537"
+        app:layout_constraintHorizontal_bias="0.531"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.645" />
+        app:layout_constraintVertical_bias="0.695" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

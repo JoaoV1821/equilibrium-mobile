@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
             if (RoleHelpers.isHealthProfessional()) {
                 startActivity(Intent(this@MainActivity, HomeProfissional::class.java))
                 finish() // Fecha a MainActivity para não voltar para ela
+
             } else if (RoleHelpers.isPatient()) {
                 startActivity(Intent(this@MainActivity, HomePaciente::class.java))
                 finish() // Fecha a MainActivity para não voltar para ela

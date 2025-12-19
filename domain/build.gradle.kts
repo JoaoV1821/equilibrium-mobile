@@ -27,6 +27,9 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.0.21"))
     implementation(project(":core-common"))
     implementation(libs.coroutines.core)
+    
+    // Inject annotations for use cases
+    implementation("javax.inject:javax.inject:1")
 }
 
 

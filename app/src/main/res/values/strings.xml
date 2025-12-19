@@ -58,6 +58,8 @@
     <string name="error_load_health_units">Não foi possível carregar as unidades. Tente novamente.</string>
     <string name="error_select_health_unit">Selecione uma unidade de saúde.</string>
     <string name="error_send_test">Não foi possível enviar o teste. Tente novamente.</string>
+    <string name="error_participant_access">O perfil participante ainda não possui acesso.</string>
+    <string name="error_invalid_credentials">Credenciais inválidas, verifique seu cpf e senha.</string>
     
     <string name="success_login">Login realizado com sucesso!</string>
     <string name="success_test_sent">Teste enviado com sucesso!</string>
@@ -76,5 +78,17 @@
     <string name="option_2">Opção 2</string>
     <string name="option_3">Opção 3</string>
     <string name="obs_hint">Observações (opcional)</string>
+    
+    <!-- IVCF-20 Questionnaire -->
+    <string name="questionnaire_ivcf20_title">IVCF-20 - Avaliação de Vulnerabilidade</string>
+    <string name="group_idade">Idade</string>
+    <string name="group_autopercepcao">Autopercepção da Saúde</string>
+    <string name="group_avd">Incapacidades Funcionais</string>
+    <string name="vulnerability_low">Baixa vulnerabilidade clínico-funcional</string>
+    <string name="vulnerability_moderate">Moderada vulnerabilidade clínico-funcional</string>
+    <string name="vulnerability_high">Alta vulnerabilidade clínico-funcional</string>
+    <string name="result_score">Pontuação total: %1$d de %2$d pontos</string>
+    <string name="result_interpretation">Classificação: %1$s</string>
+    <string name="answer_all_questions">Responda todas as questões antes de finalizar.</string>
     
 </resources>

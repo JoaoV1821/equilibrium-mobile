@@ -13,7 +13,7 @@ android {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-        buildConfigField("String", "BASE_URL", "\"https://equilibrium.giize.com/\"")
+        buildConfigField("String", "BASE_URL", "\"https://tecnoaging.com.br/backend/\"")
     }
 
     compileOptions {

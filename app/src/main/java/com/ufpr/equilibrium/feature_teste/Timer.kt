@@ -10,6 +10,7 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import android.widget.ImageView
@@ -17,6 +18,8 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.ufpr.equilibrium.R
+import com.ufpr.equilibrium.feature_professional.HomeProfissional
+import com.ufpr.equilibrium.feature_professional.ListagemPacientes
 import com.ufpr.equilibrium.network.RetrofitClient
 import com.ufpr.equilibrium.network.Teste
 import com.ufpr.equilibrium.utils.PacienteManager
@@ -40,6 +43,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     private lateinit var timerTextView: TextView
     private lateinit var title: TextView
     private lateinit var pauseButton: Button
+    private lateinit var loadingOverlay: View
     private lateinit var sensorManager: SensorManager
 
     private var accelerometer: Sensor? = null
@@ -63,7 +67,6 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
 
-
     // ======= buffers antigos mantidos (se forem usados pela sua classificação) =======
     private val ax = mutableListOf<Float>()
     private val ay = mutableListOf<Float>()
@@ -80,7 +83,8 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     private var results: FloatArray? = null
     private val N_SAMPLES = 100
 
-
+    // ========= 5TSTS (contador progressivo) =========
+    // ★ removido countdown fixo; agora contamos para cima
     private var elapsedMs = 0L
     private var timerJob: Job? = null
     private var paused = false
@@ -92,6 +96,9 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
 
     private var lastGyroY = 0.0
     private var lastLinearZ = 0.0
+
+    // ========= SLS Peak Detector (sem thresholds) =========
+    private lateinit var slsPeakDetector: SlsPeakDetector
 
     private var timeDisplay = ""
     private lateinit var typeTeste: String
@@ -115,10 +122,10 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         timerTextView = findViewById(R.id.timerTextView)
         title = findViewById(R.id.title)
         pauseButton = findViewById(R.id.pauseButton)
-        timerTextView.text = "00:30"
+        loadingOverlay = findViewById(R.id.loading_overlay)
 
-        typeTeste = "30CST"
-        title.text = "30CST"
+        typeTeste = "TTSTS"
+        title.text = "30sSTS"
 
         val refreshBtn = findViewById<ImageView>(R.id.refresh)
 
@@ -128,55 +135,72 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
         linearAceleration = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
 
+        // Inicializar detector SLS baseado em picos
+        slsPeakDetector = SlsPeakDetector(
+            onCycleComplete = { count ->
+                Log.d("SLS", "Ciclo $count detectado!")
+                runOnUiThread {
+                    repetitions = count
+                }
+            }
+        )
 
-
-
+        
         //   - enquanto rodando: "Pausar" -> pausa o teste
         //   - pausado: "Enviar" -> envia ou navega
         pauseButton.text = "Pausar"
         pauseButton.isEnabled = true
 
+      pauseButton.setOnClickListener {
 
-        pauseButton.setOnClickListener {
+    // Caso esteja rodando → pausa manual
+    if (!paused && running.get()) {
+        paused = true
+        stopTimerAndSensors()
+        speak("Teste pausado")
+        pauseButton.text = "Enviar"
+        return@setOnClickListener
+    }
 
-            // Se está rodando → PAUSAR
-            if (!paused && running.get()) {
-                paused = true
+    // Se o botão estiver em modo "Enviar"
+    if (paused) {
+
+        // Profissional → pedir confirmação
+        if (RoleHelpers.isHealthProfessional()) {
+            showSendConfirmation(
+                onConfirm = { postData() },
+                onCancel = { }
+            )
+            
+        } else {
+            // Paciente → navega direto
+            val intent = Intent(this@Timer, TestResult::class.java)
+            intent.putExtra("time", timeDisplay.safeTime())
+
+            intent.putExtra("teste", typeTeste)
+            startActivity(intent)
+        }
+    }
+}
+
+        refreshBtn.setOnClickListener {
+            val wasRunning = running.get() && !paused
+            if (wasRunning) {
+                // pause collection while waiting confirmation
                 stopTimerAndSensors()
-                speak("Teste pausado")
-                pauseButton.text = "Enviar"
-                return@setOnClickListener
+                paused = true
+                runOnUiThread { pauseButton.text = "Enviar" }
             }
-
-            // Se está pausado → ENVIAR
-            if (paused) {
-                if (RoleHelpers.isHealthProfessional()) {
-                    // profissional → enviar para a API
-                    postData()
-
-                } else {
-                    // paciente → vai direto para resultado
-                    val intent = Intent(this@Timer, TestResult::class.java)
-                    intent.putExtra("time", timeDisplay.safeTime())
-                    intent.putExtra("repetitions", repetitions)
-                    intent.putExtra("teste", typeTeste)
-                    startActivity(intent)
-                    finish()
-                }
-            }
+            showResetConfirmation (
+                onConfirm = { resetTimer() },
+                onCancel = { if (wasRunning) resumeTimerAndSensors() }
+            )
         }
-
-
-        val refreshAction = {
-            resetTimer()
-        }
-
-        refreshBtn.setOnClickListener { refreshAction() }
 
 
         textToSpeech = TextToSpeech(this, this)
 
-        startTimerAndSensors() // inicia contando de 00:00 para cima
+        startTimerAndSensors()
     }
 
     // ====== TTS ======
@@ -194,18 +218,21 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     // ====== Timer/Sensores ======
     private fun startTimerAndSensors() {
         startTime = System.currentTimeMillis()
-        elapsedMs = 0L
+        // start protocol countdown at 30 seconds
+        elapsedMs = 30_000L
         lastSpokenSecond = -1
         paused = false
         running.set(true)
 
-        startCountdown()
         startSensorCollection()
+        startCountdown()
     }
 
     private fun stopTimerAndSensors() {
         running.set(false)
-        sensorManager.unregisterListener(this)
+        try {
+            sensorManager.unregisterListener(this)
+        } catch (_: Exception) { }
         timerJob?.cancel()
     }
 
@@ -223,6 +250,9 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         sittingLikely = true
         lastSpokenSecond = -1
         elapsedMs = 0L
+        
+        // Resetar detector SLS
+        slsPeakDetector.reset()
         paused = false
         timerTextView.text = "00:30"
         pauseButton.text = "Pausar"
@@ -230,9 +260,9 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         finish()
         startActivity(Intent(this@Timer, FtstsInstruction::class.java))
     }
-
     private fun startCountdown() {
-        elapsedMs = 30_000L
+        // if elapsedMs is zero or negative, initialize to protocol duration
+        if (elapsedMs <= 0L) elapsedMs = 30_000L
 
         timerJob = coroutineScope.launch(Dispatchers.Main) {
             while (running.get() && elapsedMs >= 0) {
@@ -243,25 +273,55 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
                 delay(200)
                 elapsedMs -= 200
 
+                // Quando zerar → finaliza o teste automaticamente
                 if (elapsedMs <= 0) {
-                    // zera a contagem
-                    timerTextView.text = "00:00"
-                    timeDisplay = "00:00"
-
                     running.set(false)
                     stopTimerAndSensors()
-                    speak("Teste concluído")
+                    
+                    // ★ Imprimir resultado final do detector SLS
+                    slsPeakDetector.printFinalSummary()
+                    repetitions = slsPeakDetector.getCycleCount()
+                    
+                    // ensure UI shows zeroed time
+                    runOnUiThread {
+                        timerTextView.text = "00:00"
+                        timeDisplay = "00:00"
+                        
+                        // Mostrar dialog com resultado de ciclos SLS
+                        showCycleResultDialog(slsPeakDetector.getCycleCount())
+                    }
+                    speak("Teste concluído. ${slsPeakDetector.getCycleCount()} repetições.")
 
-                    // muda para modo ENVIAR
-                    paused = true
-                    pauseButton.text = "Enviar"
-                    pauseButton.isEnabled = true
+                    // fluxo ao terminar automaticamente
+                    if (RoleHelpers.isHealthProfessional()) {
+                        // mark as paused and change button to "Enviar" so the user must
+                        // explicitly click to confirm sending (alert will be shown on click)
+                        paused = true
+                        // ensure UI update happens on main thread
+                        runOnUiThread {
+                            pauseButton.text = "Enviar"
+                        }
 
-                    // NÃO enviar automaticamente
-                    return@launch
+                    } else {
+                        val intent = Intent(this@Timer, TestResult::class.java)
+                        intent.putExtra("time", "00:30")  // tempo total do protocolo
+                        intent.putExtra("repetitions", repetitions)
+                        intent.putExtra("teste", typeTeste)
+                        startActivity(intent)
+                        finish()
+                    }
                 }
             }
         }
+    }
+
+    private fun resumeTimerAndSensors() {
+        // resume sensors and countdown using the current elapsedMs
+        if (running.get()) return
+        running.set(true)
+        paused = false
+        startSensorCollection()
+        startCountdown()
     }
 
 
@@ -294,6 +354,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
                     put("z", sensorData[2].toDouble())
                 })
             }
+
             Sensor.TYPE_GYROSCOPE -> {
                 gyroQueue.add(JSONObject().apply {
                     put("time", timestampStr)
@@ -302,6 +363,12 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
                     put("z", sensorData[2].toDouble())
                 })
                 lastGyroY = sensorData[1].toDouble()
+                
+                // Processar no detector SLS baseado em picos (usa gyroY para celular de pé)
+                slsPeakDetector.processSample(
+                    gyroValue = sensorData[1].toDouble(),  // gyroY - celular de pé com tela no peito
+                    timestampMs = System.currentTimeMillis()
+                )
             }
             Sensor.TYPE_LINEAR_ACCELERATION -> {
                 linearQueue.add(JSONObject().apply {
@@ -315,7 +382,6 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         }
 
         tryMergeSensorData()
-
     }
 
 
@@ -374,11 +440,24 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     }
 
     private fun postData() {
+        loadingOverlay.visibility = View.VISIBLE
+        
+        // Validate that we have a valid patient ID before proceeding
+        val patientUuid = PacienteManager.uuid
+        if (patientUuid == null) {
+            loadingOverlay.visibility = View.GONE
+            val errorMsg = "Erro: ID do paciente não encontrado. Por favor, selecione o paciente novamente."
+            Toast.makeText(applicationContext, errorMsg, Toast.LENGTH_LONG).show()
+            speak(errorMsg)
+            Log.e("Timer", "Patient UUID is null - cannot submit test")
+            return
+        }
+        
         val api = RetrofitClient.instancePessoasAPI
 
-        // 🔹 Monta sensorData com pontos válidos
+        //  Monta sensorData com pontos válidos
         val sensorList: List<Map<String, Any>> = result.map { json ->
-            mapOf(
+            mapOf (
                 "timestamp" to json.optString("timestamp", ""),
                 "accel_x"   to json.optDouble("accel_x", 0.0),
                 "accel_y"   to json.optDouble("accel_y", 0.0),
@@ -392,9 +471,9 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
         // ★ totalTime agora é o tempo decorrido do 5TSTS
         val total = timeDisplay.safeTime()
 
-        val teste = Teste(
-            type = "FTSTS",
-            patientId = PacienteManager.uuid.toString(),
+        val teste = Teste (
+            type = "TTSTS",
+            participantId = patientUuid.toString(),  // Now we know this is a valid UUID
             healthProfessionalId = SessionManager.user?.id.toString(),
             healthcareUnitId = intent.getStringExtra("id_unidade"),
             date = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()),
@@ -411,38 +490,107 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
             val call = api.postTestes(teste, "Bearer ${SessionManager.token}")
             call.enqueue(object : retrofit2.Callback<Teste> {
                 override fun onResponse(call: Call<Teste>, response: Response<Teste>) {
+                    loadingOverlay.visibility = View.GONE
+                    
                     if (response.isSuccessful) {
-                        speak(getString(R.string.success_test_sent))
 
-                        val intent = Intent(this@Timer, TestResult::class.java)
-                        intent.putExtra("time", total)
-                        intent.putExtra("repetitions", repetitions)
-                        intent.putExtra("teste", typeTeste)
-                        startActivity(intent)
-                        finish()
+                        val onConfirm = Intent(this@Timer, ListagemPacientes::class.java)
+                        val onCancel = Intent(this@Timer, HomeProfissional::class.java)
+
+                        speak("Teste enviado com sucesso!")
+
+                        showOnSuccessConfirmation (
+                            onConfirm = {
+                                startActivity(onConfirm)
+                                finish()
+                            },
+                            onCancel = {
+                                startActivity(onCancel)
+                                finish()
+                            }
+                        )
+
                     } else {
                         val msg = ErrorMessages.forHttpStatus(this@Timer, response.code())
                         speak(msg)
                         Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
                     }
                 }
+
                 override fun onFailure(call: Call<Teste>, t: Throwable) {
+                    loadingOverlay.visibility = View.GONE
                     Log.e("Erro", "Falha ao enviar o teste", t)
                     val msg = getString(R.string.error_network)
                     speak(msg)
                     Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
                 }
             })
-        } else {
-            // Para pacientes, também navega para TestResult
-            val intent = Intent(this@Timer, TestResult::class.java)
-            intent.putExtra("time", total)
-            intent.putExtra("repetitions", repetitions)
-            intent.putExtra("teste", typeTeste)
-            startActivity(intent)
-            finish()
         }
     }
+
+    // Show confirmation dialog before sending the test to server
+    private fun showSendConfirmation(onConfirm: () -> Unit, onCancel: () -> Unit) {
+        runOnUiThread {
+            val builder = androidx.appcompat.app.AlertDialog.Builder(this@Timer)
+                .setTitle(getString(R.string.confirm_send_title).takeIf { it.isNotEmpty() } ?: "Enviar resultado")
+                .setMessage(getString(R.string.confirm_send_message).takeIf { it.isNotEmpty() } ?: "Deseja enviar os dados do teste para o servidor?")
+                .setPositiveButton(getString(R.string.yes).takeIf { it.isNotEmpty() } ?: "Enviar") { _, _ ->
+                    onConfirm()
+                }
+                .setNegativeButton(getString(R.string.no).takeIf { it.isNotEmpty() } ?: "Cancelar") { dialog, _ ->
+                    dialog.dismiss()
+                    onCancel()
+                }
+            builder.show()
+        }
+    }
+
+    // Show confirmation dialog before resetting/restarting the test
+    private fun showResetConfirmation(onConfirm: () -> Unit, onCancel: () -> Unit) {
+        runOnUiThread {
+            val builder = androidx.appcompat.app.AlertDialog.Builder(this@Timer)
+                .setTitle("Reiniciar teste")
+                .setMessage("Deseja reiniciar o teste? Todos os dados coletados serão perdidos.")
+                .setPositiveButton("Reiniciar") { _, _ ->
+                    onConfirm()
+                }
+                .setNegativeButton("Cancelar") { dialog, _ ->
+                    dialog.dismiss()
+                    onCancel()
+                }
+            builder.show()
+        }
+    }
+
+
+    private fun showOnSuccessConfirmation(onConfirm: () -> Unit, onCancel: () -> Unit) {
+        runOnUiThread {
+            val builder = androidx.appcompat.app.AlertDialog.Builder(this@Timer)
+                .setTitle("Teste enviado com sucesso!")
+                .setPositiveButton("Novo teste") { _, _ ->
+                    onConfirm()
+                }
+                .setNegativeButton("Voltar ao início") { dialog, _ ->
+                    dialog.dismiss()
+                    onCancel()
+                }
+            builder.show()
+        }
+    }
+
+    // Dialog para mostrar resultado de ciclos SLS ao final do teste
+    private fun showCycleResultDialog(cycleCount: Int) {
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this@Timer)
+            .setTitle("Resultado do Teste 30sSTS")
+            .setMessage("Total de ciclos sentar-levantar-sentar detectados:\n\n" +
+                    "🔄 $cycleCount ciclos completos")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+        builder.show()
+    }
+
 
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) = Unit
 

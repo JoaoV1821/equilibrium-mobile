@@ -21,9 +21,16 @@ object PacienteManager {
         set(value) = prefs?.edit()?.putString("CPF", value)?.apply()!!
 
     var uuid: UUID?
-        get() = prefs?.getString("id", null)?.let { UUID.fromString(it) }
+        get() {
+            val idString = prefs?.getString("id", null)
+            val uuid = idString?.let { UUID.fromString(it) }
+            android.util.Log.d("PacienteManager", "Getting UUID: $uuid (string: $idString)")
+            return uuid
+        }
         set(value) {
+            android.util.Log.d("PacienteManager", "Setting UUID: $value")
             prefs?.edit()?.putString("id", value?.toString())?.apply()
+            android.util.Log.d("PacienteManager", "UUID saved to SharedPreferences")
         }
 
 

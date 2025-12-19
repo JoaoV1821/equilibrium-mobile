@@ -4,74 +4,144 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.databinding.ActivityQuestionnaireBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class QuestionnaireActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityQuestionnaireBinding
-    private val viewModel: QuestionnaireViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val db = QuestionnaireDatabase.getInstance(applicationContext)
-                return QuestionnaireViewModel(db.answerDao()) as T
-            }
-        }
-    }
-
+    private val viewModel: QuestionnaireViewModel by viewModels()
+  
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityQuestionnaireBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Exemplo: criar perguntas (substitua pelo JSON gerado do PDF)
-        val questions = listOf (
-            Question(1, "Perda de peso involuntária nos últimos 3 meses?", listOf(
-                Option("Não", 0),
-                Option("Sim — leve", 1),
-                Option("Sim — moderado", 2),
-                Option("Sim — severo", 3)
-            )),
+        // Load IVCF-20 questions via ViewModel
+        viewModel.loadQuestions("ivcf20")
 
-            Question(2, "Dificuldade para caminhar 400m?", listOf(
-                Option("Não", 0),
-                Option("Sim", 1)
-            ), allowNote = true)
-            // ... adicione todas as perguntas do PDF
-        )
+        // Flag to track if questionnaire is already set up
+        var isSetupDone = false
 
-        viewModel.loadQuestions(questions)
-
-        val adapter = QuestionnaireAdapter(questions) { qid, idx, score, note ->
-            viewModel.onAnswerChanged(qid, idx, score, note)
+        // Observe UI state for questions
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    // Only setup questionnaire ONCE when questions are loaded
+                    if (!state.isLoading && state.questions.isNotEmpty() && !isSetupDone) {
+                        setupQuestionnaire(state.questions)
+                        isSetupDone = true
+                    }
+                    
+                    state.error?.let { error ->
+                        Snackbar.make(binding.root, error, Snackbar.LENGTH_LONG).show()
+                    }
+                }
+            }
         }
 
-        binding.rvQuestions.layoutManager = LinearLayoutManager(this)
-        binding.rvQuestions.adapter = adapter
-
         binding.fabFinish.setOnClickListener {
-            // valida se todas respondidas (se necessário)
-            if (!viewModel.allQuestionsAnswered()) {
-                Snackbar.make(binding.root, "Responda todas as perguntas antes de concluir.", Snackbar.LENGTH_LONG).show()
+            // Validate if all questions are answered
+            if (!viewModel.isComplete()) {
+                Snackbar.make(binding.root, R.string.answer_all_questions, Snackbar.LENGTH_LONG).show()
                 return@setOnClickListener
             }
+            
             lifecycleScope.launch {
-                val total = viewModel.totalScore()
-                // abrir tela de resultado ou mostrar diálogo
-                val message = "Pontuação total: $total"
+                val total = viewModel.getTotalScore()
+                val interpretation = viewModel.getInterpretation()
+                
+                // Build result message
+                val message = buildString {
+                    appendLine(getString(R.string.result_score, total, 14))
+                    appendLine()
+                    appendLine(getString(R.string.result_interpretation, interpretation))
+                }
+                
+                // Show result dialog and ask if they want to submit
                 AlertDialog.Builder(this@QuestionnaireActivity)
-                    .setTitle("Resultado")
+                    .setTitle("Resultado IVCF-20")
                     .setMessage(message)
-                    .setPositiveButton("Ok", null)
+                    .setPositiveButton("Enviar") { _, _ ->
+                        submitQuestionnaire()
+                    }
+                    .setNegativeButton("Cancelar") { _, _ ->
+                        finish()
+                    }
                     .show()
             }
         }
     }
+    
+    private fun submitQuestionnaire() {
+        // Show loading feedback
+        android.widget.Toast.makeText(this, "Enviando questionário...", android.widget.Toast.LENGTH_SHORT).show()
+        binding.fabFinish.isEnabled = false
+        
+        // Get participant and professional IDs
+        val participantId = com.ufpr.equilibrium.utils.PacienteManager.uuid?.toString()
+        val professionalId = com.ufpr.equilibrium.utils.SessionManager.user?.id
+        val token = com.ufpr.equilibrium.utils.SessionManager.token
+        
+        if (participantId == null) {
+            Snackbar.make(binding.root, "Erro: Participante não identificado", Snackbar.LENGTH_LONG).show()
+            binding.fabFinish.isEnabled = true
+            return
+        }
+        
+        if (professionalId == null || token == null) {
+            Snackbar.make(binding.root, "Erro: Usuário não autenticado", Snackbar.LENGTH_LONG).show()
+            binding.fabFinish.isEnabled = true
+            return
+        }
+        
+        viewModel.submitAnswers(
+            participantId = participantId,
+            healthProfessionalId = professionalId,
+            token = token,
+            onSuccess = { message ->
+                binding.fabFinish.isEnabled = true
+                
+                AlertDialog.Builder(this@QuestionnaireActivity)
+                    .setTitle("Sucesso!")
+                    .setMessage(message)
+                    .setPositiveButton("Ok") { _, _ ->
+                        finish()
+                    }
+                    .setCancelable(false)
+                    .show()
+            },
+            onError = { error ->
+                binding.fabFinish.isEnabled = true
+                
+                AlertDialog.Builder(this@QuestionnaireActivity)
+                    .setTitle("Erro ao Enviar")
+                    .setMessage(error)
+                    .setPositiveButton("Tentar Novamente") { _, _ ->
+                        submitQuestionnaire()
+                    }
+                    .setNegativeButton("Cancelar") { _, _ ->
+                        finish()
+                    }
+                    .show()
+            }
+        )
+    }
+    
+    private fun setupQuestionnaire(questions: List<Question>) {
+        val adapter = QuestionnaireAdapter(questions) { qid, idx, score, note ->
+            viewModel.onAnswerChanged(qid, idx, score, note)
+        }
+        
+        binding.rvQuestions.layoutManager = LinearLayoutManager(this)
+        binding.rvQuestions.adapter = adapter
+    }
 }
-// Questionnaire feature removed. File kept empty to avoid build-time missing references.

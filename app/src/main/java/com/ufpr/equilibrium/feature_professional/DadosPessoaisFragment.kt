@@ -159,23 +159,56 @@ class DadosPessoaisFragment : Fragment() {
     private fun aplicarMascaraCpf(editText: EditText) {
         editText.addTextChangedListener(object : TextWatcher {
             private var isUpdating = false
+            private var oldText = ""
+            
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                if (!isUpdating) {
+                    oldText = s.toString()
+                }
+            }
+            
             override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (isUpdating) return
                 isUpdating = true
 
-                // Mantém apenas dígitos e limita a 11
-                val str = s.toString().filter { it.isDigit() }.take(11)
-                val mask = StringBuilder()
-                for (i in str.indices) {
-                    mask.append(str[i])
-                    if (i == 2 || i == 5) mask.append(".")
-                    if (i == 8) mask.append("-")
+                val currentText = s.toString()
+                val cursorPos = editText.selectionStart
+                
+                // Remove formatação e limita a 11 dígitos
+                val digits = currentText.filter { it.isDigit() }.take(11)
+                
+                // Aplica máscara
+                val formatted = buildString {
+                    digits.forEachIndexed { index, char ->
+                        append(char)
+                        if (index == 2 || index == 5) append(".")
+                        if (index == 8) append("-")
+                    }
                 }
-
-                editText.setText(mask.toString())
-                editText.setSelection(mask.length)
+                
+                // Calcula nova posição do cursor
+                val newCursorPos = if (currentText.length < oldText.length) {
+                    // Deletando: mantém posição
+                    cursorPos
+                } else {
+                    // Inserindo: ajusta posição considerando caracteres especiais adicionados
+                    var pos = cursorPos
+                    var digitsBeforeCursor = currentText.substring(0, minOf(cursorPos, currentText.length))
+                        .count { it.isDigit() }
+                    
+                    // Conta quantos caracteres especiais devem estar antes dessa quantidade de dígitos
+                    var adjustedPos = digitsBeforeCursor
+                    if (digitsBeforeCursor > 3) adjustedPos++ // primeiro ponto
+                    if (digitsBeforeCursor > 6) adjustedPos++ // segundo ponto
+                    if (digitsBeforeCursor > 9) adjustedPos++ // hífen
+                    
+                    adjustedPos
+                }
+                
+                editText.setText(formatted)
+                editText.setSelection(minOf(newCursorPos, formatted.length))
                 isUpdating = false
             }
         })
@@ -184,29 +217,58 @@ class DadosPessoaisFragment : Fragment() {
     private fun aplicarMascaraCelular(editText: EditText) {
         editText.addTextChangedListener(object : TextWatcher {
             private var isUpdating = false
-            private val maxDigits = 11 // DDD + número (ex: 11999999999)
+            private var oldText = ""
+            private val maxDigits = 11 // DDD + número
 
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                if (!isUpdating) {
+                    oldText = s.toString()
+                }
+            }
+            
             override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (isUpdating) return
                 isUpdating = true
 
-                // Mantém apenas dígitos e limita à quantidade máxima
-                val digits = s.toString().filter { it.isDigit() }.take(maxDigits)
-                val mask = StringBuilder()
-
-                for (i in digits.indices) {
-                    when (i) {
-                        0 -> mask.append("(").append(digits[i])
-                        1 -> mask.append(digits[i]).append(") ")
-                        6 -> mask.append(digits[i]).append("-")
-                        else -> mask.append(digits[i])
+                val currentText = s.toString()
+                val cursorPos = editText.selectionStart
+                
+                // Remove formatação e limita
+                val digits = currentText.filter { it.isDigit() }.take(maxDigits)
+                
+                // Aplica máscara
+                val formatted = buildString {
+                    digits.forEachIndexed { index, char ->
+                        when (index) {
+                            0 -> append("($char")
+                            1 -> append("$char) ")
+                            6 -> append("$char-")
+                            else -> append(char)
+                        }
                     }
                 }
 
-                editText.setText(mask.toString())
-                editText.setSelection(mask.length)
+                // Calcula nova posição do cursor
+                val newCursorPos = if (currentText.length < oldText.length) {
+                    // Deletando: mantém posição
+                    cursorPos
+                } else {
+                    // Inserindo: ajusta considerando caracteres especiais
+                    val digitsBeforeCursor = currentText.substring(0, minOf(cursorPos, currentText.length))
+                        .count { it.isDigit() }
+                    
+                    var adjustedPos = digitsBeforeCursor
+                    if (digitsBeforeCursor > 0) adjustedPos++ // abre parênteses
+                    if (digitsBeforeCursor > 2) adjustedPos += 2 // fecha parênteses + espaço
+                    if (digitsBeforeCursor > 7) adjustedPos++ // hífen
+                    
+                    adjustedPos
+                }
+
+                editText.setText(formatted)
+                editText.setSelection(minOf(newCursorPos, formatted.length))
                 isUpdating = false
             }
         })
@@ -216,19 +278,52 @@ class DadosPessoaisFragment : Fragment() {
     private fun aplicarMascaraData(editText: EditText) {
         editText.addTextChangedListener(object : TextWatcher {
             private var isUpdating = false
+            private var oldText = ""
+            
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                if (!isUpdating) {
+                    oldText = s.toString()
+                }
+            }
+            
             override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (isUpdating) return
                 isUpdating = true
-                val str = s.toString().filter { it.isDigit() }
-                val mask = StringBuilder()
-                for (i in str.indices) {
-                    mask.append(str[i])
-                    if (i == 1 || i == 3) mask.append("/")
+                
+                val currentText = s.toString()
+                val cursorPos = editText.selectionStart
+                
+                // Remove formatação e LIMITA A 8 DÍGITOS (dd/MM/yyyy)
+                val digits = currentText.filter { it.isDigit() }.take(8)
+                
+                // Aplica máscara
+                val formatted = buildString {
+                    digits.forEachIndexed { index, char ->
+                        append(char)
+                        if (index == 1 || index == 3) append("/")
+                    }
                 }
-                editText.setText(mask.toString())
-                editText.setSelection(editText.text.length)
+                
+                // Calcula nova posição do cursor
+                val newCursorPos = if (currentText.length < oldText.length) {
+                    // Deletando: mantém posição
+                    cursorPos
+                } else {
+                    // Inserindo: ajusta considerando barras adicionadas
+                    val digitsBeforeCursor = currentText.substring(0, minOf(cursorPos, currentText.length))
+                        .count { it.isDigit() }
+                    
+                    var adjustedPos = digitsBeforeCursor
+                    if (digitsBeforeCursor > 2) adjustedPos++ // primeira barra
+                    if (digitsBeforeCursor > 4) adjustedPos++ // segunda barra
+                    
+                    adjustedPos
+                }
+                
+                editText.setText(formatted)
+                editText.setSelection(minOf(newCursorPos, formatted.length))
                 isUpdating = false
             }
         })

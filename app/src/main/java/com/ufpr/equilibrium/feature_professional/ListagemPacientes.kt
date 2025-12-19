@@ -28,19 +28,18 @@ import java.util.UUID
 
 // ---- MODELOS alinhados ao JSON -------------------
 
-data class Meta(
+data class Meta (
     val total: Int? = null,
     val page: Int? = null,
     val pageSize: Int? = null,
     val lastPage: Int? = null
 )
 
-/** ESTE PacienteModel corresponde ao JSON do seu log */
 data class PacienteModelList(
     val id: String?,
     val birthday: String?,
-    val weight: Int?,       // no JSON veio Int
-    val height: Int?,       // no JSON veio Int (175, 172, 1, ...)
+    val weight: Int?,       
+    val height: Int?,       
     val zipCode: String?,
     val street: String?,
     val number: String?,
@@ -69,7 +68,7 @@ class ListagemPacientes : AppCompatActivity() {
     @Inject lateinit var pessoasAPI: PessoasAPI
     private lateinit var recyclerView: RecyclerView
     private lateinit var pacienteAdapter: PacienteAdapter
-    private val pacientes = mutableListOf<Paciente>()
+    private val pacientes = mutableListOf<com.ufpr.equilibrium.domain.model.Patient>()
     
     // Variáveis de controle de paginação
     private var currentPage = 1
@@ -87,7 +86,16 @@ class ListagemPacientes : AppCompatActivity() {
         recyclerView = findViewById(R.id.rv_pacientes)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        pacienteAdapter = PacienteAdapter(this, pacientes)
+        // Cria o adapter com callback para salvar o ID do paciente selecionado
+        pacienteAdapter = PacienteAdapter(
+            context = this, 
+            pacientes = pacientes,
+            onPatientSelected = { patient ->
+                // Salva o ID do paciente no PacienteManager quando ele é selecionado
+                com.ufpr.equilibrium.utils.PacienteManager.uuid = patient.id
+                android.util.Log.d("ListagemPacientes", "Paciente selecionado: ${patient.fullName}, ID: ${patient.id}")
+            }
+        )
         recyclerView.adapter = pacienteAdapter
 
         // Adiciona scroll listener para paginação
@@ -196,6 +204,8 @@ class ListagemPacientes : AppCompatActivity() {
                         
                         if (!jaExiste) {
                             pacientes.add(pacienteEncontrado)
+                            // Ordena alfabeticamente por nome
+                            pacientes.sortBy { it.fullName }
                             pacienteAdapter.atualizarLista(pacientes.toList())
                             pacienteAdapter.filtrarPorCpf(currentFilter)
                         }
@@ -248,6 +258,9 @@ class ListagemPacientes : AppCompatActivity() {
                         pacientes.addAll(lista)
                     }
                     
+                    // Ordena alfabeticamente por nome
+                    pacientes.sortBy { it.fullName }
+                    
                     // Atualiza o adapter com a lista completa e reaplica o filtro se houver
                     pacienteAdapter.atualizarLista(pacientes.toList())
                     if (currentFilter.isNotEmpty()) {
@@ -285,15 +298,33 @@ class ListagemPacientes : AppCompatActivity() {
 
     // --------- MAPPER SIMPLES e SEGURO (sem user) ----------------
 
-    private fun PacienteModelList.toDomain(): Paciente = Paciente(
-        id       = parseUuidOrFromCpf(id, cpf),
-        fullName = fullName.orEmpty(),
-        cpf      = cpf.orEmpty(),
-        age      = parseAgeFromIso(birthday),
-        weight   = (weight ?: 0).toFloat(),
-        height   = normalizeHeight(height),  // trata cm vs m=1/2/… do seu dataset
-        downFall = false                     // ajuste quando houver origem real
-    )
+    private fun PacienteModelList.toDomain(): com.ufpr.equilibrium.domain.model.Patient = 
+        com.ufpr.equilibrium.domain.model.Patient(
+            id       = parseUuidOrFromCpf(id, cpf),
+            fullName = fullName.orEmpty(),
+            cpf      = cpf.orEmpty(),
+            phone    = phone.orEmpty(),
+            birthDate = birthday.orEmpty(),
+            gender   = gender.orEmpty(),
+            age      = parseAgeFromIso(birthday),
+            education = scholarship,
+            socioeconomicLevel = socio_economic_level,
+            weight   = weight,
+            height   = normalizeHeight(height),
+            hasFallHistory = false,  // ajuste quando houver origem real
+            address  = if (!zipCode.isNullOrBlank() && !street.isNullOrBlank()) {
+                com.ufpr.equilibrium.domain.model.Address(
+                    zipCode = zipCode,
+                    street = street,
+                    number = number?.toIntOrNull() ?: 0,
+                    complement = complement,
+                    neighborhood = neighborhood.orEmpty(),
+                    city = city.orEmpty(),
+                    state = state.orEmpty(),
+                    stateCode = state.orEmpty()
+                )
+            } else null
+        )
 
     private fun parseUuidOrFromCpf(idStr: String?, cpf: String?): UUID {
         // tenta o id; se não der, gera UUID determinístico pelo CPF; fallback random

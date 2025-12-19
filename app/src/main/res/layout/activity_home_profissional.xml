@@ -88,6 +88,7 @@
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingHorizontal="16dp"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -144,7 +145,7 @@
             app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:layout_width="161dp"
+                android:layout_width="match_parent"
                 android:layout_height="246dp"
                 android:orientation="vertical"
                 android:padding="@dimen/space_16">
@@ -168,8 +169,11 @@
                         android:id="@+id/semicircle"
                         android:layout_width="118dp"
                         android:layout_height="125dp"
-                        tools:layout_editor_absoluteX="8dp"
-                        tools:layout_editor_absoluteY="1dp" />
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.083"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tvMonthlyPercent"
@@ -202,12 +206,12 @@
                         app:layout_constraintHorizontal_bias="0.111"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.774" />
+                        app:layout_constraintVertical_bias="0.764" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
-                    android:layout_width="134dp"
+                    android:layout_width="match_parent"
                     android:layout_height="44dp"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal"

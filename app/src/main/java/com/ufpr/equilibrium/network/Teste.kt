@@ -6,7 +6,7 @@ import java.util.UUID
 data class Teste (
     val type: String?,
     val healthProfessionalId: String,
-    val patientId: String,
+    val participantId: String,
     val healthcareUnitId: String?,
     val date: java.util.Date,
     val totalTime: String,

@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.OnBackPressedCallback
@@ -29,6 +30,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var cpf: EditText
     private lateinit var senha: EditText
     private lateinit var errorBar: LinearLayout
+    private lateinit var loadingOverlay: View
     private lateinit var eyeIcon: ImageView
     private var isPasswordVisible = false
 
@@ -46,6 +48,7 @@ class LoginActivity : AppCompatActivity() {
 
         eyeIcon = findViewById(R.id.eye)
         errorBar = findViewById(R.id.error_bar)
+        loadingOverlay = findViewById(R.id.loading_overlay)
 
         val btnLogin = findViewById<Button>(R.id.login_button)
         val retryButton = findViewById<Button>(R.id.retry_button)
@@ -80,15 +83,38 @@ class LoginActivity : AppCompatActivity() {
             viewModel.uiState.collectLatest { state ->
                 when (state) {
                     is LoginUiState.Idle -> Unit
-                    is LoginUiState.Loading -> { /* show loading if needed */ }
-                    is LoginUiState.Error -> {
-                        errorBar.visibility = View.VISIBLE
-                        Toast.makeText(applicationContext, getString(R.string.login_error_generic), Toast.LENGTH_SHORT).show()
-                    }
-                    is LoginUiState.Success -> {
+                    is LoginUiState.Loading -> {
+                        loadingOverlay.visibility = View.VISIBLE
                         errorBar.visibility = View.GONE
-                        Toast.makeText(applicationContext, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                        // persist
+                    }
+                    is LoginUiState.Error -> {
+                        loadingOverlay.visibility = View.GONE
+                        errorBar.visibility = View.VISIBLE
+                        val errorMessage = findViewById<TextView>(R.id.error_message)
+
+                        if (state.message.contains("401") || state.message.contains("Unauthorized")) {
+                            errorMessage.text = getString(R.string.error_invalid_credentials)
+                        } else {
+                            errorMessage.text = getString(R.string.login_error_generic)
+                        }
+
+                    }
+
+                    is LoginUiState.Success -> {
+                        loadingOverlay.visibility = View.GONE
+                        
+                        // Verifica se o usuário é um HEALTH_PROFESSIONAL
+                        if (state.session.role != "HEALTH_PROFESSIONAL") {
+                            // Se não for, mostra o errorBar com a mensagem apropriada
+                            errorBar.visibility = View.VISIBLE
+                            val errorMessage = findViewById<TextView>(R.id.error_message)
+                            errorMessage.text = getString(R.string.error_participant_access)
+                            return@collectLatest
+                        }
+                        
+                        errorBar.visibility = View.GONE
+
+
                         SessionManager.token = state.session.token
                         SessionManager.user = com.ufpr.equilibrium.network.Usuario(
                             id = state.session.id ?: "",
@@ -102,8 +128,9 @@ class LoginActivity : AppCompatActivity() {
 
                         if (state.session.role == "HEALTH_PROFESSIONAL") {
                             startActivity(Intent(this@LoginActivity, HomeProfissional::class.java))
-                        } else if (state.session.role == "PATIENT") {
-                            startActivity(Intent(this@LoginActivity, HomePaciente::class.java))
+
+                        } else {
+
                         }
                     }
                 }

@@ -15,6 +15,7 @@
     <!-- Typography -->
     <dimen name="font_display">28sp</dimen>
     <dimen name="font_headline">22sp</dimen>
+
     <dimen name="font_title">18sp</dimen>
     <dimen name="font_body">14sp</dimen>
 
@@ -24,5 +25,7 @@
     <dimen name="icon_touch">24dp</dimen>
     <dimen name="semicircle_stroke">14dp</dimen>
     <dimen name="semicircle_dot_radius">6dp</dimen>
+    <!-- Launcher foreground size to scale app icon appropriately -->
+    <dimen name="ic_launcher_foreground_size">10dp</dimen>
 </resources>
 

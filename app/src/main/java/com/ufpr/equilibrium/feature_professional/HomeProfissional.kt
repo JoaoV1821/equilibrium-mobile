@@ -208,10 +208,6 @@ class HomeProfissional : AppCompatActivity() {
             popup.menuInflater.inflate(R.menu.menu_hamburger_professional, popup.menu)
             popup.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.menu_edit_data -> {
-                        startActivity(Intent(this@HomeProfissional, AtualizarProfissionalActivity::class.java))
-                        true
-                    }
                     R.id.menu_logout -> {
                         builder.show()
                         true

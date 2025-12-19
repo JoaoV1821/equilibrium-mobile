@@ -41,7 +41,8 @@ class InfoAddFragment : Fragment() {
         "Classe A" to "A",
         "Classe B" to "B",
         "Classe C" to "C",
-        "Classe D" to "D"
+        "Classe D" to "D",
+        "Classe E" to "E"
     )
 
     override fun onCreateView(

@@ -12,8 +12,9 @@
         style="@style/Widget.MaterialComponents.Toolbar.Primary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:title="@string/questionnaire_title"
+        android:title="@string/questionnaire_ivcf20_title"
         android:elevation="4dp"
+        android:background="#2260FF"
         app:titleTextColor="@android:color/white" />
 
     <!-- Conteúdo principal: RecyclerView com as perguntas -->
@@ -42,6 +43,7 @@
         app:srcCompat="@drawable/ic_check"
         app:layout_anchor="@id/rvQuestions"
         app:layout_anchorGravity="bottom|end"
-        android:layout_margin="16dp" />
+        android:layout_margin="16dp"
+        app:backgroundTint="#2260FF" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

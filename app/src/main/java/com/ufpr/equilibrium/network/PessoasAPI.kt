@@ -24,8 +24,8 @@ interface PessoasAPI {
 
     // legacy login removed; use data module AuthRepositoryImpl
 
-    // /patient -> envelope com data + meta (como no seu log)
-    @GET("patient")
+    // /participant -> envelope com data + meta (como no seu log)
+    @GET("participant")
     fun getPacientes(
         // opcional: suporte a paginação do backend
         @Query("page") page: Int? = null,
@@ -34,8 +34,8 @@ interface PessoasAPI {
         @Query("cpf") cpf: String? = null
     ): Call<PacientesEnvelope>
 
-    // /patient aceita o JSON plano do PacienteModel (sem "user")
-    @POST("patient")
+    // /participant aceita o JSON plano do PacienteModel (sem "user")
+    @POST("participant")
     fun postPatient(
         @Body request: PacienteModel
     ): Call<PacienteModel>
@@ -45,6 +45,12 @@ interface PessoasAPI {
         @Body request: Teste,
         @Header("Authorization") token: String
     ): Call<Teste>
+
+    // GET evaluations for a participant (returns list of evaluation objects)
+    @GET("evaluation")
+    fun getEvaluations(
+        @Query("participantId") participantId: String
+    ): Call<EvaluationsEnvelope>
 
     // Provável que também exija auth — adicione se o backend requer
     @POST("healthProfessional")

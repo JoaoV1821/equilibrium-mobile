@@ -3,6 +3,6 @@
     <!-- Mesmo fundo do ícone padrão -->
     <background android:drawable="@android:color/white" />
     <!-- Usa o mesmo foreground com margem para manter o enquadramento em ícones redondos -->
-    <foreground android:drawable="@drawable/ic_launcher_foreground" />
-    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+    <foreground android:drawable="@drawable/ic_app_logo" />
+    <monochrome android:drawable="@drawable/ic_app_logo" />
 </adaptive-icon>

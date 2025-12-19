@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class AnswerEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val questionnaireId: String = "ivcf20",
-    val questionId: Int,
+    val questionId: String,  // UUID da API
     val selectedOptionIndex: Int, // -1 se não respondeu
     val score: Int,
     val note: String? = null,

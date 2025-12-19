@@ -41,14 +41,14 @@
         android:layout_width="119dp"
         android:layout_height="56dp"
         android:layout_marginStart="147dp"
-        android:layout_marginTop="676dp"
-        android:layout_marginEnd="146dp"
         android:backgroundTint="#2260FF"
         android:text="Avançar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.915" />
 
     <TextView
         android:id="@+id/textView4"
@@ -59,7 +59,7 @@
         android:layout_marginEnd="155dp"
         android:layout_marginBottom="669dp"
         android:fontFamily="@font/league_spartan_medium"
-        android:text="5TSTS"
+        android:text="30sSTS"
         android:textColor="#2260FF"
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -70,16 +70,15 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="356dp"
-        android:layout_height="257dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="408dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="66dp"
+        android:layout_width="333dp"
+        android:layout_height="244dp"
+        android:layout_marginStart="37dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.146"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView4"
+        app:layout_constraintVertical_bias="0.728"
         app:srcCompat="@drawable/instrucao2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

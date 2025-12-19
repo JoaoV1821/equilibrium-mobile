@@ -20,6 +20,7 @@ import com.ufpr.equilibrium.R
 import com.ufpr.equilibrium.feature_login.LoginActivity
 import com.ufpr.equilibrium.network.PessoasAPI
 import com.ufpr.equilibrium.utils.ErrorMessages
+import com.ufpr.equilibrium.utils.BrazilianState
 import javax.inject.Inject
 import dagger.hilt.android.AndroidEntryPoint
 import com.ufpr.equilibrium.utils.SessionManager
@@ -46,6 +47,7 @@ class EnderecoFragment : Fragment() {
     private lateinit var bairro : EditText
     private lateinit var cidade: EditText
     private lateinit var uf: EditText
+    private lateinit var loadingOverlay: View
 
     private lateinit var ruaAdapter: ArrayAdapter<String>
     private lateinit var bairroAdapter: ArrayAdapter<String>
@@ -85,12 +87,52 @@ class EnderecoFragment : Fragment() {
         ruaAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         bairroAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         cidadeAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
-        ufAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
+        
+        // Setup UF adapter with Brazilian states
+        val allStates = BrazilianState.getAllUFs()
+        ufAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, allStates.toMutableList())
 
         (rua as? android.widget.AutoCompleteTextView)?.setAdapter(ruaAdapter)
         (bairro as? android.widget.AutoCompleteTextView)?.setAdapter(bairroAdapter)
         (cidade as? android.widget.AutoCompleteTextView)?.setAdapter(cidadeAdapter)
-        (uf as? android.widget.AutoCompleteTextView)?.setAdapter(ufAdapter)
+        
+        // Configure UF field with custom behavior
+        (uf as? android.widget.AutoCompleteTextView)?.apply {
+            setAdapter(ufAdapter)
+            threshold = 1 // Show suggestions after 1 character
+            
+            // Limit to 2 uppercase characters and filter states
+            addTextChangedListener(object : TextWatcher {
+                private var isUpdating = false
+                
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun afterTextChanged(s: Editable?) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (isUpdating) return
+                    isUpdating = true
+                    
+                    val input = s.toString().uppercase().take(2)
+                    if (input != s.toString()) {
+                        setText(input)
+                        setSelection(input.length)
+                    }
+                    
+                    // Filter states based on input
+                    val filtered = if (input.isEmpty()) {
+                        allStates
+                    } else {
+                        allStates.filter { it.startsWith(input) }
+                    }
+                    ufAdapter.clear()
+                    ufAdapter.addAll(filtered)
+                    ufAdapter.notifyDataSetChanged()
+                    
+                    isUpdating = false
+                }
+            })
+        }
+
+        loadingOverlay = view.findViewById(R.id.loading_overlay)
 
         val viewModel = ViewModelProvider(requireActivity()).get(FormViewModel::class.java)
 
@@ -117,102 +159,187 @@ class EnderecoFragment : Fragment() {
         }
 
         btnEnviar.setOnClickListener {
+            // Validate all required fields before proceeding
+            if (!validateAddressFields()) {
+                return@setOnClickListener
+            }
 
             val viewPager = activity?.findViewById<ViewPager2>(R.id.viewPager)
 
-            viewModel.cep.value = cep.text.toString()
-            viewModel.numero.value = numero.text.toString().toInt()
-            viewModel.rua.value = rua.text.toString()
-            viewModel.complemento.value = complemento.text.toString()
-            viewModel.bairro.value = bairro.text.toString()
-            viewModel.cidade.value = cidade.text.toString()
-            viewModel.uf.value = uf.text.toString()
+            // Safely assign values to ViewModel with validation
+            try {
+                viewModel.cep.value = cep.text.toString()
+                viewModel.numero.value = numero.text.toString().toIntOrNull() ?: 0
+                viewModel.rua.value = rua.text.toString()
+                viewModel.complemento.value = complemento.text.toString()
+                viewModel.bairro.value = bairro.text.toString()
+                viewModel.cidade.value = cidade.text.toString()
+                viewModel.uf.value = uf.text.toString()
 
-            viewPager?.let {
+                viewPager?.let {
 
-                if (it.currentItem < (it.adapter?.itemCount ?: 1) - 1) {
-                    it.currentItem = it.currentItem + 1
+                    if (it.currentItem < (it.adapter?.itemCount ?: 1) - 1) {
+                        it.currentItem = it.currentItem + 1
 
-                } else {
-
-                    val sdfInput = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-
-                    val sdfOutput = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-                    val date = sdfInput.parse(viewModel.dataNasc.value ?: "")
-                    val birthdayOnly = date?.let { sdfOutput.format(it) } ?: ""
-                    
-                    val zipDigitsOnly = viewModel.cep.value.toString().replace(Regex("[^\\d]"), "")
-
-                    val user = User (
-
-                        fullName = viewModel.nome.value.toString(),
-                        cpf = viewModel.cpf.value.toString().replace(Regex("[.-]"), ""),
-                        gender = if (viewModel.sexo.value.toString() == "Masculino") "MALE" else "FEMALE")
-
-                    val paciente = PacienteModel (
-
-                        birthday = birthdayOnly,
-                        weight = viewModel.peso.value.toString().toInt(),
-                        height =  viewModel.altura.value ,
-                        zipCode = zipDigitsOnly,
-                        street = viewModel.rua.value.toString(),
-                        number = viewModel.numero.value.toString(),
-                        complement = viewModel.complemento.value.toString(),
-                        neighborhood = viewModel.bairro.value.toString(),
-                        city = viewModel.cidade.value.toString(),
-                        state = viewModel.uf.value.toString(),
-                        socio_economic_level = viewModel.nivelSocio.value.toString(),
-                        scholarship = viewModel.escolaridade.value.toString(),
-                        user = user
-
-                    )
-
-                    println(paciente)
-
-                    pessoasAPI.postPatient(paciente).enqueue(object : Callback<PacienteModel> {
-                        override fun onResponse(call: Call<PacienteModel>, response: Response<PacienteModel>) {
-
-                            if (response.isSuccessful) {
-
-                                AlertDialog.Builder(requireContext())
-                                    .setTitle("Cadastro concluído")
-                                    .setMessage("O paciente foi cadastrado com sucesso!")
-                                    .setPositiveButton("OK") { dialog, _ ->
-                                        dialog.dismiss()
-
-                                        if (SessionManager.isLoggedIn()) {
-
-                                            val intent = Intent(requireContext(), HomeProfissional::class.java)
-                                            startActivity(intent)
-
-                                        } else {
-
-                                            val intent = Intent(requireContext(), LoginActivity::class.java)
-                                            startActivity(intent)
-                                        }
-
-                                        requireActivity().finish()
-                                    }
-                                    .show()
-
-                            } else {
-                                val message = ErrorMessages.forHttpStatus(requireContext(), response.code())
-                                AlertDialog.Builder(requireContext())
-                                    .setTitle("Erro")
-                                    .setMessage(message)
-                                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-                                    .show()
-                                Log.e("postPatient", response.errorBody()?.string().orEmpty())
-                            }
-                        }
-
-                    override fun onFailure(call: Call<PacienteModel>, t: Throwable) {
-                        Toast.makeText(requireContext(), getString(R.string.error_network), Toast.LENGTH_SHORT).show()
+                    } else {
+                        submitPatientData()
                     }
-                   })
                 }
+            } catch (e: Exception) {
+                Log.e("EnderecoFragment", "Error processing form data", e)
+                Toast.makeText(requireContext(), "Erro ao processar dados do formulário", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun validateAddressFields(): Boolean {
+        val cepText = cep.text.toString().trim()
+        val numeroText = numero.text.toString().trim()
+        val ruaText = rua.text.toString().trim()
+        val bairroText = bairro.text.toString().trim()
+        val cidadeText = cidade.text.toString().trim()
+        val ufText = uf.text.toString().trim()
+
+        // Check for empty required fields
+        when {
+            cepText.isEmpty() -> {
+                cep.error = "CEP é obrigatório"
+                cep.requestFocus()
+                Toast.makeText(requireContext(), "Por favor, preencha o CEP", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            cepText.replace(Regex("[^\\d]"), "").length != 8 -> {
+                cep.error = "CEP deve ter 8 dígitos"
+                cep.requestFocus()
+                Toast.makeText(requireContext(), "CEP inválido. Digite 8 dígitos", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            numeroText.isEmpty() -> {
+                numero.error = "Número é obrigatório"
+                numero.requestFocus()
+                Toast.makeText(requireContext(), "Por favor, preencha o número", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            numeroText.toIntOrNull() == null -> {
+                numero.error = "Número inválido"
+                numero.requestFocus()
+                Toast.makeText(requireContext(), "Digite um número válido", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            ruaText.isEmpty() -> {
+                rua.error = "Rua é obrigatória"
+                rua.requestFocus()
+                Toast.makeText(requireContext(), "Por favor, preencha a rua", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            bairroText.isEmpty() -> {
+                bairro.error = "Bairro é obrigatório"
+                bairro.requestFocus()
+                Toast.makeText(requireContext(), "Por favor, preencha o bairro", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            cidadeText.isEmpty() -> {
+                cidade.error = "Cidade é obrigatória"
+                cidade.requestFocus()
+                Toast.makeText(requireContext(), "Por favor, preencha a cidade", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            ufText.isEmpty() -> {
+                uf.error = "Estado (UF) é obrigatório"
+                uf.requestFocus()
+                Toast.makeText(requireContext(), "Por favor, preencha o estado", Toast.LENGTH_SHORT).show()
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private fun submitPatientData() {
+        val viewModel = ViewModelProvider(requireActivity()).get(FormViewModel::class.java)
+
+        try {
+            val sdfInput = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val sdfOutput = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+            val date = sdfInput.parse(viewModel.dataNasc.value ?: "")
+            val birthdayOnly = date?.let { sdfOutput.format(it) } ?: ""
+            
+            val zipDigitsOnly = viewModel.cep.value.toString().replace(Regex("[^\\d]"), "")
+
+            val user = User(
+                fullName = viewModel.nome.value.toString(),
+                cpf = viewModel.cpf.value.toString().replace(Regex("[.-]"), ""),
+                gender = if (viewModel.sexo.value.toString() == "Masculino") "MALE" else "FEMALE"
+            )
+
+            val paciente = PacienteModel(
+                birthday = birthdayOnly,
+                weight = viewModel.peso.value.toString().toInt(),
+                height = viewModel.altura.value,
+                zipCode = zipDigitsOnly,
+                street = viewModel.rua.value.toString(),
+                number = viewModel.numero.value.toString(),
+                complement = viewModel.complemento.value.toString(),
+                neighborhood = viewModel.bairro.value.toString(),
+                city = viewModel.cidade.value.toString(),
+                state = viewModel.uf.value.toString(),
+                socio_economic_level = viewModel.nivelSocio.value.toString(),
+                scholarship = viewModel.escolaridade.value.toString(),
+                user = user
+            )
+
+            println(paciente)
+
+            loadingOverlay.visibility = View.VISIBLE
+
+            pessoasAPI.postPatient(paciente).enqueue(object : Callback<PacienteModel> {
+                override fun onResponse(call: Call<PacienteModel>, response: Response<PacienteModel>) {
+                    loadingOverlay.visibility = View.GONE
+
+                    if (response.isSuccessful) {
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Cadastro concluído")
+                            .setMessage("O paciente foi cadastrado com sucesso!")
+                            .setPositiveButton("OK") { dialog, _ ->
+                                dialog.dismiss()
+
+                                if (SessionManager.isLoggedIn()) {
+                                    val intent = Intent(requireContext(), HomeProfissional::class.java)
+                                    startActivity(intent)
+                                } else {
+                                    val intent = Intent(requireContext(), LoginActivity::class.java)
+                                    startActivity(intent)
+                                }
+
+                                requireActivity().finish()
+                            }
+                            .show()
+                    } else {
+                        val message = ErrorMessages.forHttpStatus(requireContext(), response.code())
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Erro")
+                            .setMessage(message)
+                            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                            .show()
+                        Log.e("postPatient", response.errorBody()?.string().orEmpty())
+                    }
+                }
+
+                override fun onFailure(call: Call<PacienteModel>, t: Throwable) {
+                    loadingOverlay.visibility = View.GONE
+                    Toast.makeText(requireContext(), getString(R.string.error_network), Toast.LENGTH_SHORT).show()
+                    Log.e("postPatient", "Network error", t)
+                }
+            })
+        } catch (e: Exception) {
+            loadingOverlay.visibility = View.GONE
+            Log.e("EnderecoFragment", "Error submitting patient data", e)
+            AlertDialog.Builder(requireContext())
+                .setTitle("Erro")
+                .setMessage("Erro ao processar dados. Por favor, verifique todos os campos.")
+                .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                .show()
         }
     }
 

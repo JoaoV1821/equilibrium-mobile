@@ -2,6 +2,7 @@ package com.ufpr.equilibrium.feature_paciente
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
@@ -100,7 +101,7 @@ class HomePaciente: AppCompatActivity() {
         // Ajusta a margem do BottomNavigationView para respeitar a safe area
         ViewCompat.setOnApplyWindowInsetsListener(bottomNav) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.updateLayoutParams<androidx.constraintlayout.widget.ConstraintLayout.LayoutParams> {
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 bottomMargin = systemBars.bottom
             }
             insets
