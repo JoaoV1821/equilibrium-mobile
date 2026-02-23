@@ -8,6 +8,8 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
@@ -54,6 +56,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     private var linearAceleration: Sensor? = null
 
     private val running = AtomicBoolean(false)
+    private val sensorCollectionActive = AtomicBoolean(false)
     private var startTime: Long = 0L
 
     // 60 Hz
@@ -220,7 +223,30 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
 
     // ====== Timer/Sensores ======
     private fun startTimerAndSensors() {
-        startTime = System.currentTimeMillis()
+        // Usar o startTime da contagem se disponível (coleta começou antes)
+        startTime = if (SensorDataBuffer.collectionStartTime > 0L) {
+            SensorDataBuffer.collectionStartTime
+        } else {
+            System.currentTimeMillis()
+        }
+
+        // Importar dados pré-coletados durante a contagem regressiva
+        SensorDataBuffer.drainTo(accelQueue, gyroQueue, linearQueue)
+
+        // Processar dados de giroscópio pré-coletados no detector SLS
+        gyroQueue.forEach { json ->
+            val gyroY = json.optDouble("y", 0.0)
+            slsPeakDetector.processSample(
+                gyroValue = gyroY,
+                timestampMs = System.currentTimeMillis()
+            )
+        }
+
+        Log.d("Timer", "Imported ${accelQueue.size} accel, ${gyroQueue.size} gyro, ${linearQueue.size} linear samples from countdown")
+
+        // Limpar o buffer compartilhado
+        SensorDataBuffer.clear()
+
         // start protocol countdown at 30 seconds
         elapsedMs = 30_000L
         lastSpokenSecond = -1
@@ -233,6 +259,7 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
 
     private fun stopTimerAndSensors() {
         running.set(false)
+        sensorCollectionActive.set(false)
         try {
             sensorManager.unregisterListener(this)
         } catch (_: Exception) { }
@@ -279,7 +306,15 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
                 // Quando zerar → finaliza o teste automaticamente
                 if (elapsedMs <= 0) {
                     running.set(false)
-                    stopTimerAndSensors()
+                    timerJob?.cancel()
+                    
+                    // Manter sensores coletando por mais 2 segundos após o fim do timer
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        sensorCollectionActive.set(false)
+                        try {
+                            sensorManager.unregisterListener(this@Timer)
+                        } catch (_: Exception) { }
+                    }, 2000L)
                     
                     // ★ Imprimir resultado final do detector SLS
                     slsPeakDetector.printFinalSummary()
@@ -337,13 +372,14 @@ class Timer : AppCompatActivity(), SensorEventListener, TextToSpeech.OnInitListe
     }
 
     private fun startSensorCollection() {
+        sensorCollectionActive.set(true)
         sensorManager.registerListener(this, accelerometer, frequency)
         sensorManager.registerListener(this, gyroscope, frequency)
         sensorManager.registerListener(this, linearAceleration, frequency)
     }
 
     override fun onSensorChanged(event: SensorEvent) {
-        if (!running.get()) return
+        if (!running.get() && !sensorCollectionActive.get()) return
 
         val timestampStr = formatTimestamp()
         val sensorData = floatArrayOf(event.values[0], event.values[1], event.values[2])

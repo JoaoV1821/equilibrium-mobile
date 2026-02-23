@@ -13,7 +13,11 @@ import android.speech.tts.UtteranceProgressListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.ufpr.equilibrium.R
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventListener {
 
@@ -22,14 +26,15 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventLi
     private val handler = Handler(Looper.getMainLooper())
     private var currentPage = 0
 
-    // Contagem de 10 até 1 e depois "JÁ!"
-    private val countdownList = listOf("7","6","5","4","3","2","1","JÁ!")
+    // Contagem de 5 até 1 e depois "JÁ!"
+    private val countdownList = listOf("5","4","3","2","1","JÁ!")
     private var countdownRunning = false
     
     // Gerenciamento de sensores
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
     private var gyroscope: Sensor? = null
+    private var linearAcceleration: Sensor? = null
     private var sensorsStarted = false
     
     // Frequência de 60 Hz
@@ -43,6 +48,9 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventLi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contagem)
 
+        // Limpar qualquer dado residual do buffer
+        SensorDataBuffer.clear()
+
         textToSpeech = TextToSpeech(this, this)
         viewPager = findViewById(R.id.viewPager)
         viewPager.adapter = ContagemAdapter(countdownList)
@@ -51,6 +59,7 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventLi
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+        linearAcceleration = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
 
         // Não inicia a contagem aqui; esperamos o TTS inicial terminar.
     }
@@ -75,9 +84,9 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventLi
                 }
             })
 
-            // Fala introdutória antes da contagem de 10 s
+            // Fala introdutória antes da contagem
             speakText(
-                "Sete segundos para começar o teste! Faça os ajustes necessários",
+                "Cinco segundos para começar o teste!",
                 INTRO_UTTERANCE_ID
             )
         }
@@ -88,6 +97,13 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventLi
         countdownRunning = true
         currentPage = 0
 
+        // Iniciar coleta de sensores no início da contagem
+        if (!sensorsStarted) {
+            startSensorCollection()
+            sensorsStarted = true
+            SensorDataBuffer.collectionStartTime = System.currentTimeMillis()
+        }
+
         // Exibe e fala a cada 1 segundo
         handler.post(object : Runnable {
             override fun run() {
@@ -96,14 +112,6 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventLi
 
                     val text = countdownList[currentPage]
                     speakText(text)
-                    
-                    // Iniciar sensores quando chegar a 4 segundos (currentPage == 3)
-                    // Lista: ["7","6","5","4","3","2","1","JÁ!"]
-                    // Index:   0   1   2   3   4   5   6   7
-                    if (currentPage == 3 && !sensorsStarted) {
-                        startSensorCollection()
-                        sensorsStarted = true
-                    }
 
                     currentPage++
 
@@ -123,6 +131,9 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventLi
     }
 
     private fun startTimerActivity() {
+        // Parar sensores antes de navegar — Timer.kt vai registrar os próprios listeners
+        stopSensorCollection()
+
         val teste = intent.getStringExtra("teste")
         val selectedUnitId = intent.getStringExtra("id_unidade")
 
@@ -138,6 +149,7 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventLi
     private fun startSensorCollection() {
         sensorManager.registerListener(this, accelerometer, frequency)
         sensorManager.registerListener(this, gyroscope, frequency)
+        sensorManager.registerListener(this, linearAcceleration, frequency)
     }
     
     private fun stopSensorCollection() {
@@ -150,9 +162,42 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventLi
     }
     
     override fun onSensorChanged(event: SensorEvent) {
-        // Os dados dos sensores não precisam ser processados aqui
-        // Este método existe apenas para permitir o "warm up" dos sensores
-        // O Timer.kt irá processar os dados quando a Activity for iniciada
+        // Coleta real de dados de sensores para o SensorDataBuffer
+        val timestampStr = formatTimestamp()
+        val sensorData = floatArrayOf(event.values[0], event.values[1], event.values[2])
+
+        when (event.sensor.type) {
+            Sensor.TYPE_ACCELEROMETER -> {
+                SensorDataBuffer.accelQueue.add(JSONObject().apply {
+                    put("time", timestampStr)
+                    put("x", sensorData[0].toDouble())
+                    put("y", sensorData[1].toDouble())
+                    put("z", sensorData[2].toDouble())
+                })
+            }
+            Sensor.TYPE_GYROSCOPE -> {
+                SensorDataBuffer.gyroQueue.add(JSONObject().apply {
+                    put("time", timestampStr)
+                    put("x", sensorData[0].toDouble())
+                    put("y", sensorData[1].toDouble())
+                    put("z", sensorData[2].toDouble())
+                })
+            }
+            Sensor.TYPE_LINEAR_ACCELERATION -> {
+                SensorDataBuffer.linearQueue.add(JSONObject().apply {
+                    put("time", timestampStr)
+                    put("x", sensorData[0].toDouble())
+                    put("y", sensorData[1].toDouble())
+                    put("z", sensorData[2].toDouble())
+                })
+            }
+        }
+    }
+
+    private fun formatTimestamp(): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        return sdf.format(Date())
     }
     
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
@@ -161,8 +206,7 @@ class Contagem : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventLi
 
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
-        // Não paramos os sensores aqui para permitir continuidade com Timer.kt
-        // O Timer.kt registrará seus próprios listeners enquanto os sensores continuam ativos
+        stopSensorCollection()
         textToSpeech?.stop()
         textToSpeech?.shutdown()
         super.onDestroy()
